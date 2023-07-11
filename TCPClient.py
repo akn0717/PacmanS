@@ -33,12 +33,8 @@ class TCPClient:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Invalid Port No.")
-        sys.exit(1)
-
     host_ip = "127.0.0.1"
-    host_port = int(sys.argv[1])
+    host_port = 5555
 
     client = TCPClient(host_ip, host_port)
 
