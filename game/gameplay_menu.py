@@ -3,9 +3,12 @@ from game.canvas import Canvas
 
 
 class gameplay_menu(Menu):
-    def __init__(self) -> None:
+    def __init__(self, host: str = None) -> None:
         super().__init__()
-        self.canvas = Canvas(CANVAS_SIZE)
+        if host is not None:  # is a client
+            pass
+        else:  # is a server, responsible for generating the game board
+            self.canvas = Canvas()
 
     def main(self):
         pass
