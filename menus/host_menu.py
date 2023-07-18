@@ -18,7 +18,7 @@ class Host_Menu(Menu):
              onchange=self.on_port_no_change
 		)
         self.menu.add.vertical_margin(30)
-        self.start_button = self.menu.add.button("Continue", self.navigate_to_gameplay_menu)
+        self.menu.add.button("Continue", self.navigate_to_gameplay_menu)
         self.menu.add.vertical_margin(30)
         self.menu.add.button("Back", self.back_to_main_menu)
 
