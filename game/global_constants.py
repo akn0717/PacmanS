@@ -1,0 +1,1 @@
+CANVAS_SIZE = (10, 10)

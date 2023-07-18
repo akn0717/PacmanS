@@ -1,4 +1,4 @@
-import game.global_configs as global_configs
+import game.global_variables as global_variables
 from game.base_menu import Menu
 import pygame
 import pygame_menu
@@ -9,8 +9,8 @@ class Main_Menu(Menu):
         super().__init__()
         self.menu = pygame_menu.Menu(
             "Main Menu",
-            global_configs.SCREEN_WIDTH,
-            global_configs.SCREEN_HEIGHT,
+            global_variables.SCREEN_WIDTH,
+            global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
@@ -19,7 +19,7 @@ class Main_Menu(Menu):
         self.exit_button = self.menu.add.button("Exit", self.exit_game)
 
     def main(self):
-        self.menu.mainloop(global_configs.SCREEN_WINDOW)
+        self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def start_game(self):
         pass

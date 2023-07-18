@@ -1,5 +1,5 @@
 import numpy as np
-from game.global_configs import CANVAS_SIZE
+from game.global_variables import CANVAS_SIZE
 
 
 class Canvas:
