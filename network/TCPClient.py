@@ -1,5 +1,4 @@
 # adapted from https://realpython.com/python-sockets/
-import sys
 import socket
 import threading
 

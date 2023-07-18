@@ -1,7 +1,6 @@
 import argparse
 import pygame
 import global_configs
-from canvas import Canvas
 from menus.main_menu import Main_Menu
 
 
@@ -19,7 +18,7 @@ def run(args):
         menu = menu.main()
         if not (menu):
             break
-    pygame.ex()
+    pygame.none(
     pygame.quit()
 
 
