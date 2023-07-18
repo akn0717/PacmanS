@@ -1,6 +1,5 @@
 import global_configs
 from menus.menu import Menu
-import pygame
 import pygame_menu
 
 
@@ -25,9 +24,9 @@ class Client_Menu(Menu):
              onchange=self.on_port_no_change
 		)
         self.menu.add.vertical_margin(30)
-        self.start_button = self.menu.add.button("Continue", self.navigate_to_gameplay_menu)
+        self.menu.add.button("Continue", self.navigate_to_gameplay_menu)
         self.menu.add.vertical_margin(30)
-        self.exit_button = self.menu.add.button("Back", self.back_to_main_menu)
+        self.menu.add.button("Back", self.back_to_main_menu)
 
     def main(self):
         self.menu.mainloop(global_configs.SCREEN_WINDOW)
