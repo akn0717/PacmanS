@@ -57,3 +57,4 @@ while running:
     menu.mainloop(window)
 
 pygame.quit()
+print("Test Notification")
