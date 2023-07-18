@@ -1,6 +1,6 @@
 import argparse
 import pygame
-import global_configs
+import game.global_configs as global_configs
 from menus.main_menu import Main_Menu
 
 

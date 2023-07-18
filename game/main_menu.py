@@ -1,11 +1,12 @@
-import global_configs
-from menus.menu import Menu
+import game.global_configs as global_configs
+from game.base_menu import Menu
 import pygame
 import pygame_menu
 
 
 class Main_Menu(Menu):
     def __init__(self):
+        super().__init__()
         self.menu = pygame_menu.Menu(
             "Main Menu",
             global_configs.SCREEN_WIDTH,
