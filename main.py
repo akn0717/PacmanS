@@ -19,7 +19,7 @@ def run(args):
         menu = menu.main()
         if not (menu):
             break
-
+    pygame.ex()
     pygame.quit()
 
 
