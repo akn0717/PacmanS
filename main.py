@@ -4,6 +4,7 @@ import game.global_variables as global_variables
 from game.main_menu import Main_Menu
 
 
+
 def run(args):
     print("Starting the game...")
     pygame.init()
