@@ -32,16 +32,11 @@ class Client_Menu(Menu):
         self.menu.mainloop(global_configs.SCREEN_WINDOW)
 
     def navigate_to_gameplay_menu(self):
-        # gameplay_menu = GameplayMenu()
-        # gameplay_menu.main()
         pass
 
     def back_to_main_menu(self):
-         self.menu.reset(1) 
-         # TO PREVENT CIRCULAR IMPORT ISSUE
-         from menus.main_menu import Main_Menu
-         main_menu = Main_Menu()
-         main_menu.main()
+        self.menu._back()
+
         
     def on_ip_address_change(self, value):
         global_configs.HOST_IP_ADDRESS=value
