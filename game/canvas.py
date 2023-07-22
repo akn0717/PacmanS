@@ -9,7 +9,6 @@ class Canvas:
         self.__board_data = board_data
 
         self.players = []  # player positions
-        self.__score_data = np.zeros_like(self.__board_data)
 
         self.asset_empty_block = pygame.image.load("../assets/EmptyBlock.png")
         self.asset_block = pygame.image.load("../assets/Block.png")
@@ -21,18 +20,10 @@ class Canvas:
             .set_colorkey(((255, 255, 255) / num_players) * i)
             for i in range(num_players)
         ]
-
-    def __blockType(self, i, j):
-        code = 0
-        if i - 1 >= 0:
-            code |= self.data[i - 1][j] == 1
-        if i + 1 < self.size:
-            code |= (self.data[i + 1][j] == 1) << 1
-        if j - 1 >= 0:
-            code |= (self.data[i][j - 1] == 1) << 2
-        if j + 1 < self.size:
-            code |= (self.data[i][j + 1] == 1) << 3
-        return code
+        
+    def update(self):
+        # TODO: Handle recevie message from server and update the board state
+        pass
 
     def draw(
         self,

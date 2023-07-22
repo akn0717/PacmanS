@@ -17,7 +17,7 @@ class Main_Menu(Menu):
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
-        self.menu.add.button("Join As Host", self.navigate_to_host_menu)
+        self.menu.add.button("Host A Game", self.navigate_to_host_menu)
         self.menu.add.vertical_margin(30)
         self.menu.add.button("Join As Client", self.navigate_to_client_menu)
         self.menu.add.vertical_margin(30)
