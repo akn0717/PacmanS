@@ -1,4 +1,4 @@
-from game.base_menu import Menu
+from game.menu import Menu
 from game.canvas import Canvas
 import pygame
 

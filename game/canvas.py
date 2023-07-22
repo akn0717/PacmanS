@@ -1,5 +1,3 @@
-import numpy as np
-from game.global_variables import CANVAS_SIZE
 import pygame
 import game.global_variables as global_variables
 
@@ -20,7 +18,7 @@ class Canvas:
             .set_colorkey(((255, 255, 255) / num_players) * i)
             for i in range(num_players)
         ]
-        
+
     def update(self):
         # TODO: Handle recevie message from server and update the board state
         pass

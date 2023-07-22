@@ -1,5 +1,5 @@
 import game.global_variables as global_variables
-from game.base_menu import Menu
+from game.menu import Menu
 from game.host_menu import Host_Menu
 from game.client_menu import Client_Menu
 

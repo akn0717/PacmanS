@@ -4,7 +4,6 @@ import game.global_variables as global_variables
 from game.main_menu import Main_Menu
 
 
-
 def run(args):
     print("Starting the game...")
     pygame.init()
@@ -15,10 +14,7 @@ def run(args):
     ) = global_variables.SCREEN_WINDOW.get_size()
     pygame.display.set_caption("PacmanS")
     menu = Main_Menu()
-    while True:
-        menu = menu.main()
-        if not (menu):
-            break
+    menu.main()
     pygame.quit()
 
 
