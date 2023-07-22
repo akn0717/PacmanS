@@ -8,14 +8,8 @@ import game.global_constants as global_constants
 class GameServer:
     def __init__(self, port):
         self.port = port
-        # socket.SOCK_STREAM is TCP
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # start server binding at specific port in TCP
-        self.socket.bind(("", self.port))
-        print("Server Started")
-        print("-----------------")
-        self.socket.listen()  # start listening for connection request
         self.connections = []
+
 
     def threadedConnection(self, conn):
         while True:
@@ -74,10 +68,16 @@ class GameServer:
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
-
         self.players = self.populatePlayerPosition(4)
 
     def startServer(self):
+        # socket.SOCK_STREAM is TCP
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # start server binding at specific port in TCP
+        self.socket.bind(("", self.port))
+        self.socket.listen()  # start listening for connection request
+        print("Server Started")
+        print("-----------------")
         while True:
             conn, _ = self.socket.accept()
             self.connections.append(conn)
