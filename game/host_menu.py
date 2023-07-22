@@ -30,5 +30,5 @@ class Host_Menu(Menu):
         self.menu._back()
 
     def on_port_no_change(self, value):
-        global_configs.HOST_PORT = value
+        global_variables.HOST_PORT = value
         pass
