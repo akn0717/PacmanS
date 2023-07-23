@@ -39,7 +39,6 @@ class Gameplay_Menu(Menu):
                     isRunning = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        print("HELLO")
                         self.players[self.player_id].setDirection(3)
                     elif event.key == pygame.K_DOWN:
                         self.players[self.player_id].setDirection(2)

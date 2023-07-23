@@ -28,9 +28,9 @@ class Canvas:
         for i in range(self.board_data.shape[0]):
             for j in range(self.board_data.shape[1]):
                 position = (
-                    i * global_variables.CANVAS_UNIT[0],
                     j * global_variables.CANVAS_UNIT[1],
-                )
+                    i * global_variables.CANVAS_UNIT[0],
+                ) #pygame display format is (column, row)
                 if self.board_data[i][j] == 0 or self.board_data[i][j] == 2:
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.IMAGE_ASSET_EMPTY_BLOCK,
