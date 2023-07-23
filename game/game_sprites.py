@@ -2,6 +2,7 @@ import game.global_constants as global_constants
 import game.global_variables as global_variables
 import pygame
 import numpy as np
+from game.global_constants import Direction, Move_Operation
 
 
 class Pacman:
@@ -11,7 +12,7 @@ class Pacman:
         self.score = 0
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[id], pygame.Surface)
         self.image_asset = global_variables.IMAGE_ASSET_PLAYERS[id]
-        self.direction = 0
+        self.direction = Direction.RIGHT.value
 
     def setDirection(self, direction):
         self.direction = direction
@@ -19,7 +20,7 @@ class Pacman:
     def move(self):
         # For game testing only, skipping exchanging message,
         # remove later when the network is ready
-        self.position += np.array(global_constants.MOVE_DIRECTIONS[self.direction])
+        self.position += np.array(Move_Operation.OPERATORS.value[self.direction])
 
         # TODO: send message to server to request for a move here
 

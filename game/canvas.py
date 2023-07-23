@@ -1,5 +1,6 @@
 import pygame
 import game.global_variables as global_variables
+from game.global_constants import Block_Type
 
 
 class Canvas:
@@ -29,16 +30,20 @@ class Canvas:
                     j * global_variables.CANVAS_UNIT[1],
                     i * global_variables.CANVAS_UNIT[0],
                 )  # pygame display format is (column, row)
-                if self.board_data[i][j] == 0 or self.board_data[i][j] == 2:
+                if (
+                    self.board_data[i][j] == Block_Type.EMPTY.value
+                    or self.board_data[i][j] == Block_Type.DOT.value
+                ):
+
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.IMAGE_ASSET_EMPTY_BLOCK,
                         position,
                     )
-                elif self.board_data[i][j] == 1:
+                elif self.board_data[i][j] == Block_Type.WALL.value:
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.IMAGE_ASSET_WALL_BLOCK,
                         position,
                     )
 
-                if self.board_data[i][j] == 2:
+                if self.board_data[i][j] == Block_Type.DOT.value:
                     pass  # TODO: Load dot image and blit it here

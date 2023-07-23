@@ -5,6 +5,7 @@ import numpy as np
 import pygame
 import game.global_constants as global_constants
 import game.global_variables as global_variables
+from game.global_constants import Direction, Block_Type
 
 # Debug
 from network.GameServer import GameServer
@@ -39,13 +40,13 @@ class Gameplay_Menu(Menu):
                     isRunning = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        self.players[self.player_id].setDirection(3)
+                        self.players[self.player_id].setDirection(Direction.UP.value)
                     elif event.key == pygame.K_DOWN:
-                        self.players[self.player_id].setDirection(2)
+                        self.players[self.player_id].setDirection(Direction.DOWN.value)
                     elif event.key == pygame.K_LEFT:
-                        self.players[self.player_id].setDirection(1)
+                        self.players[self.player_id].setDirection(Direction.LEFT.value)
                     elif event.key == pygame.K_RIGHT:
-                        self.players[self.player_id].setDirection(0)
+                        self.players[self.player_id].setDirection(Direction.RIGHT.value)
 
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
@@ -61,27 +62,27 @@ class Gameplay_Menu(Menu):
             player = self.players[self.player_id]
             (i, j) = player.position
             if (
-                player.direction == 0
+                player.direction == Direction.RIGHT.value
                 and j < global_constants.CANVAS_SIZE[1] - 1
-                and self.canvas.board_data[i][j + 1] == 0
+                and self.canvas.board_data[i][j + 1] == Block_Type.EMPTY.value
             ):
                 player.move()
             elif (
-                player.direction == 1
+                player.direction == Direction.LEFT.value
                 and j > 0
-                and self.canvas.board_data[i][j - 1] == 0
+                and self.canvas.board_data[i][j - 1] == Block_Type.EMPTY.value
             ):
                 player.move()
             elif (
-                player.direction == 2
+                player.direction == Direction.DOWN.value
                 and i < global_constants.CANVAS_SIZE[1] - 1
-                and self.canvas.board_data[i + 1][j] == 0
+                and self.canvas.board_data[i + 1][j] == Block_Type.EMPTY.value
             ):
                 player.move()
             elif (
-                player.direction == 3
+                player.direction == Direction.UP.value
                 and i > 0
-                and self.canvas.board_data[i - 1][j] == 0
+                and self.canvas.board_data[i - 1][j] == Block_Type.EMPTY.value
             ):
                 player.move()
             ################################################################################################

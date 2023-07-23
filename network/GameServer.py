@@ -69,11 +69,10 @@ class GameServer:
         return random.choices(potential_positions, k=num_players)
 
     def initializeGameData(self):
-        self.board_data = np.ones(shape=global_constants.CANVAS_SIZE)
+        self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
         self.players = self.populatePlayerPosition(global_constants.NUM_PLAYERS)
-        print(self.players)
 
     def startServer(self):
         # socket.SOCK_STREAM is TCP
