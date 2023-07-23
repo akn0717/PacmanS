@@ -3,7 +3,8 @@ import random
 import socket
 import threading
 import numpy as np
-import game.global_constants as global_constants
+# import game.global_constants as global_constants
+import struct
 
 
 class GameServer:
@@ -15,14 +16,15 @@ class GameServer:
         while True:
             recv_data = conn.recv(128)
             if recv_data:
+                decoded_token = struct.unpack("!I",recv_data[:4])
                 print("Message received from {}".format(conn))
-                print("Message is {}".format(recv_data.decode("utf-8")))
+                print("Message is {}".format(decoded_token))
             for connection in self.connections:
                 if connection != conn:
                     connection.sendall(recv_data)
         conn.close()
         print("Connection closed.")
-
+     
     def __dfsPopulation(self, i, j):
         if (
             i <= 0
