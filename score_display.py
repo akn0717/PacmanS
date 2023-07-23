@@ -3,8 +3,8 @@ import random
 
 pygame.init()
 
-window_width = 800
-window_height = 600
+window_width = 1280
+window_height = 720
 window = pygame.display.set_mode((window_width, window_height))
 
 clock = pygame.time.Clock()
@@ -14,14 +14,15 @@ margin = 50
 space = 20
 
 players = ["Player 1", "Player 2", "Player 3", "Player 4"]
-scores = [111, 222, 333, 444]
+scores = [111, 22, 33, 44]
 
 # Define the colors for each player
 colors = [(255, 0, 0), (0, 128, 0), (0, 0, 255), (255, 200, 0)] # red, green, blue, yellow
 
 crown_path = "assets/Crown.svg"
 icon_crown = pygame.image.load(crown_path)
-icon_crown = pygame.transform.scale(icon_crown, (30, 50))
+icon_crown = pygame.transform.scale(icon_crown, (80, 100))
+icon_crown_width = icon_crown.get_width()
 
 icon_pacman_size = 50
 
@@ -55,7 +56,7 @@ while running:
 
     for i in range(4):
         
-        if i == 0:          # player 1
+        if i == 0:          # player 1 red
             score_text = font.render(f"{players[i]}: {scores[i]}", True, colors[i])
             text_width = score_text.get_width()
             text_height = score_text.get_height()
@@ -68,15 +69,15 @@ while running:
 
             # draw the crown after the player with highest score
             if scores[i] == max(scores):
-                window.blit(icon_crown, (text_width + text_x + icon_pacman_size, text_y - 20))
+                window.blit(icon_crown, (icon_x, icon_y - icon_pacman_size / 4 * 3))
             i += 1
 
-        elif i == 1:        # player 2
+        elif i == 1:        # player 2 green
             score_text = font.render(f"{players[i]}: {scores[i]}", True, colors[i])
             text_width = score_text.get_width()
             text_height = score_text.get_height()
             icon_x = window_width - margin - text_width - space - icon_pacman_size
-            icon_y = margin
+            # icon_y = text_y - text_height / 2
             window.blit(icon_pacman_green, (icon_x, icon_y))
             text_x = icon_x + icon_pacman_size + space
             text_y = icon_y + icon_pacman_size / 2 - text_height / 2
@@ -84,10 +85,10 @@ while running:
 
             # draw the crown after the player with highest score
             if scores[i] == max(scores):
-                window.blit(icon_crown, (text_width + text_x, text_y - 20))
+                window.blit(icon_crown, (icon_x, icon_y - icon_pacman_size / 4 * 3))
             i += 1
 
-        elif i == 2:        # player 3            
+        elif i == 2:        # player 3 blue   
             score_text = font.render(f"{players[i]}: {scores[i]}", True, colors[i])
             text_width = score_text.get_width()
             text_height = score_text.get_height()
@@ -100,15 +101,15 @@ while running:
 
             # draw the crown after the player with highest score
             if scores[i] == max(scores):
-                window.blit(icon_crown, (text_width + text_x, text_y - 20))   
+                window.blit(icon_crown, (icon_x, icon_y - icon_pacman_size / 4 * 3))
             i += 1   
 
-        else:               # player 4
+        else:               # player 4 yellow
             score_text = font.render(f"{players[i]}: {scores[i]}", True, colors[i])
             text_width = score_text.get_width()
             text_height = score_text.get_height()
             icon_x = window_width - margin - text_width - space - icon_pacman_size
-            icon_y = window_height - margin - text_height
+            # icon_y = text_y - text_height / 2
             window.blit(icon_pacman_yellow, (icon_x, icon_y))
             text_x = icon_x + icon_pacman_size + space
             text_y = icon_y + icon_pacman_size / 2 - text_height / 2
@@ -116,7 +117,7 @@ while running:
 
             # draw the crown after the player with highest score
             if scores[i] == max(scores):
-                window.blit(icon_crown, (text_width + text_x, text_y - 20))
+                window.blit(icon_crown, (icon_x, icon_y - icon_pacman_size / 4 * 3))
             i += 1
         
 
