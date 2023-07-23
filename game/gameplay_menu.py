@@ -1,7 +1,9 @@
+from game.game_sprites import Pacman
 from game.menu import Menu
 from game.canvas import Canvas
 import numpy as np
 import pygame
+import game.global_constants as global_constants
 
 # Debug
 from network.GameServer import GameServer
@@ -16,7 +18,11 @@ class Gameplay_Menu(Menu):
         gameServer = GameServer()
         gameServer.initializeGameData()
 
-        self.canvas = Canvas(np.zeros)
+        self.canvas = Canvas(np.zeros(global_constants.CANVAS_SIZE))
+        self.players = [Pacman(i, (0, 0)) for i in range(4)]  # player positions
+        self.player_id = (
+            0  # For Debuging only, TODO: receive player_id from server message
+        )
 
     def main(self):
         isRunning = True
@@ -25,13 +31,20 @@ class Gameplay_Menu(Menu):
                 if event.type == pygame.QUIT:
                     isRunning = True
                 elif event.type == pygame.K_UP:
-                    pass
+                    self.players[self.player_id].setDirection(3)
                 elif event.type == pygame.K_DOWN:
-                    pass
+                    self.players[self.player_id].setDirection(2)
                 elif event.type == pygame.K_LEFT:
-                    pass
+                    self.players[self.player_id].setDirection(1)
                 elif event.type == pygame.K_RIGHT:
-                    pass
+                    self.players[self.player_id].setDirection(0)
 
+            # Update
             self.canvas.update()
+            for player in self.players:
+                player.update()
+
+            # Draw
             self.canvas.draw()
+            for player in self.players:
+                player.draw()
