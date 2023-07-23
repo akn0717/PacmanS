@@ -1,6 +1,6 @@
 import numpy as np
 
-CANVAS_SIZE = (10, 10)
+CANVAS_SIZE = (20, 20)
 PRIMARY_COLOR = (100, 100, 100)
 BLOCK_SIZE = (100, 100)
 MOVE_DIRECTIONS = [

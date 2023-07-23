@@ -17,7 +17,8 @@ class Pacman:
         self.direction = direction
 
     def move(self):
-        # For game testing only, skipping exchanging message, remove later when the network is ready
+        # For game testing only, skipping exchanging message,
+        # remove later when the network is ready
         self.position += global_constants.MOVE_DIRECTIONS[self.direction]
 
         # TODO: send message to server to request for a move here

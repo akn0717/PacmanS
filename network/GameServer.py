@@ -66,13 +66,13 @@ class GameServer:
             for j in range(m):
                 if self.board_data[i, j] == 0:
                     potential_positions.append((i, j))
-        return random.choices(potential_positions, k=global_constants.NUM_PLAYERS)
+        return random.choices(potential_positions, k=num_players)
 
     def initializeGameData(self):
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
-        self.players = self.populatePlayerPosition(4)
+        self.players = self.populatePlayerPosition(global_constants.NUM_PLAYERS)
         print(self.players)
 
     def startServer(self):

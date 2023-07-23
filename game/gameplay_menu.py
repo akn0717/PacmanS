@@ -31,7 +31,7 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 10
+        FPS = 15
 
         while isRunning:
             for event in pygame.event.get():
@@ -56,7 +56,8 @@ class Gameplay_Menu(Menu):
 
             # player will move every tick
 
-            # For game testing only, skipping exchanging message, remove later when the network is ready
+            # For game testing only, skipping exchanging message,
+            # remove later when the network is ready
             player = self.players[self.player_id]
             (i, j) = player.position
             if (
