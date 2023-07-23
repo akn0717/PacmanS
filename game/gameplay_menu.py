@@ -16,11 +16,14 @@ class Gameplay_Menu(Menu):
         # TODO: receive board data from server and pass it to Canvas()
 
         # workaround for initilize game board
-        gameServer = GameServer()
+        gameServer = GameServer(5555)
         gameServer.initializeGameData()
 
         self.canvas = Canvas(gameServer.board_data)
-        self.players = [Pacman(i, (0, 0)) for i in range(4)]  # player positions
+        self.players = [
+            Pacman(i, gameServer.players[i])
+            for i in range(global_constants.NUM_PLAYERS)
+        ]  # player positions
         self.player_id = (
             0  # For Debuging only, TODO: receive player_id from server message
         )
@@ -28,20 +31,22 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 60
+        FPS = 10
 
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    isRunning = True
-                elif event.type == pygame.K_UP:
-                    self.players[self.player_id].setDirection(3)
-                elif event.type == pygame.K_DOWN:
-                    self.players[self.player_id].setDirection(2)
-                elif event.type == pygame.K_LEFT:
-                    self.players[self.player_id].setDirection(1)
-                elif event.type == pygame.K_RIGHT:
-                    self.players[self.player_id].setDirection(0)
+                    isRunning = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        print("HELLO")
+                        self.players[self.player_id].setDirection(3)
+                    elif event.key == pygame.K_DOWN:
+                        self.players[self.player_id].setDirection(2)
+                    elif event.key == pygame.K_LEFT:
+                        self.players[self.player_id].setDirection(1)
+                    elif event.key == pygame.K_RIGHT:
+                        self.players[self.player_id].setDirection(0)
 
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
@@ -56,23 +61,27 @@ class Gameplay_Menu(Menu):
             player = self.players[self.player_id]
             (i, j) = player.position
             if (
-                self.direction == 0
+                player.direction == 0
                 and j < global_constants.CANVAS_SIZE[1] - 1
                 and self.canvas.board_data[i][j + 1] == 0
             ):
                 player.move()
             elif (
-                self.direction == 1 and j > 0 and self.canvas.board_data[i][j - 1] == 0
+                player.direction == 1
+                and j > 0
+                and self.canvas.board_data[i][j - 1] == 0
             ):
                 player.move()
             elif (
-                self.direction == 2
+                player.direction == 2
                 and i < global_constants.CANVAS_SIZE[1] - 1
                 and self.canvas.board_data[i + 1][j] == 0
             ):
                 player.move()
             elif (
-                self.direction == 3 and i > 0 and self.canvas.board_data[i - 1][j] == 0
+                player.direction == 3
+                and i > 0
+                and self.canvas.board_data[i - 1][j] == 0
             ):
                 player.move()
             ################################################################################################
@@ -81,6 +90,7 @@ class Gameplay_Menu(Menu):
             self.canvas.draw()
             for player in self.players:
                 player.draw()
+            pygame.display.update()
             clock.tick(FPS)
 
         pygame.quit()

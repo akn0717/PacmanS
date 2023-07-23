@@ -1,4 +1,5 @@
 # adapted from https://realpython.com/python-sockets/
+import random
 import socket
 import threading
 import numpy as np
@@ -9,7 +10,6 @@ class GameServer:
     def __init__(self, port):
         self.port = port
         self.connections = []
-
 
     def threadedConnection(self, conn):
         while True:
@@ -26,9 +26,9 @@ class GameServer:
     def __dfsPopulation(self, i, j):
         if (
             i <= 0
-            or i >= self.size - 1
+            or i >= self.board_data.shape[0] - 1
             or j <= 0
-            or j >= self.size - 1
+            or j >= self.board_data.shape[1] - 1
             or self.__dd[i, j] == 1
         ):
             return 1
@@ -36,7 +36,7 @@ class GameServer:
 
         c = 0.8  # how many walls expected
         self.board_data[i, j] = np.random.choice(np.array([0, 1]), p=[c, 1 - c])
-        if self.data[i, j] == 0:
+        if self.board_data[i, j] == 0:
             self.__dfsPopulation(i - 1, j)
             self.__dfsPopulation(i + 1, j)
             self.__dfsPopulation(i, j - 1)
@@ -44,11 +44,15 @@ class GameServer:
 
     def populateCanvas(self):
         # set the border lines
-        for i in range(self.size):
-            self.board_data[0, i] = self.data[i, 0] = 1
-            self.board_data[i, self.size - 1] = self.data[self.size - 1, i] = 1
+        for i in range(self.board_data.shape[0]):
+            self.board_data[0, i] = self.board_data[i, 0] = 1
+            self.board_data[i, self.board_data.shape[0] - 1] = self.board_data[
+                self.board_data.shape[0] - 1, i
+            ] = 1
 
-        i, j = np.random.randint(1, self.size - 2), np.random.randint(1, self.size - 2)
+        i, j = np.random.randint(1, self.board_data.shape[0] - 2), np.random.randint(
+            1, self.board_data.shape[0] - 2
+        )
         self.board_data[i, j] = 0
         self.__dfsPopulation(i - 1, j)
         self.__dfsPopulation(i + 1, j)
@@ -62,13 +66,14 @@ class GameServer:
             for j in range(m):
                 if self.board_data[i, j] == 0:
                     potential_positions.append((i, j))
-        return np.random.choice(potential_positions, num_players)
+        return random.choices(potential_positions, k=global_constants.NUM_PLAYERS)
 
     def initializeGameData(self):
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
         self.players = self.populatePlayerPosition(4)
+        print(self.players)
 
     def startServer(self):
         # socket.SOCK_STREAM is TCP
