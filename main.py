@@ -32,6 +32,12 @@ def init():
         )
         for i in range(global_constants.NUM_PLAYERS)
     ]  # TODO: change color of player depending on the player ID
+
+
+    global_variables.SCORE_DISPLAY_FONT =  pygame.font.Font(pygame.font.get_default_font(), 30)
+    global_variables.ICON_CROWN = pygame.transform.scale(
+        pygame.image.load("assets/PacmanRed.svg"), (50, 50)
+    )
     pygame.display.set_caption("PacmanS")
 
 

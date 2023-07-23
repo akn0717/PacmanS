@@ -7,3 +7,12 @@ global IMAGE_ASSET_WALL_BLOCK
 global IMAGE_ASSET_DOT
 global IMAGE_ASSET_PLAYERS
 global CANVAS_UNIT
+
+# used for in-game score display
+global SCORE_DISPLAY_MARGIN 
+global SCORE_DISPLAY_FONT
+global ICON_CROWN
+global ICON_PACMAN_RED
+global ICON_PACMAN_GREEN
+global ICON_PACMAN_BLUE
+global ICON_PACMAN_YELLOW

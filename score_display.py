@@ -55,7 +55,7 @@ while running:
             running = False
 
     # Background color
-    window.fill((255, 255, 255))
+    window.fill((100, 100, 100))
 
 
     for i in range(4):
