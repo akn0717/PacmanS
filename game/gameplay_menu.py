@@ -18,7 +18,7 @@ class Gameplay_Menu(Menu):
         gameServer = GameServer()
         gameServer.initializeGameData()
 
-        self.canvas = Canvas(np.zeros(global_constants.CANVAS_SIZE))
+        self.canvas = Canvas(gameServer.board_data)
         self.players = [Pacman(i, (0, 0)) for i in range(4)]  # player positions
         self.player_id = (
             0  # For Debuging only, TODO: receive player_id from server message
