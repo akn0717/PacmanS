@@ -4,6 +4,7 @@ from game.canvas import Canvas
 import numpy as np
 import pygame
 import game.global_constants as global_constants
+import game.global_variables as global_variables
 
 # Debug
 from network.GameServer import GameServer
@@ -26,6 +27,9 @@ class Gameplay_Menu(Menu):
 
     def main(self):
         isRunning = True
+        clock = pygame.time.Clock()
+        FPS = 60
+
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -39,13 +43,44 @@ class Gameplay_Menu(Menu):
                 elif event.type == pygame.K_RIGHT:
                     self.players[self.player_id].setDirection(0)
 
+            # Clear display
+            assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
+            global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
+
             # Update
             self.canvas.update()
 
             # player will move every tick
-            self.players[self.player_id].move()
+
+            # For game testing only, skipping exchanging message, remove later when the network is ready
+            player = self.players[self.player_id]
+            (i, j) = player.position
+            if (
+                self.direction == 0
+                and j < global_constants.CANVAS_SIZE[1] - 1
+                and self.canvas.board_data[i][j + 1] == 0
+            ):
+                player.move()
+            elif (
+                self.direction == 1 and j > 0 and self.canvas.board_data[i][j - 1] == 0
+            ):
+                player.move()
+            elif (
+                self.direction == 2
+                and i < global_constants.CANVAS_SIZE[1] - 1
+                and self.canvas.board_data[i + 1][j] == 0
+            ):
+                player.move()
+            elif (
+                self.direction == 3 and i > 0 and self.canvas.board_data[i - 1][j] == 0
+            ):
+                player.move()
+            ################################################################################################
 
             # Draw
             self.canvas.draw()
             for player in self.players:
                 player.draw()
+            clock.tick(FPS)
+
+        pygame.quit()

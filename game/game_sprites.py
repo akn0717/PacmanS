@@ -15,15 +15,8 @@ class Pacman:
 
     def move(self):
         # For game testing only, skipping exchanging message, remove later when the network is ready
-        (i, j) = self.position
-        if self.direction == 0 and j < global_constants.CANVAS_SIZE[1] - 1:
-            self.position = (i, j + 1)
-        elif self.direction == 1 and j > 0:
-            self.position = (i, j - 1)
-        elif self.direction == 2 and i < global_constants.CANVAS_SIZE[1] - 1:
-            self.position = (i + 1, j)
-        elif self.direction == 3 and i > 0:
-            self.position = (i - 1, j)
+        self.position += global_constants.MOVE_DIRECTIONS[self.direction]
+        
 
         # TODO: send message to server to request for a move here
 
