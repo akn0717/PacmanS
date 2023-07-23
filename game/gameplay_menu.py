@@ -41,8 +41,9 @@ class Gameplay_Menu(Menu):
 
             # Update
             self.canvas.update()
-            for player in self.players:
-                player.update()
+
+            # player will move every tick
+            self.players[self.player_id].move()
 
             # Draw
             self.canvas.draw()
