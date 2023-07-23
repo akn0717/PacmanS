@@ -1,3 +1,4 @@
+from multiprocessing import Lock
 from game.game_sprites import Pacman
 from game.menu import Menu
 from game.canvas import Canvas
@@ -6,25 +7,38 @@ import pygame
 import game.global_constants as global_constants
 import game.global_variables as global_variables
 from game.global_constants import Direction, Block_Type
+from network.Game_Client import Game_Client
 
 # Debug
-from network.GameServer import GameServer
+from network.Game_Server import GameServer
 
 
 class Gameplay_Menu(Menu):
-    def __init__(self, host: str = None) -> None:
+    def __init__(self) -> None:
         super().__init__()
         # TODO: receive board data from server and pass it to Canvas()
 
         # workaround for initilize game board
-        gameServer = GameServer(5555)
-        gameServer.initializeGameData()
+        # gameServer = GameServer(5555)
+        # gameServer.initializeGameData()
+        self.canvas = Canvas()
 
-        self.canvas = Canvas(gameServer.board_data)
+        # TODO: Move this to the room menu
+        global_variables.MUTEX_CANVAS_CELLS = [
+            [Lock() for j in range(global_constants.CANVAS_SIZE[1])]
+            for i in range(global_constants.CANVAS_SIZE[0])
+        ]
+        ######################################
+
+        gameClient = Game_Client()
         self.players = [
             Pacman(i, gameServer.players[i])
             for i in range(global_constants.NUM_PLAYERS)
         ]  # player positions
+        gameClient.connect("127.0.0.1", 5555)
+
+        self.canvas.board_data
+
         self.player_id = (
             0  # For Debuging only, TODO: receive player_id from server message
         )

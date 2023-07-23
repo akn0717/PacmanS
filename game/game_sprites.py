@@ -6,9 +6,10 @@ from game.global_constants import Direction, Move_Operation
 
 
 class Pacman:
-    def __init__(self, id, position):
+    def __init__(self, id, name, position=None):
         self.id = id
         self.position = position
+        self.name = ""
         self.score = 0
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[id], pygame.Surface)
         self.image_asset = global_variables.IMAGE_ASSET_PLAYERS[id]

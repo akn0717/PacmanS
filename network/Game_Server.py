@@ -3,28 +3,46 @@ import random
 import socket
 import threading
 import numpy as np
-# import game.global_constants as global_constants
-import struct
+from game.game_sprites import Pacman
+from game.global_constants import Message_Type
+import game.global_constants as global_constants
+from network.utils import *
 
 
-class GameServer:
+class Game_Server:
     def __init__(self, port):
         self.port = port
         self.connections = []
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.bind(("", self.port))
 
-    def threadedConnection(self, conn):
+        self.board_data = None
+        self.players = []
+
+    def __listenIncommingConnection(self):
         while True:
-            recv_data = conn.recv(128)
+            conn, _ = self.socket.accept()
+            self.connections.append(conn)
+            connection_index = len(self.connections) - 1
+            player = Pacman(connection_index, "")
+            self.players.append(player)
+            conn.send(connection_index.to_bytes(4))
+            for i in range(self.connections):
+                player_joined_message = concatBuffer(
+                    Message_Type.PLAYER_JOIN, player.id + " " + player.name
+                )
+                self.connections[i].send(player_joined_message)
+            thread = threading.Thread(target=self.__listen, args=(conn,))
+            thread.start()
+
+    def __listen(self, conn: socket):
+        while True:
+            recv_data = conn.recv(global_constants.NUM_DEFAULT_COMMUNICATION_BYTES)
             if recv_data:
-                decoded_token = struct.unpack("!I",recv_data[:4])
-                print("Message received from {}".format(conn))
-                print("Message is {}".format(decoded_token))
-            for connection in self.connections:
-                if connection != conn:
-                    connection.sendall(recv_data)
-        conn.close()
-        print("Connection closed.")
-     
+                token, data = splitBuffer(recv_data)
+                if token == Message_Type.REQUEST_PLAYER_MOVE:
+                    pass
+
     def __dfsPopulation(self, i, j):
         if (
             i <= 0
@@ -76,19 +94,11 @@ class GameServer:
         self.populateCanvas()
         self.players = self.populatePlayerPosition(global_constants.NUM_PLAYERS)
 
-    def startServer(self):
-        # socket.SOCK_STREAM is TCP
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # start server binding at specific port in TCP
-        self.socket.bind(("", self.port))
-        self.socket.listen()  # start listening for connection request
+    def startConnectionListener(self):
         print("Server Started")
         print("-----------------")
-        while True:
-            conn, _ = self.socket.accept()
-            self.connections.append(conn)
-            thread = threading.Thread(target=self.threadedConnection, args=(conn,))
-            thread.start()
+        thread = threading.Thread(target=self.__listenIncommingConnection)
+        thread.start()
 
     def closeSocket(self):
         self.socket.close()
@@ -96,5 +106,5 @@ class GameServer:
 
 
 if __name__ == "__main__":
-    server = GameServer(5555)
-    server.startServer()
+    server = Game_Server(5555)
+    server.startConnectionListener()
