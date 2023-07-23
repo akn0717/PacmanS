@@ -1,21 +1,23 @@
-import global_configs
-from menus.menu import Menu
-from menus.host_menu import Host_Menu
-from menus.client_menu import Client_Menu
+import game.global_variables as global_variables
+from game.menu import Menu
+from game.host_menu import Host_Menu
+from game.client_menu import Client_Menu
+
 import pygame
 import pygame_menu
 
 
 class Main_Menu(Menu):
     def __init__(self):
+        super().__init__()
         self.menu = pygame_menu.Menu(
             "Main Menu",
-            global_configs.SCREEN_WIDTH,
-            global_configs.SCREEN_HEIGHT,
+            global_variables.SCREEN_WIDTH,
+            global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
-        self.menu.add.button("Join As Host", self.navigate_to_host_menu)
+        self.menu.add.button("Host A Game", self.navigate_to_host_menu)
         self.menu.add.vertical_margin(30)
         self.menu.add.button("Join As Client", self.navigate_to_client_menu)
         self.menu.add.vertical_margin(30)
@@ -24,7 +26,7 @@ class Main_Menu(Menu):
         self.host_menu=Host_Menu()
 
     def main(self):
-        self.menu.mainloop(global_configs.SCREEN_WINDOW)
+        self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def navigate_to_host_menu(self):
         self.menu._open(self.host_menu.menu)

@@ -3,7 +3,7 @@ import socket
 import threading
 
 
-class TCPClient:
+class GameClient:
     def __init__(self, host_ip, host_port):
         self.host_ip = host_ip
         self.host_port = host_port
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     host_ip = "127.0.0.1"
     host_port = 5555
 
-    client = TCPClient(host_ip, host_port)
+    client = GameClient(host_ip, host_port)
 
     # Send messages to the server
     while True:
