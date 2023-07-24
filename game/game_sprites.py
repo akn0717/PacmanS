@@ -30,7 +30,8 @@ class Pacman:
 
     def draw(self):
         position = (
-            self.position[1] * global_variables.CANVAS_UNIT[1],
+            # self.position[1] * global_variables.CANVAS_UNIT[1] + (global_variables.SCREEN_WIDTH - global_variables.CANVAS_UNIT[0]) / 2,
+            self.position[1] * global_variables.CANVAS_UNIT[1] + 240,
             self.position[0] * global_variables.CANVAS_UNIT[0],
         )  # pygame display format is (column, row)
         global_variables.SCREEN_WINDOW.blit(self.image_asset, position)

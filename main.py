@@ -6,11 +6,18 @@ from game.gameplay_menu import *
 
 def init():
     pygame.init()
-    global_variables.SCREEN_WINDOW = pygame.display.set_mode((800, 800))
+    global_variables.SCREEN_WINDOW = pygame.display.set_mode((1280, 800))
+    # (
+    #     global_variables.SCREEN_WIDTH,
+    #     global_variables.SCREEN_HEIGHT,
+    # ) = global_variables.SCREEN_WINDOW.get_size()
     (
         global_variables.SCREEN_WIDTH,
         global_variables.SCREEN_HEIGHT,
-    ) = global_variables.SCREEN_WINDOW.get_size()
+    ) = (
+        global_variables.SCREEN_WINDOW.get_height(),
+        global_variables.SCREEN_WINDOW.get_height()
+    )
 
     global_variables.CANVAS_UNIT = (
         int(global_variables.SCREEN_HEIGHT / global_constants.CANVAS_SIZE[0]),

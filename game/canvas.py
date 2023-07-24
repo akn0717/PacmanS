@@ -1,5 +1,6 @@
 import pygame
 import game.global_variables as global_variables
+import game.global_constants as global_constants
 from game.global_constants import Block_Type
 
 
@@ -27,7 +28,8 @@ class Canvas:
         for i in range(self.board_data.shape[0]):
             for j in range(self.board_data.shape[1]):
                 position = (
-                    j * global_variables.CANVAS_UNIT[1],
+                    # j * global_variables.CANVAS_UNIT[1] + (global_variables.SCREEN_WIDTH - global_variables.CANVAS_UNIT[1] * global_constants.CANVAS_SIZE[0]) / 2,
+                    j * global_variables.CANVAS_UNIT[1] + 240,
                     i * global_variables.CANVAS_UNIT[0],
                 )  # pygame display format is (column, row)
                 if (
