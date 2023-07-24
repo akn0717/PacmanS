@@ -1,7 +1,10 @@
 import argparse
 import pygame
 import game.global_variables as global_variables
+import game.global_constants as global_constants
 from game.gameplay_menu import *
+from game.main_menu import Main_Menu
+
 
 
 def init():
@@ -39,7 +42,8 @@ def run(args):
     print("Starting the game...")
     # TODO get player ids from the server and assign them with each image color
 
-    menu = Gameplay_Menu()
+    # menu = Loading_Menu(True)
+    menu = Main_Menu()
     menu.main()
     pygame.quit()
 
