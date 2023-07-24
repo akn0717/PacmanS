@@ -1,11 +1,13 @@
 # adapted from https://realpython.com/python-sockets/
+from multiprocessing import Lock
 import random
 import socket
 import threading
 import numpy as np
 from game.game_sprites import Pacman
-from game.global_constants import Message_Type
+from game.global_constants import Message_Type, Block_Type
 import game.global_constants as global_constants
+import game.global_variables as global_variables
 from network.utils import *
 
 
@@ -15,7 +17,7 @@ class Game_Server:
         self.connections = []
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(("", self.port))
-
+        self.mutex_server_canvas_cells = None
         self.board_data = None
         self.players = []
 
@@ -23,25 +25,77 @@ class Game_Server:
         while True:
             conn, _ = self.socket.accept()
             self.connections.append(conn)
-            connection_index = len(self.connections) - 1
-            player = Pacman(connection_index, "")
+            player_id = (
+                len(self.connections) - 1
+            )  # player id is set to the connection index
+            player = Pacman(player_id, "")
             self.players.append(player)
-            conn.send(connection_index.to_bytes(4))
+            conn.send(str(player_id).encode())
+            player_joined_message = concatBuffer(
+                Message_Type.PLAYER_JOIN, player.id + " " + player.name
+            )
             for i in range(self.connections):
-                player_joined_message = concatBuffer(
-                    Message_Type.PLAYER_JOIN, player.id + " " + player.name
-                )
                 self.connections[i].send(player_joined_message)
-            thread = threading.Thread(target=self.__listen, args=(conn,))
+
+            # Send initial board
+            args = [
+                self.board_data.shape[0],
+                self.board_data.shape[1],
+                *(self.board_data.flatten().tolist()),
+            ]
+            board_data_message = concatBuffer(Message_Type.INITIAL_BOARD, args)
+            conn.send(board_data_message)
+            thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
 
-    def __listen(self, conn: socket):
+    def __listen(self, player_id):
         while True:
-            recv_data = conn.recv(global_constants.NUM_DEFAULT_COMMUNICATION_BYTES)
+            recv_data = self.connections(player_id).recv(
+                global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
+            )
             if recv_data:
                 token, data = splitBuffer(recv_data)
                 if token == Message_Type.REQUEST_PLAYER_MOVE:
-                    pass
+                    player_id, position_x, position_y = data
+                    player_id = int(player_id)
+                    position_x = int(position_x)
+                    position_y = int(position_y)
+                    if not (
+                        self.mutex_server_canvas_cells[position_x][position_y].locked()
+                    ):
+                        self.mutex_server_canvas_cells[position_x][position_y].acquire()
+                        old_position = (
+                            self.players[int(player_id)].position[0],
+                            self.players[int(player_id)].position[1],
+                        )
+
+                        # UPDATE BLOCK FOR UPDATE a block from dot to empty for scoring
+                        # self.board_data[
+                        #     old_position[0], old_position[1]
+                        # ] = Block_Type.EMPTY.value
+                        # message = concatBuffer(
+                        #     Message_Type.UPDATE_BLOCK.value,
+                        #     [
+                        #         str(position_x),
+                        #         str(position_y),
+                        #         str(Block_Type.EMPTY.value),
+                        #     ],
+                        # )
+                        # for conn in self.connections:
+                        #     conn.send(message)
+
+                        self.mutex_server_canvas_cells[old_position[0]][
+                            old_position[1]
+                        ].release()
+                        self.players[player_id] = (
+                            position_x,
+                            position_y,
+                        )
+                        message = concatBuffer(
+                            Message_Type.PLAYER_POSITION.value, [position_x, position_y]
+                        )
+                        for conn in self.connections:
+                            conn.send(message)
 
     def __dfsPopulation(self, i, j):
         if (
@@ -93,6 +147,10 @@ class Game_Server:
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
         self.players = self.populatePlayerPosition(global_constants.NUM_PLAYERS)
+        self.mutex_server_canvas_cells = [
+            [Lock() for _ in range(self.board_data.shape[1])]
+            for _ in range(self.board_data.shape[0])
+        ]
 
     def startConnectionListener(self):
         print("Server Started")

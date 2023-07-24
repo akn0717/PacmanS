@@ -42,3 +42,4 @@ class Message_Type(Enum):
     PLAYER_SCORE = 2
     REQUEST_PLAYER_MOVE = 3
     PLAYER_JOIN = 4
+    UPDATE_BLOCK = 5

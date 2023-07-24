@@ -31,13 +31,23 @@ class Game_Client:
             if recv_data:
                 token, data = splitBuffer(recv_data)
                 if token == Message_Type.INITIAL_BOARD:
-                    # TODO: parse the remamining data to the board state and set canvas
-                    board_data = np.frombuffer(data, dtype=np.int8)
-                    pass
+                    with global_variables.MUTEX_CANVAS:
+                        global_variables.CANVAS.board_data = np.array(
+                            data[2:], dtype=np.int8
+                        )
+                        global_variables.CANVAS.board_data.reshape(
+                            shape=(data[0], data[1])
+                        )
                 elif token == Message_Type.PLAYER_POSITION:
-                    pass
+                    player_id = int(data[0])
+                    player_position = (int(data[1]), int(data[2]))
+                    with global_variables.MUTEX_PLAYERS[player_id]:
+                        global_variables.PLAYERS[player_id].position = player_position
                 elif token == Message_Type.PLAYER_SCORE:
-                    pass
+                    player_id = int(data[0])
+                    player_score = int(data[1])
+                    with global_variables.MUTEX_PLAYERS[player_id]:
+                        global_variables.PLAYERS[player_id].score = player_score
                 elif token == Message_Type.PLAYER_JOIN:
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[id] = Pacman(data[0], data[1])
@@ -63,7 +73,7 @@ class Game_Client:
                 )
                 if player_id:
                     with global_variables.MUTEX_PLAYER_ID:
-                        global_variables.PLAYER_ID = int(player_id)
+                        global_variables.PLAYER_ID = int(player_id.decode())
                     break
             print("Connected to server")
         except:

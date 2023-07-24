@@ -13,7 +13,7 @@ class Loading_Menu(Menu):
             global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
-        self.num_connections =0
+        self.num_connections = 0
         self.menu.add.vertical_margin(30)
         self.menu.add.vertical_margin(30)
 
