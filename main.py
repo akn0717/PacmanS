@@ -35,6 +35,9 @@ def init():
         )
         for i in range(global_constants.NUM_PLAYERS)
     ]  # TODO: change color of player depending on the player ID
+
+    global_variables.NUMBER_CONNECTIONS = 0
+    global_variables.GAME_STARTED=False
     pygame.display.set_caption("PacmanS")
 
 

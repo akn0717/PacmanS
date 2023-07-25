@@ -6,7 +6,7 @@ from game.gameplay_menu import Gameplay_Menu
 
 
 class Loading_Menu(Menu):
-    def __init__(self, is_host):
+    def __init__(self, is_host,game_server=None,game_client=None):
         self.menu = pygame_menu.Menu(
             "Loading Menu",
             global_variables.SCREEN_WIDTH,
@@ -16,6 +16,7 @@ class Loading_Menu(Menu):
         self.num_connections = 0
         self.menu.add.vertical_margin(30)
         self.menu.add.vertical_margin(30)
+        self.game_server=game_server
 
         if(is_host):
             active_connections = self.menu.add.label("Number of players joined: {}".format(self.num_connections), font_size=30)
@@ -32,11 +33,10 @@ class Loading_Menu(Menu):
 
     def new_connections_listener(self):
         while True:
-            if self.num_connections != global_variables.NUMBER_CONNECTIONS:
+            if global_variables.NUMBER_CONNECTIONS!=None and self.num_connections != global_variables.NUMBER_CONNECTIONS:
                 self.num_connections = global_variables.NUMBER_CONNECTIONS
                 self.update_menu()
-                break
-        self.navigate_to_gameplay_menu
+                # maybe need thread to sleep for 1 sec
 
     def listen_for_host_starting_game(self):
         while True:
@@ -51,7 +51,7 @@ class Loading_Menu(Menu):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def navigate_to_gameplay_menu(self):
-        self.gameplay_menu=Gameplay_Menu()
+        self.gameplay_menu=Gameplay_Menu(self.game_server)
         self.menu._open(self.gameplay_menu.menu)
 
         pass

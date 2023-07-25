@@ -10,11 +10,11 @@ from game.global_constants import Direction, Block_Type
 from network.Game_Client import Game_Client
 
 # Debug
-from network.Game_Server import GameServer
+from network.Game_Server import Game_Server
 
 
 class Gameplay_Menu(Menu):
-    def __init__(self) -> None:
+    def __init__(self,game_server=None) -> None:
         super().__init__()
         # TODO: receive board data from server and pass it to Canvas()
 
@@ -32,7 +32,7 @@ class Gameplay_Menu(Menu):
 
         gameClient = Game_Client()
         self.players = [
-            Pacman(i, gameServer.players[i])
+            Pacman(i, game_server.players[i])
             for i in range(global_constants.NUM_PLAYERS)
         ]  # player positions
         gameClient.connect("127.0.0.1", 5555)
