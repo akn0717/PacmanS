@@ -3,7 +3,7 @@ from game.menu import Menu
 import pygame_menu
 import threading
 from game.gameplay_menu import Gameplay_Menu
-
+import time
 
 class Loading_Menu(Menu):
     def __init__(self, is_host,game_server=None,game_client=None):
@@ -19,7 +19,7 @@ class Loading_Menu(Menu):
         self.game_server=game_server
 
         if(is_host):
-            active_connections = self.menu.add.label("Number of players joined: {}".format(self.num_connections), font_size=30)
+            self.active_connections = self.menu.add.label("Number of players joined: {}".format(self.num_connections), font_size=30)
             self.menu.add.button("START GAME", self.navigate_to_gameplay_menu)
             threading.Thread(target=self.new_connections_listener).start()
         else:
@@ -28,14 +28,15 @@ class Loading_Menu(Menu):
 
         
     def update_menu(self):
-        if self.num_connections_label is not None:
-            self.num_connections_label.set_title("Number of players joined: {}".format(self.num_connections))
+        if self.active_connections is not None:
+            self.active_connections.set_title("Number of players joined: {}".format(self.num_connections))
 
     def new_connections_listener(self):
         while True:
             if global_variables.NUMBER_CONNECTIONS!=None and self.num_connections != global_variables.NUMBER_CONNECTIONS:
                 self.num_connections = global_variables.NUMBER_CONNECTIONS
                 self.update_menu()
+                time.sleep(1)
                 # maybe need thread to sleep for 1 sec
 
     def listen_for_host_starting_game(self):

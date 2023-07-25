@@ -24,7 +24,10 @@ class Game_Server:
         while True:
             conn, _ = self.socket.accept()
             self.connections.append(conn)
+          
             global_variables.NUMBER_CONNECTIONS += 1
+            print("PRINTING GLOBAL VAR...")
+            print(global_variables.NUMBER_CONNECTIONS)
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
@@ -32,25 +35,27 @@ class Game_Server:
             self.players.append(player)
             conn.send(str(player_id).encode())
             player_joined_message = concatBuffer(
-                Message_Type.PLAYER_JOIN, player.id + " " + player.name
+                Message_Type.PLAYER_JOIN.value, str(player.id) + " " + str(player.name)
             )
-            for i in range(self.connections):
-                self.connections[i].send(player_joined_message)
+            for conns in self.connections:
+                print("SENDING MPALYER JOIN MESSAGE")
+                conns.send(player_joined_message)
 
             # Send initial board
-            args = [
-                self.board_data.shape[0],
-                self.board_data.shape[1],
-                *(self.board_data.flatten().tolist()),
-            ]
-            board_data_message = concatBuffer(Message_Type.INITIAL_BOARD, args)
-            conn.send(board_data_message)
+            # commented for testing
+            # args = [
+            #     self.board_data.shape[0],
+            #     self.board_data.shape[1],
+            #     *(self.board_data.flatten().tolist()),
+            # ]
+            # board_data_message = concatBuffer(Message_Type.INITIAL_BOARD, args)
+            # conn.send(board_data_message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
 
     def __listen(self, player_id):
         while True:
-            recv_data = self.connections(player_id).recv(
+            recv_data = self.connections[0].recv(
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
             if recv_data:

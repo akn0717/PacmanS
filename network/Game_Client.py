@@ -30,7 +30,9 @@ class Game_Client:
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
             if recv_data:
+                # print("DATA RECEIVED")
                 token, data = splitBuffer(recv_data)
+                
                 if token == Message_Type.INITIAL_BOARD:
                     with global_variables.MUTEX_CANVAS:
                         global_variables.CANVAS.board_data = np.array(
@@ -39,17 +41,18 @@ class Game_Client:
                         global_variables.CANVAS.board_data.reshape(
                             shape=(data[0], data[1])
                         )
-                elif token == Message_Type.PLAYER_POSITION:
+                elif token == Message_Type.PLAYER_POSITION.value:
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].position = player_position
-                elif token == Message_Type.PLAYER_SCORE:
+                elif token == Message_Type.PLAYER_SCORE.value:
                     player_id = int(data[0])
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
-                elif token == Message_Type.PLAYER_JOIN:
+                elif token == Message_Type.PLAYER_JOIN.value:
+                    # print("PLAYER JOIN MESSAGE SUCCESSFULLY PARSED")
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[id] = Pacman(data[0], data[1])
                     pass
@@ -75,9 +78,13 @@ class Game_Client:
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
                 )
                 if player_id:
+                    print("player id recieved")
+                    # print(player_id)
+                    # print(player_id.decode())
                     with global_variables.MUTEX_PLAYER_ID:
-                        global_variables.PLAYER_ID = int(player_id.decode())
+                        global_variables.PLAYER_ID = player_id.decode()
                     break
+            self.startListener()
             print("Connected to server")
         except Exception as e:
             print(e)
