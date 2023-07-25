@@ -64,7 +64,7 @@ class Game_Client:
         print(self.host_ip)
         print(self.host_port)
         try:
-            self.socket.connect((self.host_ip, self.host_port))
+            self.socket.connect((self.host_ip, int(self.host_port)))
             # TODO: MOVE TO ROOM
             global_variables.MUTEX_PLAYER_ID = Lock()
             global_variables.MUTEX_PLAYERS = []
