@@ -14,7 +14,6 @@ class Game_Client:
     def __init__(self):
         # socket.SOCK_STREAM is TCP
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("GAME CLIENT STARTED")
 
     def sendDataToServer(self, message):
         send_data = message.encode()
@@ -60,9 +59,6 @@ class Game_Client:
         # establish TCP connection to the server
         # Host menu initialize game server
         # Client menu initialize game client
-        print("TRYING TO CONNECT TO GAME SERVER")
-        print(self.host_ip)
-        print(self.host_port)
         try:
             self.socket.connect((self.host_ip, int(self.host_port)))
             # TODO: MOVE TO ROOM
@@ -78,7 +74,6 @@ class Game_Client:
                     with global_variables.MUTEX_PLAYER_ID:
                         global_variables.PLAYER_ID = int(player_id.decode())
                     break
-            print("Connected to server")
         except Exception as e:
             print(e)
             return -1
