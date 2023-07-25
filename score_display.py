@@ -135,7 +135,7 @@ while running:
               random.randint(0, 1000), 
               random.randint(0, 1000)]
 
-    pygame.display.flip()
-    clock.tick(0.5)
+    pygame.display.update()
+    clock.tick(50)
 
 pygame.quit()

@@ -91,6 +91,9 @@ class Gameplay_Menu(Menu):
             self.canvas.draw()
             for player in self.players:
                 player.draw()
+
+            self.canvas.score_display(self.players)
+
             pygame.display.update()
             clock.tick(FPS)
 

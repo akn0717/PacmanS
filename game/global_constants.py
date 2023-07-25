@@ -2,7 +2,7 @@ import numpy as np
 from enum import Enum
 
 CANVAS_SIZE = (20, 20)
-PRIMARY_COLOR = (100, 100, 100)
+PRIMARY_COLOR = (119,136,153)
 BLOCK_SIZE = (100, 100)
 
 NUM_PLAYERS = 4
