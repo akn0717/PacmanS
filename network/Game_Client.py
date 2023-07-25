@@ -51,7 +51,7 @@ class Game_Client:
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
                 elif token == Message_Type.PLAYER_JOIN.value:
-                    # print("PLAYER JOIN MESSAGE SUCCESSFULLY PARSED")
+                    print("PLAYER JOIN MESSAGE TOKEN PARSED")
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[id] = Pacman(data[0], data[1])
                     pass

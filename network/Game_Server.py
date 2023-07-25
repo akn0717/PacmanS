@@ -55,7 +55,7 @@ class Game_Server:
 
     def __listen(self, player_id):
         while True:
-            recv_data = self.connections[0].recv(
+            recv_data = self.connections[player_id].recv(
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
             if recv_data:
