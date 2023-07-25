@@ -53,6 +53,7 @@ class Client_Menu(Menu):
         self.menu._open(self.loading_menu.menu)
 
     def back_to_main_menu(self):
+        self.error_widget.set_title("")
         self.menu._back()
 
     def on_ip_address_change(self, value):
