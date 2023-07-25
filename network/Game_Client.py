@@ -11,7 +11,7 @@ from network.utils import *
 
 
 class Game_Client:
-    def _init__(self):
+    def __init__(self):
         # socket.SOCK_STREAM is TCP
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print("GAME CLIENT STARTED")
@@ -62,9 +62,9 @@ class Game_Client:
         # Client menu initialize game client
         print("TRYING TO CONNECT TO GAME SERVER")
         print(self.host_ip)
+        print(self.host_port)
         try:
             self.socket.connect((self.host_ip, self.host_port))
-            print("CONNECTED?")
             # TODO: MOVE TO ROOM
             global_variables.MUTEX_PLAYER_ID = Lock()
             global_variables.MUTEX_PLAYERS = []
@@ -79,8 +79,8 @@ class Game_Client:
                         global_variables.PLAYER_ID = int(player_id.decode())
                     break
             print("Connected to server")
-        except:
-            print("FAILED")
+        except Exception as e:
+            print(e)
             return -1
         return 0
 

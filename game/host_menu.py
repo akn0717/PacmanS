@@ -14,8 +14,8 @@ class Host_Menu(Menu):
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
-        self.inputted_host_port = 0
-    
+        self.inputted_host_port = 5555
+
         self.port_number_input = self.menu.add.text_input(
             "Enter HOST PORT: ", default="", onchange=self.on_port_no_change
         )
@@ -29,7 +29,10 @@ class Host_Menu(Menu):
 
     def navigate_to_loading_menu(self):
         game_server = Game_Server(int(self.inputted_host_port))
-        self.loading_menu=Loading_Menu(True,game_client=None,game_server=game_server)
+        game_server.startConnectionListener()
+        self.loading_menu = Loading_Menu(
+            True, game_client=None, game_server=game_server
+        )
         self.menu._open(self.loading_menu.menu)
         pass
 
@@ -37,5 +40,5 @@ class Host_Menu(Menu):
         self.menu._back()
 
     def on_port_no_change(self, value):
-        self.inputted_host_port  = value
+        self.inputted_host_port = value
         pass

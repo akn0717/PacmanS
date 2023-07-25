@@ -16,19 +16,15 @@ class Game_Server:
         self.port = port
         self.connections = []
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #for testing
-        self.socket.bind(("127.0.0.1", port))
         self.mutex_server_canvas_cells = None
         self.board_data = None
         self.players = []
-        print("GAME SERVER STARTED")
-        print(self.socket)
 
     def __listenIncommingConnection(self):
         while True:
             conn, _ = self.socket.accept()
             self.connections.append(conn)
-            global_variables.NUMBER_CONNECTIONS+=1
+            global_variables.NUMBER_CONNECTIONS += 1
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
@@ -159,6 +155,9 @@ class Game_Server:
     def startConnectionListener(self):
         print("Server Started")
         print("-----------------")
+        # for testing
+        self.socket.bind(("", self.port))
+        self.socket.listen()
         thread = threading.Thread(target=self.__listenIncommingConnection)
         thread.start()
 
