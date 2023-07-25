@@ -29,6 +29,7 @@ class Host_Menu(Menu):
 
     def navigate_to_loading_menu(self):
         game_server = Game_Server(int(self.inputted_host_port))
+        game_server.initializeGameData()
         game_server.startConnectionListener()
         self.loading_menu = Loading_Menu(
             True, game_client=None, game_server=game_server

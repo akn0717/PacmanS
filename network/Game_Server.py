@@ -24,7 +24,7 @@ class Game_Server:
         while True:
             conn, _ = self.socket.accept()
             self.connections.append(conn)
-          
+
             global_variables.NUMBER_CONNECTIONS += 1
             print("PRINTING GLOBAL VAR...")
             print(global_variables.NUMBER_CONNECTIONS)
@@ -43,13 +43,15 @@ class Game_Server:
 
             # Send initial board
             # commented for testing
-            # args = [
-            #     self.board_data.shape[0],
-            #     self.board_data.shape[1],
-            #     *(self.board_data.flatten().tolist()),
-            # ]
-            # board_data_message = concatBuffer(Message_Type.INITIAL_BOARD, args)
-            # conn.send(board_data_message)
+
+            args = [
+                self.board_data.shape[0],
+                self.board_data.shape[1],
+                *(self.board_data.flatten().tolist()),
+            ]
+            args = [str(arg) for arg in args]
+            board_data_message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
+            conn.send(board_data_message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
 

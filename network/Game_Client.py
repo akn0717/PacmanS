@@ -29,10 +29,9 @@ class Game_Client:
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
             if recv_data:
-                # print("DATA RECEIVED")
+
                 token, data = splitBuffer(recv_data)
-                
-                if token == Message_Type.INITIAL_BOARD:
+                if token == Message_Type.INITIAL_BOARD.value:
                     with global_variables.MUTEX_CANVAS:
                         global_variables.CANVAS.board_data = np.array(
                             data[2:], dtype=np.int8
