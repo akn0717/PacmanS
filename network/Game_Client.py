@@ -17,11 +17,15 @@ class Game_Client:
 
     def sendDataToServer(self, token, data):
         send_data = concatBuffer(token, data)
-        self.socket.sendall(send_data)
+        self.sendAndFlush(send_data)
 
     def startListener(self):
         self.listening_thread = threading.Thread(target=self.__listen)
         self.listening_thread.start()
+
+    def sendAndFlush(self, message):
+        self.socket.sendall(message)
+        flush()
 
     def __listen(self):
         bufferQueue = Queue()
@@ -34,7 +38,6 @@ class Game_Client:
                 print(data)
                 for i in range(len(data)):
                     bufferQueue.put(data[i])
-            print("Hello")
 
             while not (bufferQueue.empty()):
                 token = int(bufferQueue.get())
@@ -57,7 +60,7 @@ class Game_Client:
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].position = player_position
-                        global_variables.PLAYERS[player_id].movingRequest=False
+                        global_variables.PLAYERS[player_id].movingRequest = False
                 elif token == Message_Type.PLAYER_SCORE.value:
                     data = [str(bufferQueue.get()) for _ in range(2)]
                     player_id = int(data[0])

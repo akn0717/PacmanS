@@ -22,6 +22,10 @@ class Game_Server:
         self.board_data = None
         self.players = []
 
+    def sendAndFlush(self, conn, message):
+        conn.sendall(message)
+        flush()
+
     def __listenIncommingConnection(self):
 
         while True:
@@ -36,8 +40,7 @@ class Game_Server:
             )  # player id is set to the connection index
             player = Pacman(player_id, "test")
             self.players.append(player)
-            conn.sendall(str(player_id).encode())
-            flush(conn)
+            self.sendAndFlush(conn, str(player_id).encode())
             args = [
                 self.board_data.shape[0],
                 self.board_data.shape[1],
@@ -45,17 +48,15 @@ class Game_Server:
             ]
             args = [str(arg) for arg in args]
             message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
-            conn.sendall(message)
-            flush(conn)
+            self.sendAndFlush(conn, message)
 
             player_joined_args = [str(player.id), "testname"]
 
             player_joined_message = concatBuffer(
                 Message_Type.PLAYER_JOIN.value, player_joined_args
             )
-            for conns in self.connections:
-                conns.sendall(player_joined_message)
-                flush(conn)
+            for conn in self.connections:
+                self.sendAndFlush(conn, player_joined_message)
 
             player_position_message = [
                 player_id,
@@ -69,8 +70,7 @@ class Game_Server:
                 player_position_message[2]
             ].acquire()
             message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-            conn.sendall(message)
-            flush(conn)
+            self.sendAndFlush(conn, message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
 
@@ -87,7 +87,7 @@ class Game_Server:
 
             if not (bufferQueue.empty()):
                 token = int(bufferQueue.get())
-                
+
                 if token == Message_Type.REQUEST_PLAYER_MOVE.value:
                     data = [bufferQueue.get() for _ in range(3)]
                     player_id = int(data[0])
@@ -213,8 +213,7 @@ class Game_Server:
 
         for conn in self.connections:
             print("GAME STARTED")
-            conn.sendall(game_started_message)
-            flush(conn)
+            self.sendAndFlush(conn, game_started_message)
 
     def closeSocket(self):
         self.socket.close()
