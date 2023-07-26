@@ -24,7 +24,7 @@ class Game_Server:
 
     def sendAndFlush(self, conn, message):
         conn.sendall(message)
-        flush()
+        flush(conn)
 
     def __listenIncommingConnection(self):
 
@@ -139,8 +139,10 @@ class Game_Server:
                         message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
 
                         for i in range(len(self.connections)):
-                            flush(self.connections[i])
-                            self.connections[i].sendall(message)
+                            # flush(self.connections[i])
+                            # self.connections[i].sendall(message)
+                            self.sendAndFlush(self.connections[i], message)
+                         
 
     def __dfsPopulation(self, i, j):
         if (

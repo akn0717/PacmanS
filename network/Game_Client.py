@@ -25,7 +25,7 @@ class Game_Client:
 
     def sendAndFlush(self, message):
         self.socket.sendall(message)
-        flush()
+        flush(self.socket)
 
     def __listen(self):
         bufferQueue = Queue()
