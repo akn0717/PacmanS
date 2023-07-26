@@ -9,36 +9,10 @@ import game.global_variables as global_variables
 from game.global_constants import Direction, Block_Type
 from network.Game_Client import Game_Client
 
-# Debug
-from network.Game_Server import Game_Server
-
 
 class Gameplay_Menu(Menu):
-    def __init__(self, game_server=None) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        # TODO: receive board data from server and pass it to Canvas()
-
-        # workaround for initilize game board
-        # gameServer = GameServer(5555)
-        # gameServer.initializeGameData()
-        self.canvas = Canvas()
-
-        # TODO: Move this to the room menu
-        
-        ######################################
-
-        gameClient = Game_Client()
-        self.players = [
-            Pacman(i, game_server.players[i])
-            for i in range(global_constants.NUM_PLAYERS)
-        ]  # player positions
-        gameClient.connect("127.0.0.1", 5555)
-
-        self.canvas.board_data
-
-        self.player_id = (
-            0  # For Debuging only, TODO: receive player_id from server message
-        )
 
     def main(self):
         isRunning = True
@@ -67,36 +41,9 @@ class Gameplay_Menu(Menu):
             self.canvas.update()
 
             # player will move every tick
-
-            # For game testing only, skipping exchanging message,
-            # remove later when the network is ready
-            player = self.players[self.player_id]
-            (i, j) = player.position
-            if (
-                player.direction == Direction.RIGHT.value
-                and j < global_constants.CANVAS_SIZE[1] - 1
-                and self.canvas.board_data[i][j + 1] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            elif (
-                player.direction == Direction.LEFT.value
-                and j > 0
-                and self.canvas.board_data[i][j - 1] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            elif (
-                player.direction == Direction.DOWN.value
-                and i < global_constants.CANVAS_SIZE[1] - 1
-                and self.canvas.board_data[i + 1][j] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            elif (
-                player.direction == Direction.UP.value
-                and i > 0
-                and self.canvas.board_data[i - 1][j] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            ################################################################################################
+            player = global_variables.PLAYERS[global_variables.PLAYER_ID]
+            assert isinstance(player, Pacman)
+            player.move()
 
             # Draw
             self.canvas.draw()

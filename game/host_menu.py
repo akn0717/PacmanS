@@ -2,6 +2,7 @@ import game.global_variables as global_variables
 from game.menu import Menu
 import pygame_menu
 from game.loading_menu import Loading_Menu
+from network.Game_Client import Game_Client
 from network.Game_Server import Game_Server
 
 
@@ -31,9 +32,12 @@ class Host_Menu(Menu):
         game_server = Game_Server(int(self.inputted_host_port))
         game_server.initializeGameData()
         game_server.startConnectionListener()
-        self.loading_menu = Loading_Menu(
-            True, game_client=None, game_server=game_server
-        )
+
+        # Host is also a client and connect to itself
+        game_client = Game_Client()
+        game_client.connect("127.0.0.1", self.inputted_host_port)
+        
+        self.loading_menu = Loading_Menu(True, game_client=game_client)
         self.menu._open(self.loading_menu.menu)
         pass
 

@@ -31,7 +31,7 @@ class Game_Server:
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
-            player = Pacman(player_id, "")
+            player = Pacman(player_id)
             self.players.append(player)
             conn.send(str(player_id).encode())
             player_joined_message = concatBuffer(

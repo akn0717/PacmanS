@@ -1,5 +1,6 @@
 from multiprocessing import Lock
 from game.canvas import Canvas
+from game.game_sprites import Pacman
 import game.global_variables as global_variables
 import game.global_constants as global_constants
 from game.menu import Menu
@@ -10,7 +11,7 @@ import time
 
 
 class Loading_Menu(Menu):
-    def __init__(self, is_host, game_server=None, game_client=None):
+    def __init__(self, is_host, game_client=None):
         self.menu = pygame_menu.Menu(
             "Loading Menu",
             global_variables.SCREEN_WIDTH,
@@ -20,15 +21,14 @@ class Loading_Menu(Menu):
         self.num_connections = 0
         self.menu.add.vertical_margin(30)
         self.menu.add.vertical_margin(30)
-        self.game_server = game_server
-
+        self.game_client = game_client
         global_variables.MUTEX_CANVAS = Lock()
         global_variables.MUTEX_CANVAS_CELLS = [
             [Lock() for _ in range(global_constants.CANVAS_SIZE[1])]
             for _ in range(global_constants.CANVAS_SIZE[0])
         ]
         global_variables.CANVAS = Canvas(None)
-
+        global_variables.PLAYERS = [Pacman(0)] * 4
         if is_host:
             self.active_connections = self.menu.add.label(
                 "Number of players joined: {}".format(self.num_connections),
@@ -43,7 +43,7 @@ class Loading_Menu(Menu):
     def update_menu(self):
         if self.active_connections is not None:
             self.active_connections.set_title(
-                "Number of players joined: {}".format(self.num_connections)
+                "Number of players: {}".format(self.num_connections)
             )
 
     def new_connections_listener(self):
@@ -70,7 +70,7 @@ class Loading_Menu(Menu):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def navigate_to_gameplay_menu(self):
-        self.gameplay_menu = Gameplay_Menu(self.game_server)
+        self.gameplay_menu = Gameplay_Menu()
         self.menu._open(self.gameplay_menu.menu)
 
         pass
