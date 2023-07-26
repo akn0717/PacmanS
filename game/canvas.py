@@ -14,6 +14,8 @@ class Canvas:
     def draw(
         self,
     ):
+        if self.board_data is None:
+            return
         # Debug board
         # for i in range(self.size):
         #     for j in range(self.size):

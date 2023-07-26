@@ -1,5 +1,6 @@
 # adapted from https://realpython.com/python-sockets/
 from multiprocessing import Lock
+from queue import Queue
 import socket
 import threading
 from game.game_sprites import Pacman
@@ -24,35 +25,53 @@ class Game_Client:
         self.listening_thread.start()
 
     def __listen(self):
+        bufferQueue = Queue()
         while True:
             recv_data = self.socket.recv(
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
             if recv_data:
-                token, data = splitBuffer(recv_data)
+                data = splitBuffer(recv_data)
+                print(data)
+                for i in range(len(data)):
+                    bufferQueue.put(data[i])
+            print("Hello")
+            if not (bufferQueue.empty()):
+                token = int(bufferQueue.get())
+
                 if token == Message_Type.INITIAL_BOARD.value:
-                    print(data)
-                    data = [int(i) for i in data]
+                    data = [
+                        int(bufferQueue.get())
+                        for _ in range(
+                            2
+                            + global_constants.CANVAS_SIZE[0]
+                            * global_constants.CANVAS_SIZE[1]
+                        )
+                    ]
                     with global_variables.MUTEX_CANVAS:
                         global_variables.CANVAS.board_data = np.reshape(
                             np.asarray(data[2:]), (data[0], data[1])
                         )
                 elif token == Message_Type.PLAYER_POSITION.value:
+                    data = [bufferQueue.get() for _ in range(3)]
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].position = player_position
                 elif token == Message_Type.PLAYER_SCORE.value:
+                    data = [str(bufferQueue.get()) for _ in range(2)]
                     player_id = int(data[0])
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
                 elif token == Message_Type.PLAYER_JOIN.value:
+                    data = [str(bufferQueue.get()) for _ in range(2)]
                     player_id = int(data[0])
                     name = str(data[1])
                     with global_variables.MUTEX_PLAYERS_LIST:
                         global_variables.PLAYERS[player_id] = Pacman(player_id, name)
                 elif token == Message_Type.HOST_GAME_STARTED.value:
+                    data = [bufferQueue.get()]
                     global_variables.GAME_STARTED = True
 
     def connect(self, host_ip, host_port):

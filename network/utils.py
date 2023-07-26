@@ -8,6 +8,4 @@ def concatBuffer(token, args):
 
 def splitBuffer(buffer: bytearray):
     message = buffer.decode().split(" ")
-    token = int(message[0])
-    args = message[1:]
-    return token, args
+    return message

@@ -184,9 +184,9 @@ class Game_Server:
     def startGame(self):
         game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value, "")
 
-        for conns in self.connections:
+        for conn in self.connections:
             print("GAME STARTED")
-            conns.send(game_started_message)
+            conn.send(game_started_message)
 
     def closeSocket(self):
         self.socket.close()

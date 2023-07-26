@@ -36,8 +36,10 @@ class Host_Menu(Menu):
         # Host is also a client and connect to itself
         game_client = Game_Client()
         game_client.connect("127.0.0.1", self.inputted_host_port)
-        
-        self.loading_menu = Loading_Menu(True, game_client=game_client)
+
+        self.loading_menu = Loading_Menu(
+            game_client=game_client, game_server=game_server
+        )
         self.menu._open(self.loading_menu.menu)
         pass
 

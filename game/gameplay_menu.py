@@ -20,6 +20,7 @@ class Gameplay_Menu(Menu):
         clock = pygame.time.Clock()
         FPS = 15
         player = global_variables.PLAYERS[global_variables.PLAYER_ID]
+        print(global_variables.CANVAS.board_data)
         assert isinstance(player, Pacman)
         while isRunning:
             for event in pygame.event.get():
