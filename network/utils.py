@@ -1,5 +1,3 @@
-from typing import Iterable
-
 
 def concatBuffer(token, args):
     byte_array = bytearray((str(token) + " " + " ".join(args)).encode())
@@ -8,4 +6,10 @@ def concatBuffer(token, args):
 
 def splitBuffer(buffer: bytearray):
     message = buffer.decode().split(" ")
+    message = list(filter(lambda x: x != "", message))
     return message
+
+
+def flush(socket):  # fake flush
+    socket.sendall(" ".encode())
+    return

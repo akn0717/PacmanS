@@ -61,12 +61,14 @@ class Loading_Menu(Menu):
     def start_game(self):
         print("ATTEMPTING TO START")
         self.game_server.startGame()
+        self.navigate_to_gameplay_menu()
         clock = pygame.time.Clock()
         FPS = 15
         while True:
-            if global_variables.GAME_STARTED:
-                self.navigate_to_gameplay_menu()
-                break
+            with global_variables.GAME_STARTED_LOCK:
+                if global_variables.GAME_STARTED:
+                    self.navigate_to_gameplay_menu()
+                    break
             pygame.display.update()
             clock.tick(FPS)
 

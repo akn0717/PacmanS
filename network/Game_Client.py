@@ -1,6 +1,5 @@
 # adapted from https://realpython.com/python-sockets/
-from multiprocessing import Lock
-from queue import Queue
+from multiprocessing import Queue
 import socket
 import threading
 from game.game_sprites import Pacman
@@ -36,9 +35,9 @@ class Game_Client:
                 for i in range(len(data)):
                     bufferQueue.put(data[i])
             print("Hello")
-            if not (bufferQueue.empty()):
-                token = int(bufferQueue.get())
 
+            while not (bufferQueue.empty()):
+                token = int(bufferQueue.get())
                 if token == Message_Type.INITIAL_BOARD.value:
                     data = [
                         int(bufferQueue.get())
@@ -72,7 +71,8 @@ class Game_Client:
                         global_variables.PLAYERS[player_id] = Pacman(player_id, name)
                 elif token == Message_Type.HOST_GAME_STARTED.value:
                     data = [bufferQueue.get()]
-                    global_variables.GAME_STARTED = True
+                    with global_variables.GAME_STARTED_LOCK:
+                        global_variables.GAME_STARTED = True
 
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip

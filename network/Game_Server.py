@@ -1,5 +1,6 @@
 # adapted from https://realpython.com/python-sockets/
-from multiprocessing import Lock
+from multiprocessing import Queue
+from threading import Lock
 import random
 import socket
 import threading
@@ -22,30 +23,21 @@ class Game_Server:
         self.players = []
 
     def __listenIncommingConnection(self):
+
         while True:
             conn, _ = self.socket.accept()
             self.connections.append(conn)
 
             global_variables.NUMBER_CONNECTIONS += 1
             print(global_variables.NUMBER_CONNECTIONS)
+
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
             player = Pacman(player_id, "test")
             self.players.append(player)
-            conn.send(str(player_id).encode())
-
-            player_joined_args = [str(player.id), "testname"]
-
-            player_joined_message = concatBuffer(
-                Message_Type.PLAYER_JOIN.value, player_joined_args
-            )
-            for conns in self.connections:
-                conns.send(player_joined_message)
-
-            # Send initial board
-            # commented for testing
-
+            conn.sendall(str(player_id).encode())
+            flush(conn)
             args = [
                 self.board_data.shape[0],
                 self.board_data.shape[1],
@@ -53,30 +45,53 @@ class Game_Server:
             ]
             args = [str(arg) for arg in args]
             message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
-            conn.send(message)
+            conn.sendall(message)
+            flush(conn)
+
+            player_joined_args = [str(player.id), "testname"]
+
+            player_joined_message = concatBuffer(
+                Message_Type.PLAYER_JOIN.value, player_joined_args
+            )
+            for conns in self.connections:
+                conns.sendall(player_joined_message)
+                flush(conn)
+
             player_position_message = [
                 player_id,
                 *self.potential_player_positions[player_id],
             ]
             args = [str(arg) for arg in player_position_message]
+            self.players[player_id].position = self.potential_player_positions[
+                player_id
+            ]
+            self.mutex_server_canvas_cells[player_position_message[1]][
+                player_position_message[2]
+            ].acquire()
             message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-            conn.send(message)
+            conn.sendall(message)
+            flush(conn)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
 
     def __listen(self, player_id):
+        bufferQueue = Queue()
         while True:
             recv_data = self.connections[player_id].recv(
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
             if recv_data:
-                token, data = splitBuffer(recv_data)
-                if token == Message_Type.REQUEST_PLAYER_MOVE:
-                    player_id, position_x, position_y = data
-                    print("Player id", player_id)
-                    player_id = int(player_id)
-                    position_x = int(position_x)
-                    position_y = int(position_y)
+                data = splitBuffer(recv_data)
+                for i in range(len(data)):
+                    bufferQueue.put(data[i])
+
+            if not (bufferQueue.empty()):
+                token = int(bufferQueue.get())
+                if token == Message_Type.REQUEST_PLAYER_MOVE.value:
+                    data = [bufferQueue.get() for _ in range(3)]
+                    player_id = int(data[0])
+                    position_x = int(data[1])
+                    position_y = int(data[2])
                     if not (
                         self.mutex_server_canvas_cells[position_x][position_y].locked()
                     ):
@@ -99,21 +114,25 @@ class Game_Server:
                         #     ],
                         # )
                         # for conn in self.connections:
-                        #     conn.send(message)
+                        #     conn.sendall(message)
 
-                        self.mutex_server_canvas_cells[old_position[0]][
+                        # bad practice, needs to change later
+                        if self.mutex_server_canvas_cells[old_position[0]][
                             old_position[1]
-                        ].release()
-                        self.players[player_id] = (
+                        ].locked():
+                            self.mutex_server_canvas_cells[old_position[0]][
+                                old_position[1]
+                            ].release()
+                        self.players[player_id].position = (
                             position_x,
                             position_y,
                         )
-                        message = concatBuffer(
-                            Message_Type.PLAYER_POSITION.value,
-                            [player_id, position_x, position_y],
-                        )
-                        for conn in self.connections:
-                            conn.send(message)
+                        args = [str(player_id), str(position_x), str(position_y)]
+                        message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
+
+                        for i in range(len(self.connections)):
+                            flush(self.connections[i])
+                            self.connections[i].sendall(message)
 
     def __dfsPopulation(self, i, j):
         if (
@@ -186,7 +205,8 @@ class Game_Server:
 
         for conn in self.connections:
             print("GAME STARTED")
-            conn.send(game_started_message)
+            conn.sendall(game_started_message)
+            flush(conn)
 
     def closeSocket(self):
         self.socket.close()
