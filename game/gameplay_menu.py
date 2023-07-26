@@ -14,7 +14,7 @@ from network.Game_Server import Game_Server
 
 
 class Gameplay_Menu(Menu):
-    def __init__(self,game_server=None) -> None:
+    def __init__(self, game_server=None) -> None:
         super().__init__()
         # TODO: receive board data from server and pass it to Canvas()
 
@@ -24,10 +24,7 @@ class Gameplay_Menu(Menu):
         self.canvas = Canvas()
 
         # TODO: Move this to the room menu
-        global_variables.MUTEX_CANVAS_CELLS = [
-            [Lock() for j in range(global_constants.CANVAS_SIZE[1])]
-            for i in range(global_constants.CANVAS_SIZE[0])
-        ]
+        
         ######################################
 
         gameClient = Game_Client()

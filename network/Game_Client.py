@@ -32,12 +32,10 @@ class Game_Client:
 
                 token, data = splitBuffer(recv_data)
                 if token == Message_Type.INITIAL_BOARD.value:
+                    data = [int(i) for i in data]
                     with global_variables.MUTEX_CANVAS:
-                        global_variables.CANVAS.board_data = np.array(
-                            data[2:], dtype=np.int8
-                        )
-                        global_variables.CANVAS.board_data.reshape(
-                            shape=(data[0], data[1])
+                        global_variables.CANVAS.board_data = np.reshape(
+                            np.asarray(data[2:]), (data[0], data[1])
                         )
                 elif token == Message_Type.PLAYER_POSITION.value:
                     player_id = int(data[0])
