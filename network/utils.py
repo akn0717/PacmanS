@@ -1,7 +1,8 @@
-
-def concatBuffer(token, args):
-    byte_array = bytearray((str(token) + " " + " ".join(args)).encode())
-    return byte_array
+def concatBuffer(token, args=None):
+    if args is not None:
+        return bytearray((str(token) + " " + " ".join(args)).encode())
+    else:
+        return bytearray(str(token)).encode()
 
 
 def splitBuffer(buffer: bytearray):

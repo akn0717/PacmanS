@@ -92,6 +92,13 @@ class Game_Server:
                     player_id = int(data[0])
                     position_x = int(data[1])
                     position_y = int(data[2])
+                    if (
+                        position_x < 0
+                        or position_x >= self.board_data.shape[0]
+                        or position_y < 0
+                        or position_y >= self.board_data.shape[1]
+                    ):
+                        continue
                     if not (
                         self.mutex_server_canvas_cells[position_x][position_y].locked()
                     ):

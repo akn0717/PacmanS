@@ -70,7 +70,6 @@ class Game_Client:
                     with global_variables.MUTEX_PLAYERS_LIST:
                         global_variables.PLAYERS[player_id] = Pacman(player_id, name)
                 elif token == Message_Type.HOST_GAME_STARTED.value:
-                    data = [bufferQueue.get()]
                     with global_variables.GAME_STARTED_LOCK:
                         global_variables.GAME_STARTED = True
 

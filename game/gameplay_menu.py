@@ -18,22 +18,28 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 15
-        player = global_variables.PLAYERS[global_variables.PLAYER_ID]
-        assert isinstance(player, Pacman)
+        FPS = 10
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        player.setDirection(Direction.UP.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.UP.value)
                     elif event.key == pygame.K_DOWN:
-                        player.setDirection(Direction.DOWN.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.DOWN.value)
                     elif event.key == pygame.K_LEFT:
-                        player.setDirection(Direction.LEFT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.LEFT.value)
                     elif event.key == pygame.K_RIGHT:
-                        player.setDirection(Direction.RIGHT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.RIGHT.value)
 
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
@@ -41,14 +47,18 @@ class Gameplay_Menu(Menu):
 
             # Update
             global_variables.CANVAS.update()
-
             # player will move every tick
-            player.move(self.game_client)
+            with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
+                global_variables.PLAYERS[global_variables.PLAYER_ID].move(
+                    self.game_client
+                )
 
             # Draw
             global_variables.CANVAS.draw()
-            for player in global_variables.PLAYERS:
-                player.draw()
+            for id in range(len(global_variables.PLAYERS)):
+                player = global_variables.PLAYERS[id]
+                if player.id == id:
+                    player.draw()
             pygame.display.update()
             clock.tick(FPS)
 
