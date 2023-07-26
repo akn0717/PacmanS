@@ -4,8 +4,8 @@ from game.global_constants import Block_Type
 
 
 class Canvas:
-    def __init__(self, board_data):
-        self.board_data = board_data
+    def __init__(self):
+        self.board_data = None
 
     def update(self):
         # TODO: Handle recevie message from server and update the board state

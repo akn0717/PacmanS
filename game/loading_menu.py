@@ -22,12 +22,7 @@ class Loading_Menu(Menu):
         self.menu.add.vertical_margin(30)
         self.menu.add.vertical_margin(30)
         self.game_client = game_client
-        global_variables.MUTEX_CANVAS = Lock()
-        global_variables.MUTEX_CANVAS_CELLS = [
-            [Lock() for _ in range(global_constants.CANVAS_SIZE[1])]
-            for _ in range(global_constants.CANVAS_SIZE[0])
-        ]
-        global_variables.CANVAS = Canvas(None)
+        
         global_variables.PLAYERS = [Pacman(0)] * 4
         if is_host:
             self.active_connections = self.menu.add.label(

@@ -6,7 +6,6 @@ from game.gameplay_menu import *
 from game.main_menu import Main_Menu
 
 
-
 def init():
     pygame.init()
     global_variables.SCREEN_WINDOW = pygame.display.set_mode((800, 800))
@@ -35,9 +34,18 @@ def init():
         )
         for i in range(global_constants.NUM_PLAYERS)
     ]  # TODO: change color of player depending on the player ID
+    global_variables.CANVAS = Canvas()
+    global_variables.MUTEX_CANVAS = Lock()
+    global_variables.MUTEX_CANVAS_CELLS = [
+        [Lock() for _ in range(global_constants.CANVAS_SIZE[1])]
+        for _ in range(global_constants.CANVAS_SIZE[0])
+    ]
+    global_variables.MUTEX_PLAYER_ID = Lock()
+    global_variables.MUTEX_PLAYERS = []
+    global_variables.MUTEX_PLAYERS_LIST = Lock()
 
     global_variables.NUMBER_CONNECTIONS = 0
-    global_variables.GAME_STARTED=False
+    global_variables.GAME_STARTED = False
     global_variables.PLAYERS = [Pacman(0)] * 4
     pygame.display.set_caption("PacmanS")
 

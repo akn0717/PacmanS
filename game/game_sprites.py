@@ -6,9 +6,9 @@ from game.global_constants import Direction, Move_Operation, Message_Type
 
 
 class Pacman:
-    def __init__(self, id, name=""):
+    def __init__(self, id, name="", position=(0, 0)):
         self.id = id
-        self.position = (0, 0)
+        self.position = position
         self.name = name
         self.score = 0
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[int(id)], pygame.Surface)
@@ -24,9 +24,12 @@ class Pacman:
         new_position = self.position + np.array(
             Move_Operation.OPERATORS.value[self.direction]
         )
+
+        args = [self.id, *new_position]
+        args = [str(arg) for arg in args]
         game_client.sendDataToServer(
-            Message_Type.REQUEST_PLAYER_MOVE,
-            [self.id, *new_position],
+            Message_Type.REQUEST_PLAYER_MOVE.value,
+            args,
         )
 
     def update(self):

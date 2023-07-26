@@ -27,25 +27,20 @@ class Game_Server:
             self.connections.append(conn)
 
             global_variables.NUMBER_CONNECTIONS += 1
-            print("PRINTING GLOBAL VAR...")
             print(global_variables.NUMBER_CONNECTIONS)
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
-            player = Pacman(player_id,"test")
+            player = Pacman(player_id, "test")
             self.players.append(player)
             conn.send(str(player_id).encode())
 
-            player_joined_args =[
-                str(player.id),
-                "testname"
-            ]
+            player_joined_args = [str(player.id), "testname"]
 
             player_joined_message = concatBuffer(
                 Message_Type.PLAYER_JOIN.value, player_joined_args
             )
             for conns in self.connections:
-                print("SENDING MPALYER JOIN MESSAGE")
                 conns.send(player_joined_message)
 
             # Send initial board
@@ -57,8 +52,15 @@ class Game_Server:
                 *(self.board_data.flatten().tolist()),
             ]
             args = [str(arg) for arg in args]
-            board_data_message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
-            conn.send(board_data_message)
+            message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
+            conn.send(message)
+            player_position_message = [
+                player_id,
+                *self.potential_player_positions[player_id],
+            ]
+            args = [str(arg) for arg in player_position_message]
+            message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
+            conn.send(message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
 
@@ -71,6 +73,7 @@ class Game_Server:
                 token, data = splitBuffer(recv_data)
                 if token == Message_Type.REQUEST_PLAYER_MOVE:
                     player_id, position_x, position_y = data
+                    print("Player id", player_id)
                     player_id = int(player_id)
                     position_x = int(position_x)
                     position_y = int(position_y)
@@ -106,7 +109,8 @@ class Game_Server:
                             position_y,
                         )
                         message = concatBuffer(
-                            Message_Type.PLAYER_POSITION.value, [position_x, position_y]
+                            Message_Type.PLAYER_POSITION.value,
+                            [player_id, position_x, position_y],
                         )
                         for conn in self.connections:
                             conn.send(message)
@@ -160,7 +164,9 @@ class Game_Server:
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
-        self.players = self.populatePlayerPosition(global_constants.NUM_PLAYERS)
+        self.potential_player_positions = self.populatePlayerPosition(
+            global_constants.NUM_PLAYERS
+        )
         self.mutex_server_canvas_cells = [
             [Lock() for _ in range(self.board_data.shape[1])]
             for _ in range(self.board_data.shape[0])
@@ -174,21 +180,13 @@ class Game_Server:
         self.socket.listen()
         thread = threading.Thread(target=self.__listenIncommingConnection)
         thread.start()
-        start_game_thread = threading.Thread(target=self.__listen_for_if_host_started_game)
-        start_game_thread.start()
 
-    def __listen_for_if_host_started_game(self):
-        while True:
-            if (
-                global_variables.GAME_STARTED != None
-                and global_variables.GAME_STARTED == True
-            ):
-                game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value, "")
-                for conns in self.connections:
-                    print("GAME STARTED")
-                    conns.send(game_started_message)
-                time.sleep(1)
-                break
+    def startGame(self):
+        game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value, "")
+
+        for conns in self.connections:
+            print("GAME STARTED")
+            conns.send(game_started_message)
 
     def closeSocket(self):
         self.socket.close()

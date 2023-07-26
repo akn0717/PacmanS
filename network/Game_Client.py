@@ -31,13 +31,12 @@ class Game_Client:
             if recv_data:
                 token, data = splitBuffer(recv_data)
                 if token == Message_Type.INITIAL_BOARD.value:
+                    print(data)
                     data = [int(i) for i in data]
                     with global_variables.MUTEX_CANVAS:
                         global_variables.CANVAS.board_data = np.reshape(
                             np.asarray(data[2:]), (data[0], data[1])
                         )
-                        print("PRINT BOARD DATA?")
-                        print(global_variables.CANVAS.board_data)
                 elif token == Message_Type.PLAYER_POSITION.value:
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
@@ -49,17 +48,11 @@ class Game_Client:
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
                 elif token == Message_Type.PLAYER_JOIN.value:
-                    print("PLAYER JOIN MESSAGE TOKEN PARSED")
-                    # print("YO")
-                    # print(int(data[0]))
-                    # print(data[1])
                     player_id = int(data[0])
                     name = str(data[1])
-                    # print(type(player_id))
                     with global_variables.MUTEX_PLAYERS_LIST:
                         global_variables.PLAYERS[player_id] = Pacman(player_id, name)
                 elif token == Message_Type.HOST_GAME_STARTED.value:
-                    print("GAME STARTED")
                     global_variables.GAME_STARTED = True
 
     def connect(self, host_ip, host_port):
@@ -68,11 +61,7 @@ class Game_Client:
         # establish TCP connection to the server
         # Host menu initialize game server
         # Client menu initialize game client
-        # TODO: MOVE TO ROOM
-        global_variables.MUTEX_PLAYER_ID = Lock()
-        global_variables.MUTEX_PLAYERS = []
-        global_variables.MUTEX_PLAYERS_LIST = Lock()
-        ######################################
+
         try:
             self.socket.connect((self.host_ip, int(self.host_port)))
 
@@ -81,7 +70,6 @@ class Game_Client:
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
                 )
                 if player_id:
-                    print("player id recieved")
                     # print(player_id)
                     # print(player_id.decode())
                     with global_variables.MUTEX_PLAYER_ID:
