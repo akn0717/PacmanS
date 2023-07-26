@@ -57,6 +57,7 @@ class Game_Client:
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].position = player_position
+                        global_variables.PLAYERS[player_id].movingRequest=False
                 elif token == Message_Type.PLAYER_SCORE.value:
                     data = [str(bufferQueue.get()) for _ in range(2)]
                     player_id = int(data[0])

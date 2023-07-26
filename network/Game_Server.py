@@ -87,6 +87,7 @@ class Game_Server:
 
             if not (bufferQueue.empty()):
                 token = int(bufferQueue.get())
+                
                 if token == Message_Type.REQUEST_PLAYER_MOVE.value:
                     data = [bufferQueue.get() for _ in range(3)]
                     player_id = int(data[0])

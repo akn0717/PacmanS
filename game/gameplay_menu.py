@@ -14,6 +14,7 @@ class Gameplay_Menu(Menu):
     def __init__(self, game_client) -> None:
         super().__init__()
         self.game_client = game_client
+    
 
     def main(self):
         isRunning = True
@@ -48,10 +49,12 @@ class Gameplay_Menu(Menu):
             # Update
             global_variables.CANVAS.update()
             # player will move every tick
+           
             with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
-                global_variables.PLAYERS[global_variables.PLAYER_ID].move(
-                    self.game_client
-                )
+                    if(global_variables.PLAYERS[global_variables.PLAYER_ID].movingRequest==False):
+                        global_variables.PLAYERS[global_variables.PLAYER_ID].move(
+                            self.game_client
+                        )
 
             # Draw
             global_variables.CANVAS.draw()
