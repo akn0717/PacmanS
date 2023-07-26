@@ -3,6 +3,8 @@ import game.global_variables as global_variables
 import pygame
 import numpy as np
 from game.global_constants import Direction, Move_Operation, Message_Type
+from game.utils import isValidMove
+from network.utils import concatBuffer
 
 
 class Pacman:
@@ -27,15 +29,16 @@ class Pacman:
         )
         self.movingRequest = True
 
-        if (new_position[0] < 0 or new_position[0] >= global_variables.CANVAS.board_data.shape[0] or new_position[1] < 0 or new_position[1] >=  global_variables.CANVAS.board_data.shape[1]):
+        if not (isValidMove(global_variables.CANVAS.board_data, new_position)):
             return
-        print("MOVING???", new_position)
+
         args = [self.id, *new_position]
         args = [str(arg) for arg in args]
-        game_client.sendDataToServer(
+        message = concatBuffer(
             Message_Type.REQUEST_PLAYER_MOVE.value,
             args,
         )
+        game_client.sendDataToServer(message)
 
     def update(self):
         # Client thread will update the self.position, so nothing is determined here yet

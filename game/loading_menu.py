@@ -59,7 +59,6 @@ class Loading_Menu(Menu):
                 # maybe need thread to sleep for 1 sec
 
     def start_game(self):
-        print("ATTEMPTING TO START")
         self.game_server.startGame()
         self.navigate_to_gameplay_menu()
         clock = pygame.time.Clock()

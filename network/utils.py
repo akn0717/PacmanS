@@ -14,3 +14,5 @@ def splitBuffer(buffer: bytearray):
 def flush(socket):  # fake flush
     socket.sendall(" ".encode())
     return
+
+

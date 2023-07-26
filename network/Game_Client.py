@@ -15,9 +15,8 @@ class Game_Client:
         # socket.SOCK_STREAM is TCP
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def sendDataToServer(self, token, data):
-        send_data = concatBuffer(token, data)
-        self.sendAndFlush(send_data)
+    def sendDataToServer(self, message):
+        self.sendAndFlush(message)
 
     def startListener(self):
         self.listening_thread = threading.Thread(target=self.__listen)
@@ -35,7 +34,6 @@ class Game_Client:
             )
             if recv_data:
                 data = splitBuffer(recv_data)
-                print(data)
                 for i in range(len(data)):
                     bufferQueue.put(data[i])
 
