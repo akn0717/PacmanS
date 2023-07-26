@@ -31,11 +31,13 @@ class Loading_Menu(Menu):
         global_variables.PLAYERS = [Pacman(0)] * 4
         if is_host:
             self.active_connections = self.menu.add.label(
-                "Number of players joined: {}".format(self.num_connections),
+                "Number of players joined: {}".format(global_variables.NUMBER_CONNECTIONS),
                 font_size=30,
             )
-            self.menu.add.button("START GAME", self.navigate_to_gameplay_menu)
+            self.menu.add.button("START GAME", self.start_game)
             threading.Thread(target=self.new_connections_listener).start()
+            threading.Thread(target=self.listen_for_host_starting_game).start()
+
         else:
             waiting_text = self.menu.add.label("Waiting for host...", font_size=30)
             threading.Thread(target=self.listen_for_host_starting_game).start()
@@ -48,6 +50,10 @@ class Loading_Menu(Menu):
 
     def new_connections_listener(self):
         while True:
+            # print("looping?")
+            if (global_variables.GAME_STARTED==True):
+                # self.menu.disable()
+                break
             if (
                 global_variables.NUMBER_CONNECTIONS != None
                 and self.num_connections != global_variables.NUMBER_CONNECTIONS
@@ -62,18 +68,18 @@ class Loading_Menu(Menu):
             if global_variables.GAME_STARTED:
                 self.navigate_to_gameplay_menu()
                 break
-
-    def waiting_for_game_starting(self):
-        pass
+        
+    def start_game(self):
+        print("ATTEMPTING TO START")
+        global_variables.GAME_STARTED = True
 
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def navigate_to_gameplay_menu(self):
-        self.gameplay_menu = Gameplay_Menu()
-        self.menu._open(self.gameplay_menu.menu)
-
-        pass
+        self.menu.disable()
+        self.gameplay_menu = Gameplay_Menu(self.game_client)
+        self.gameplay_menu.main()
 
     def back_to_main_menu(self):
         self.menu._back()

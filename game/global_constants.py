@@ -43,3 +43,4 @@ class Message_Type(Enum):
     REQUEST_PLAYER_MOVE = 3
     PLAYER_JOIN = 4
     UPDATE_BLOCK = 5
+    HOST_GAME_STARTED = 6

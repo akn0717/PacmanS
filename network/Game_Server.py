@@ -9,6 +9,7 @@ from game.global_constants import Message_Type, Block_Type
 import game.global_constants as global_constants
 import game.global_variables as global_variables
 from network.utils import *
+import time
 
 
 class Game_Server:
@@ -31,11 +32,17 @@ class Game_Server:
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
-            player = Pacman(player_id)
+            player = Pacman(player_id,"test")
             self.players.append(player)
             conn.send(str(player_id).encode())
+
+            player_joined_args =[
+                str(player.id),
+                "testname"
+            ]
+
             player_joined_message = concatBuffer(
-                Message_Type.PLAYER_JOIN.value, str(player.id) + " " + str(player.name)
+                Message_Type.PLAYER_JOIN.value, player_joined_args
             )
             for conns in self.connections:
                 print("SENDING MPALYER JOIN MESSAGE")
@@ -167,6 +174,21 @@ class Game_Server:
         self.socket.listen()
         thread = threading.Thread(target=self.__listenIncommingConnection)
         thread.start()
+        start_game_thread = threading.Thread(target=self.__listen_for_if_host_started_game)
+        start_game_thread.start()
+
+    def __listen_for_if_host_started_game(self):
+        while True:
+            if (
+                global_variables.GAME_STARTED != None
+                and global_variables.GAME_STARTED == True
+            ):
+                game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value, "")
+                for conns in self.connections:
+                    print("GAME STARTED")
+                    conns.send(game_started_message)
+                time.sleep(1)
+                break
 
     def closeSocket(self):
         self.socket.close()

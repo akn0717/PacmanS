@@ -38,6 +38,7 @@ def init():
 
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED=False
+    global_variables.PLAYERS = [Pacman(0)] * 4
     pygame.display.set_caption("PacmanS")
 
 

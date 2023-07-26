@@ -11,8 +11,12 @@ from network.Game_Client import Game_Client
 
 
 class Gameplay_Menu(Menu):
-    def __init__(self) -> None:
+    def __init__(self,game_client) -> None:
         super().__init__()
+        # print(global_variables.CANVAS.board_data)
+        self.canvas=Canvas(global_variables.CANVAS.board_data)
+        self.players=global_variables.PLAYERS
+        self.game_client = game_client
 
     def main(self):
         isRunning = True
@@ -36,14 +40,16 @@ class Gameplay_Menu(Menu):
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
             global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
+            
 
             # Update
             self.canvas.update()
 
             # player will move every tick
             player = global_variables.PLAYERS[global_variables.PLAYER_ID]
+            # for debug, commented
             assert isinstance(player, Pacman)
-            player.move()
+            # player.move(self.game_client)
 
             # Draw
             self.canvas.draw()

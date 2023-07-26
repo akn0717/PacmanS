@@ -11,8 +11,8 @@ class Pacman:
         self.position = (0, 0)
         self.name = name
         self.score = 0
-        isinstance(global_variables.IMAGE_ASSET_PLAYERS[id], pygame.Surface)
-        self.image_asset = global_variables.IMAGE_ASSET_PLAYERS[id]
+        isinstance(global_variables.IMAGE_ASSET_PLAYERS[int(id)], pygame.Surface)
+        self.image_asset = global_variables.IMAGE_ASSET_PLAYERS[int(id)]
         self.direction = Direction.RIGHT.value
 
     def setDirection(self, direction):

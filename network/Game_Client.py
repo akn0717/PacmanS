@@ -36,6 +36,7 @@ class Game_Client:
                         global_variables.CANVAS.board_data = np.reshape(
                             np.asarray(data[2:]), (data[0], data[1])
                         )
+                        print("PRINT BOARD DATA?")
                         print(global_variables.CANVAS.board_data)
                 elif token == Message_Type.PLAYER_POSITION.value:
                     player_id = int(data[0])
@@ -49,8 +50,17 @@ class Game_Client:
                         global_variables.PLAYERS[player_id].score = player_score
                 elif token == Message_Type.PLAYER_JOIN.value:
                     print("PLAYER JOIN MESSAGE TOKEN PARSED")
+                    # print("YO")
+                    # print(int(data[0]))
+                    # print(data[1])
+                    player_id = int(data[0])
+                    name = str(data[1])
+                    # print(type(player_id))
                     with global_variables.MUTEX_PLAYERS_LIST:
-                        global_variables.PLAYERS[id] = Pacman(data[0], data[1])
+                        global_variables.PLAYERS[player_id] = Pacman(player_id, name)
+                elif token == Message_Type.HOST_GAME_STARTED.value:
+                    print("GAME STARTED")
+                    global_variables.GAME_STARTED = True
 
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip
