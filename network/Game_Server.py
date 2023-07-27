@@ -24,7 +24,6 @@ class Game_Server:
         self.players = []
 
     def sendAndFlush(self, conn, message):
-        # flush(conn)
         conn.sendall(message)
         flush(conn)
 
@@ -207,7 +206,7 @@ class Game_Server:
         thread.start()
 
     def startGame(self):
-        game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value, "")
+        game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value)
 
         for conn in self.connections:
             print("GAME STARTED")
