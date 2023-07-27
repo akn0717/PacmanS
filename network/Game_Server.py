@@ -24,6 +24,7 @@ class Game_Server:
         self.players = []
 
     def sendAndFlush(self, conn, message):
+        # flush(conn)
         conn.sendall(message)
         flush(conn)
 
@@ -41,7 +42,9 @@ class Game_Server:
             )  # player id is set to the connection index
             player = Pacman(player_id, "test")
             self.players.append(player)
-            self.sendAndFlush(conn, str(player_id).encode())
+            message = concatBuffer(Message_Type.PLAYER_ID.value, [str(player_id)])
+            self.sendAndFlush(conn, message)
+
             args = [
                 self.board_data.shape[0],
                 self.board_data.shape[1],
@@ -83,6 +86,8 @@ class Game_Server:
             )
             if recv_data:
                 data = splitBuffer(recv_data)
+                print("Server received data:", recv_data)
+                print("Server received parsed data", data)
                 for i in range(len(data)):
                     bufferQueue.put(data[i])
 
@@ -91,6 +96,7 @@ class Game_Server:
 
                 if token == Message_Type.REQUEST_PLAYER_MOVE.value:
                     data = [bufferQueue.get() for _ in range(3)]
+                    print("Server received Request Move:", data)
                     player_id = int(data[0])
                     position_x = int(data[1])
                     position_y = int(data[2])
@@ -130,10 +136,8 @@ class Game_Server:
                         )
                         args = [str(player_id), str(position_x), str(position_y)]
                         message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-
+                        print("Server move player", self.players[player_id].position)
                         for i in range(len(self.connections)):
-                            # flush(self.connections[i])
-                            # self.connections[i].sendall(message)
                             self.sendAndFlush(self.connections[i], message)
 
     def __dfsPopulation(self, i, j):

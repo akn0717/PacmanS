@@ -1,8 +1,8 @@
 def concatBuffer(token, args=None):
     if args is not None:
-        return bytearray((str(token) + " " + " ".join(args)).encode())
+        return (str(token) + " " + " ".join(args)).encode()
     else:
-        return bytearray(str(token)).encode()
+        return str(token).encode()
 
 
 def splitBuffer(buffer: bytearray):
@@ -14,5 +14,3 @@ def splitBuffer(buffer: bytearray):
 def flush(socket):  # fake flush
     socket.sendall(" ".encode())
     return
-
-

@@ -10,7 +10,7 @@ def isValidMove(board_data, new_position):
     ):
         return False
 
-    if board_data[new_position[0]][new_position[1]] == Block_Type.WALL.value:
-        return False
+    # if board_data[new_position[0]][new_position[1]] == Block_Type.WALL.value:
+    #     return False
 
     return True

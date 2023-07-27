@@ -16,6 +16,7 @@ class Game_Client:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def sendDataToServer(self, message):
+        print(message)
         self.sendAndFlush(message)
 
     def startListener(self):
@@ -23,6 +24,7 @@ class Game_Client:
         self.listening_thread.start()
 
     def sendAndFlush(self, message):
+        # flush(self.socket)
         self.socket.sendall(message)
         flush(self.socket)
 
@@ -34,11 +36,14 @@ class Game_Client:
             )
             if recv_data:
                 data = splitBuffer(recv_data)
+                print("Client received confirm move raw data", recv_data)
+                print("Client received confirm move parsed data", data)
                 for i in range(len(data)):
                     bufferQueue.put(data[i])
 
-            while not (bufferQueue.empty()):
+            if not (bufferQueue.empty()):
                 token = int(bufferQueue.get())
+                print("Client token", token)
                 if token == Message_Type.INITIAL_BOARD.value:
                     data = [
                         int(bufferQueue.get())
@@ -54,6 +59,7 @@ class Game_Client:
                         )
                 elif token == Message_Type.PLAYER_POSITION.value:
                     data = [bufferQueue.get() for _ in range(3)]
+                    print("Client received confirm move", data)
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
@@ -74,6 +80,10 @@ class Game_Client:
                 elif token == Message_Type.HOST_GAME_STARTED.value:
                     with global_variables.GAME_STARTED_LOCK:
                         global_variables.GAME_STARTED = True
+                elif token == Message_Type.PLAYER_ID.value:
+                    data = int(bufferQueue.get())
+                    with global_variables.MUTEX_PLAYER_ID:
+                        global_variables.PLAYER_ID = data
 
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip
@@ -84,17 +94,6 @@ class Game_Client:
 
         try:
             self.socket.connect((self.host_ip, int(self.host_port)))
-
-            while True:
-                player_id = self.socket.recv(
-                    global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
-                )
-                if player_id:
-                    # print(player_id)
-                    # print(player_id.decode())
-                    with global_variables.MUTEX_PLAYER_ID:
-                        global_variables.PLAYER_ID = int(player_id.decode())
-                    break
             self.startListener()
             print("Connected to server")
         except Exception as e:
