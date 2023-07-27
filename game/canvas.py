@@ -1,6 +1,8 @@
 import pygame
 import game.global_variables as global_variables
+import game.global_constants as global_constants
 from game.global_constants import Block_Type
+import numpy as np
 
 
 class Canvas:

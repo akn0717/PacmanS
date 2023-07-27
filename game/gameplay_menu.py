@@ -28,18 +28,30 @@ class Gameplay_Menu(Menu):
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.UP.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
                     elif event.key == pygame.K_DOWN:
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.DOWN.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
                     elif event.key == pygame.K_LEFT:
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.LEFT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
                     elif event.key == pygame.K_RIGHT:
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.RIGHT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
 
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
@@ -48,10 +60,15 @@ class Gameplay_Menu(Menu):
             # Update
             global_variables.CANVAS.update()
             # player will move every tick
+
             with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
-                global_variables.PLAYERS[global_variables.PLAYER_ID].move(
-                    self.game_client
-                )
+                if (
+                    global_variables.PLAYERS[global_variables.PLAYER_ID].movingRequest
+                    == False
+                ):
+                    global_variables.PLAYERS[global_variables.PLAYER_ID].move(
+                        self.game_client
+                    )
 
             # Draw
             global_variables.CANVAS.draw()
