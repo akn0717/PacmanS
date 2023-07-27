@@ -61,18 +61,13 @@ class Canvas:
                   players[2].score, 
                   players[3].score]
         
-        colors = [(255, 0, 0), 
-                  (0, 128, 0), 
-                  (0, 0, 255), 
-                  (255, 200, 0)] # red, green, blue, yellow
-        
         for i in range(4):
-        
+            
             if i == 0:          # player 1 red top-left
                 score_text = global_variables.SCORE_FONT.render(
                     f"Player {players[i].id + 1}: {scores[i]}", 
                     True, 
-                    colors[i]
+                    global_constants.COLORS[i]
                 )
                 text_width = score_text.get_width()
                 text_height = score_text.get_height()
@@ -98,7 +93,7 @@ class Canvas:
                     (icon_x, icon_y)
                 )
 
-                # draw the crown after the player with highest score
+                # Display clown for the pacman icon with highest score
                 if scores[i] == max(scores):
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.ICON_CROWN, 
@@ -107,10 +102,13 @@ class Canvas:
                 i += 1
 
             elif i == 1:        # player 2 green top-right
+                if global_variables.NUMBER_CONNECTIONS < 2:
+                    continue
+
                 score_text = global_variables.SCORE_FONT.render(
                     f"Player {players[i].id + 1}: {scores[i]}", 
                     True, 
-                    colors[i]
+                    global_constants.COLORS[i]
                 )
                 text_width = score_text.get_width()
                 text_height = score_text.get_height()
@@ -123,7 +121,7 @@ class Canvas:
                     (icon_x, icon_y)
                 )
 
-                # draw the crown after the player with highest score
+                # Display clown for the pacman icon with highest score
                 if scores[i] == max(scores):
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.ICON_CROWN, 
@@ -132,10 +130,13 @@ class Canvas:
                 i += 1
 
             elif i == 2:        # player 3 blue bottom left
+                if global_variables.NUMBER_CONNECTIONS < 3:
+                    continue
+
                 score_text = global_variables.SCORE_FONT.render(
                     f"Player {players[i].id + 1}: {scores[i]}", 
                     True, 
-                    colors[i]
+                    global_constants.COLORS[i]
                 )
                 text_width = score_text.get_width()
                 text_height = score_text.get_height()
@@ -153,7 +154,7 @@ class Canvas:
                     (icon_x, icon_y)
                 )
 
-            # draw the crown after the player with highest score
+                # Display clown for the pacman icon with highest score
                 if scores[i] == max(scores):
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.ICON_CROWN, 
@@ -162,10 +163,13 @@ class Canvas:
                 i += 1   
 
             else:               # player 4 yellow bottom right
+                if global_variables.NUMBER_CONNECTIONS < 4:
+                    continue
+
                 score_text = global_variables.SCORE_FONT.render(
                     f"Player {players[i].id + 1}: {scores[i]}", 
                     True, 
-                    colors[i]
+                    global_constants.COLORS[i]
                 )
                 text_width = score_text.get_width()
                 text_height = score_text.get_height()
@@ -178,12 +182,12 @@ class Canvas:
                     (icon_x, icon_y)
                 )
 
-                
-                # draw the crown after the player with highest score
+                # Display clown for the pacman icon with highest score
                 if scores[i] == max(scores):
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.ICON_CROWN, 
                         (icon_x, icon_y - global_variables.ICON_PACMAN_SIZE / 4 * 3)
                     )
                 i += 1
-        
+                
+            
