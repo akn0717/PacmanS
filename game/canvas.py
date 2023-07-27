@@ -2,11 +2,12 @@ import pygame
 import game.global_variables as global_variables
 import game.global_constants as global_constants
 from game.global_constants import Block_Type
+import numpy as np
 
 
 class Canvas:
-    def __init__(self, board_data):
-        self.board_data = board_data
+    def __init__(self):
+        self.board_data = None
 
     def update(self):
         # TODO: Handle recevie message from server and update the board state
@@ -15,6 +16,8 @@ class Canvas:
     def draw(
         self,
     ):
+        if self.board_data is None:
+            return
         # Debug board
         # for i in range(self.size):
         #     for j in range(self.size):

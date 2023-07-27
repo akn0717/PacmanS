@@ -1,3 +1,4 @@
+from multiprocessing import Lock
 from game.game_sprites import Pacman
 from game.menu import Menu
 from game.canvas import Canvas
@@ -6,93 +7,77 @@ import pygame
 import game.global_constants as global_constants
 import game.global_variables as global_variables
 from game.global_constants import Direction, Block_Type
-
-# Debug
-from network.GameServer import GameServer
+from network.Game_Client import Game_Client
 
 
 class Gameplay_Menu(Menu):
-    def __init__(self, host: str = None) -> None:
+    def __init__(self, game_client) -> None:
         super().__init__()
-        # TODO: receive board data from server and pass it to Canvas()
-
-        # workaround for initilize game board
-        gameServer = GameServer(5555)
-        gameServer.initializeGameData()
-
-        self.canvas = Canvas(gameServer.board_data)
-        self.players = [
-            Pacman(i, gameServer.players[i])
-            for i in range(global_constants.NUM_PLAYERS)
-        ]  # player positions
-        self.player_id = (
-            0  # For Debuging only, TODO: receive player_id from server message
-        )
+        self.game_client = game_client
 
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 15
-
+        FPS = 10
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        self.players[self.player_id].setDirection(Direction.UP.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.UP.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
                     elif event.key == pygame.K_DOWN:
-                        self.players[self.player_id].setDirection(Direction.DOWN.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.DOWN.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
                     elif event.key == pygame.K_LEFT:
-                        self.players[self.player_id].setDirection(Direction.LEFT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.LEFT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
                     elif event.key == pygame.K_RIGHT:
-                        self.players[self.player_id].setDirection(Direction.RIGHT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].setDirection(Direction.RIGHT.value)
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest = False
 
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
             global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
 
             # Update
-            self.canvas.update()
-
+            global_variables.CANVAS.update()
             # player will move every tick
 
-            # For game testing only, skipping exchanging message,
-            # remove later when the network is ready
-            player = self.players[self.player_id]
-            (i, j) = player.position
-            if (
-                player.direction == Direction.RIGHT.value
-                and j < global_constants.CANVAS_SIZE[1] - 1
-                and self.canvas.board_data[i][j + 1] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            elif (
-                player.direction == Direction.LEFT.value
-                and j > 0
-                and self.canvas.board_data[i][j - 1] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            elif (
-                player.direction == Direction.DOWN.value
-                and i < global_constants.CANVAS_SIZE[1] - 1
-                and self.canvas.board_data[i + 1][j] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            elif (
-                player.direction == Direction.UP.value
-                and i > 0
-                and self.canvas.board_data[i - 1][j] == Block_Type.EMPTY.value
-            ):
-                player.move()
-            ################################################################################################
+            with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
+                if (
+                    global_variables.PLAYERS[global_variables.PLAYER_ID].movingRequest
+                    == False
+                ):
+                    global_variables.PLAYERS[global_variables.PLAYER_ID].move(
+                        self.game_client
+                    )
 
             # Draw
-            self.canvas.draw()
-            for player in self.players:
-                player.draw()
-
-            self.canvas.score_display(self.players)
+            global_variables.CANVAS.draw()
+            for id in range(len(global_variables.PLAYERS)):
+                player = global_variables.PLAYERS[id]
+                if player.id == id:
+                    player.draw()
+                    
+            global_variables.CANVAS.score_display(global_variables.PLAYERS)
 
             pygame.display.update()
             clock.tick(FPS)

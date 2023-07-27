@@ -1,7 +1,9 @@
 import argparse
 import pygame
 import game.global_variables as global_variables
+import game.global_constants as global_constants
 from game.gameplay_menu import *
+from game.main_menu import Main_Menu
 
 
 def init():
@@ -46,7 +48,6 @@ def init():
         for i in range(global_constants.NUM_PLAYERS)
     ]  # TODO: change color of player depending on the player ID
 
-
     global_variables.SCORE_FONT = pygame.font.Font(
         pygame.font.get_default_font(), 
         global_variables.CANVAS_UNIT[0]
@@ -77,6 +78,24 @@ def init():
         pygame.image.load("assets/PacmanYellow.svg"),
         (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE)
     )
+
+    global_variables.CANVAS = Canvas()
+    global_variables.MUTEX_CANVAS = Lock()
+    global_variables.MUTEX_CANVAS_CELLS = [
+        [Lock() for _ in range(global_constants.CANVAS_SIZE[1])]
+        for _ in range(global_constants.CANVAS_SIZE[0])
+    ]
+    global_variables.GAME_STARTED_LOCK = Lock()
+    global_variables.MUTEX_PLAYER_ID = Lock()
+    global_variables.MUTEX_PLAYERS = [
+        Lock() for _ in range(global_constants.NUM_PLAYERS)
+    ]
+    global_variables.MUTEX_PLAYERS_LIST = Lock()
+
+    global_variables.NUMBER_CONNECTIONS = 0
+    global_variables.GAME_STARTED = False
+    global_variables.PLAYERS = [Pacman(0)] * 4
+
     pygame.display.set_caption("PacmanS")
 
 
@@ -84,7 +103,8 @@ def run(args):
     print("Starting the game...")
     # TODO get player ids from the server and assign them with each image color
 
-    menu = Gameplay_Menu()
+    # menu = Loading_Menu(True)
+    menu = Main_Menu()
     menu.main()
     pygame.quit()
 

@@ -7,6 +7,8 @@ BLOCK_SIZE = (100, 100)
 
 NUM_PLAYERS = 4
 
+NUM_DEFAULT_COMMUNICATION_BYTES = 1024
+
 
 class Direction(Enum):
     RIGHT = 0
@@ -38,3 +40,8 @@ class Message_Type(Enum):
     INITIAL_BOARD = 0
     PLAYER_POSITION = 1
     PLAYER_SCORE = 2
+    REQUEST_PLAYER_MOVE = 3
+    PLAYER_JOIN = 4
+    UPDATE_BLOCK = 5
+    HOST_GAME_STARTED = 6
+    PLAYER_ID = 7
