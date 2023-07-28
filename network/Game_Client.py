@@ -60,6 +60,7 @@ class Game_Client:
                         global_variables.CANVAS.board_data = np.reshape(
                             np.asarray(data[2:]), (data[0], data[1])
                         )
+                    
                 elif token == Message_Type.PLAYER_POSITION.value:
                     data = [self.bufferQueue.get() for _ in range(3)]
                     print("Client received confirm move", data)
@@ -68,6 +69,19 @@ class Game_Client:
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].position = player_position
                         global_variables.PLAYERS[player_id].movingRequest = False
+
+                        # update the score and the board data
+                        if global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] == 2:
+                            global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] = 0
+
+
+                            # calculate the score on the clients for testing
+                            global_variables.PLAYERS[player_id].score += 1
+                            
+                            print("ssssssssssssssssssssssssssssssssssssssssssssssssss:", global_variables.PLAYERS[player_id].score)
+                            # print(global_variables.CANVAS.board_data)
+
+
                 elif token == Message_Type.PLAYER_SCORE.value:
                     data = [str(self.bufferQueue.get()) for _ in range(2)]
                     player_id = int(data[0])

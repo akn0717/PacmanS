@@ -23,7 +23,7 @@ class Canvas:
         #     for j in range(self.size):
         #         print(str(self.data[i, j]) + " ", end="")
         #     print()
-
+        
         assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
         assert isinstance(global_variables.IMAGE_ASSET_EMPTY_BLOCK, pygame.Surface)
         assert isinstance(global_variables.IMAGE_ASSET_WALL_BLOCK, pygame.Surface)
