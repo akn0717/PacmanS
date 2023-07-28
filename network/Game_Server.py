@@ -184,6 +184,16 @@ class Game_Server:
                     potential_positions.append((i, j))
         return random.choices(potential_positions, k=num_players)
 
+
+    def initialize_dots(self):
+        self.board_data[self.board_data == 0] = 2
+
+        # # exclude the spawn position
+        # for i in range(global_variables.NUMBER_CONNECTIONS):
+        #     player_y = self.potential_player_positions[i][0]
+        #     player_x = self.potential_player_positions[i][1]
+        #     self.board_data[player_y][player_x] = 0
+
     def initializeGameData(self):
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
         self.__dd = np.zeros_like(self.board_data)
@@ -191,6 +201,13 @@ class Game_Server:
         self.potential_player_positions = self.populatePlayerPosition(
             global_constants.NUM_PLAYERS
         )
+
+        
+        self.initialize_dots()
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(self.potential_player_positions)
+
+
         self.mutex_server_canvas_cells = [
             [Lock() for _ in range(self.board_data.shape[1])]
             for _ in range(self.board_data.shape[0])

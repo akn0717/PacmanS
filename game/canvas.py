@@ -50,4 +50,8 @@ class Canvas:
                     )
 
                 if self.board_data[i][j] == Block_Type.DOT.value:
-                    pass  # TODO: Load dot image and blit it here
+                    global_variables.SCREEN_WINDOW.blit(
+                        global_variables.IMAGE_ASSET_DOT,
+                        position,
+                    )
+                    
