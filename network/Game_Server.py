@@ -28,9 +28,14 @@ class Game_Server:
         flush(conn)
 
     def __listenIncommingConnection(self):
-
-        while True:
-            conn, _ = self.socket.accept()
+        while True and not global_variables.QUIT_GAME:
+            print("listening")
+            try:
+                conn, _ = self.socket.accept()
+            except Exception as e:
+                print("Socket closed.")
+                break
+            
             self.connections.append(conn)
 
             global_variables.NUMBER_CONNECTIONS += 1
@@ -76,13 +81,22 @@ class Game_Server:
             self.sendAndFlush(conn, message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             thread.start()
+        print("_listenincomingconn thread closed")
 
     def __listen(self, player_id):
         bufferQueue = Queue()
-        while True:
-            recv_data = self.connections[player_id].recv(
+        while True and not global_variables.QUIT_GAME:
+            try:
+                recv_data = self.connections[player_id].recv(
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
             )
+            except ConnectionAbortedError as e:
+                print("Connection aborted Game Client Listener")
+                break
+            
+            except ConnectionResetError as e:
+                print("Connection aborted Game Client Listener")
+                break
             if recv_data:
                 data = splitBuffer(recv_data)
                 print("Server received data:", recv_data)
@@ -138,6 +152,9 @@ class Game_Server:
                         print("Server move player", self.players[player_id].position)
                         for i in range(len(self.connections)):
                             self.sendAndFlush(self.connections[i], message)
+        print("__listen thread closed in game server")
+        self.socket.close()
+
 
     def __dfsPopulation(self, i, j):
         if (

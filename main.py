@@ -4,6 +4,8 @@ import game.global_variables as global_variables
 import game.global_constants as global_constants
 from game.gameplay_menu import *
 from game.main_menu import Main_Menu
+import sys
+import threading
 
 
 def init():
@@ -50,6 +52,7 @@ def init():
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED = False
     global_variables.PLAYERS = [Pacman(0)] * 4
+    global_variables.QUIT_GAME = False
     pygame.display.set_caption("PacmanS")
 
 
@@ -60,7 +63,10 @@ def run(args):
     # menu = Loading_Menu(True)
     menu = Main_Menu()
     menu.main()
+    print("active thread count:",threading.enumerate())
+    pygame.display.quit()
     pygame.quit()
+    sys.exit()
 
 
 if __name__ == "__main__":

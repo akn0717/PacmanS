@@ -30,20 +30,29 @@ class Game_Client:
         self.socket.sendall(message)
 
     def __listen(self):
+        while True and not global_variables.QUIT_GAME:
+            try:
+                recv_data = self.socket.recv(
+                    global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
+                )
+            except ConnectionAbortedError as e:
+                print("Connection aborted Game Client Listener")
+                break
+            
+            except ConnectionResetError as e:
+                print("Connection aborted Game Client Listener")
+                break
 
-        while True:
-            recv_data = self.socket.recv(
-                global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
-            )
             if recv_data:
                 data = splitBuffer(recv_data)
                 print("Client received confirm move raw data", recv_data)
                 print("Client received confirm move parsed data", data)
                 for i in range(len(data)):
                     self.bufferQueue.put(data[i])
+        print("_listen thread closed.")
 
     def __processQueue(self):
-        while True:
+        while True and not global_variables.QUIT_GAME:
             if not (self.bufferQueue.empty()):
                 token = int(self.bufferQueue.get())
                 print("Client token", token)
@@ -87,6 +96,8 @@ class Game_Client:
                     data = int(self.bufferQueue.get())
                     with global_variables.MUTEX_PLAYER_ID:
                         global_variables.PLAYER_ID = data
+        # print("__processQueue thread closed.")
+
 
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip

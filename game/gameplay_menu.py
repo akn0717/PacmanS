@@ -8,6 +8,7 @@ import game.global_constants as global_constants
 import game.global_variables as global_variables
 from game.global_constants import Direction, Block_Type
 from network.Game_Client import Game_Client
+import threading
 
 
 class Gameplay_Menu(Menu):
@@ -22,7 +23,11 @@ class Gameplay_Menu(Menu):
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    # print("quitting...")
+                    global_variables.QUIT_GAME = True
+                    self.game_client.close_socket()
                     isRunning = False
+                    return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         global_variables.PLAYERS[

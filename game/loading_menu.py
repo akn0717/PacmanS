@@ -63,7 +63,7 @@ class Loading_Menu(Menu):
         self.navigate_to_gameplay_menu()
         clock = pygame.time.Clock()
         FPS = 15
-        while True:
+        while True and not global_variables.QUIT_GAME:
             with global_variables.GAME_STARTED_LOCK:
                 if global_variables.GAME_STARTED:
                     self.navigate_to_gameplay_menu()
@@ -77,7 +77,7 @@ class Loading_Menu(Menu):
         else:
             clock = pygame.time.Clock()
             FPS = 15
-            while True:
+            while True and not global_variables.QUIT_GAME:
                 with global_variables.GAME_STARTED_LOCK:
                     if global_variables.GAME_STARTED:
                         self.navigate_to_gameplay_menu()
