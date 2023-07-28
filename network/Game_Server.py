@@ -136,6 +136,15 @@ class Game_Server:
                         args = [str(player_id), str(position_x), str(position_y)]
                         message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
                         print("Server move player", self.players[player_id].position)
+
+                        # update the score and the board data
+                        if self.board_data[self.players[player_id].position[0]][self.players[player_id].position[1]] == 2:
+                            self.board_data[self.players[player_id].position[0]][self.players[player_id].position[1]] = 0
+                            self.players[player_id].score += 1
+                            
+                            print("ssssssssssssssssssssssssssssssssssssssssssssssssss:", self.players[player_id].score)
+                            print(self.board_data)
+
                         for i in range(len(self.connections)):
                             self.sendAndFlush(self.connections[i], message)
 
@@ -202,10 +211,7 @@ class Game_Server:
             global_constants.NUM_PLAYERS
         )
 
-        
         self.initialize_dots()
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print(self.potential_player_positions)
 
 
         self.mutex_server_canvas_cells = [
