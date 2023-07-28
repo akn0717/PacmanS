@@ -70,16 +70,12 @@ class Game_Client:
                         global_variables.PLAYERS[player_id].position = player_position
                         global_variables.PLAYERS[player_id].movingRequest = False
 
-                        # update the score and the board data
-                        if global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] == 2:
-                            global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] = 0
-
-
-                            # calculate the score on the clients for testing
-                            global_variables.PLAYERS[player_id].score += 1
-                            
-                            print("ssssssssssssssssssssssssssssssssssssssssssssssssss:", global_variables.PLAYERS[player_id].score)
-                            # print(global_variables.CANVAS.board_data)
+                    # update board_data 
+                    if global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] == 2:
+                        global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] = 0
+                        
+                        # print("ccccccccccccccccccccccccccccccccc board")
+                        print(global_variables.CANVAS.board_data)
 
 
                 elif token == Message_Type.PLAYER_SCORE.value:
@@ -88,15 +84,19 @@ class Game_Client:
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
+                    print("cccccccccccccccccccccccccccccccccc score receive:", player_id, global_variables.PLAYERS[player_id].score)
+
                 elif token == Message_Type.PLAYER_JOIN.value:
                     data = [str(self.bufferQueue.get()) for _ in range(2)]
                     player_id = int(data[0])
                     name = str(data[1])
                     with global_variables.MUTEX_PLAYERS_LIST:
                         global_variables.PLAYERS[player_id] = Pacman(player_id, name)
+
                 elif token == Message_Type.HOST_GAME_STARTED.value:
                     with global_variables.GAME_STARTED_LOCK:
                         global_variables.GAME_STARTED = True
+
                 elif token == Message_Type.PLAYER_ID.value:
                     data = int(self.bufferQueue.get())
                     with global_variables.MUTEX_PLAYER_ID:

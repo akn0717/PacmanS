@@ -60,6 +60,7 @@ class Loading_Menu(Menu):
 
     def start_game(self):
         self.game_server.startGame()
+        self.game_server.remove_spawn_dots()
         self.navigate_to_gameplay_menu()
         clock = pygame.time.Clock()
         FPS = 15
