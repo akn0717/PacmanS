@@ -59,7 +59,7 @@ class Game_Server:
             for key in self.players:
                 if player_id == key:
                     continue
-                player_joined_args = [str(player_id)]
+                player_joined_args = [str(key)]
                 player_joined_message = concatBuffer(
                     Message_Type.PLAYER_JOIN.value, player_joined_args
                 )
