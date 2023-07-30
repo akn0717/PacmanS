@@ -1,9 +1,11 @@
 import game.global_variables as global_variables
 from game.menu import Menu
 import pygame_menu
+import pygame
 from game.loading_menu import Loading_Menu
 from network.Game_Client import Game_Client
 from game.gameplay_menu import Gameplay_Menu
+import threading
 
 
 
@@ -31,9 +33,9 @@ class Client_Menu(Menu):
             "Enter HOST PORT: ", default="", onchange=self.on_port_no_change
         )
         self.menu.add.vertical_margin(30)
-        self.menu.add.button("Connect", self.connect_to_server)
+        self.connect_button = self.menu.add.button("Connect", self.connect_to_server)
         self.menu.add.vertical_margin(30)
-        self.menu.add.button("Back", self.back_to_main_menu)
+        self.back_button =self.menu.add.button("Back", self.back_to_main_menu)
 
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
@@ -44,7 +46,20 @@ class Client_Menu(Menu):
         success = self.game_client.connect(self.inputted_host_ip, self.inputted_host_port)
         if success != -1:
             print("Connected!")
-            self.listen_for_game_start(self.game_client)
+            self.error_widget.set_title("Connected!")
+            
+            # Remove buttons and inputs from the menu
+            self.menu.remove_widget(self.ip_address_input)
+            self.menu.remove_widget(self.port_number_input)
+            self.menu.remove_widget(self.connect_button)
+            self.menu.remove_widget(self.back_button)
+
+            # Add the waiting label to the menu
+            self.waiting_label = self.menu.add.label("Waiting for host...", font_size=30)
+            pygame.display.update()
+            self.listen_for_game_start()
+            # start_game_thread = threading.Thread(target=self.listen_for_game_start)
+            # start_game_thread.start()
         else:
             print("Failed to connect!")
             self.error_widget.set_title("Failed to connect to server!")
@@ -56,8 +71,16 @@ class Client_Menu(Menu):
         self.menu._back()
     
     def listen_for_game_start(self):
+        while True and not global_variables.QUIT_GAME:
+                with global_variables.GAME_STARTED_LOCK:
+                    if global_variables.GAME_STARTED:
+                        break
+        print("loop broken")
+        self.menu.disable()
         self.gameplay_menu = Gameplay_Menu(self.game_client)
         self.gameplay_menu.main()
+
+        
 
         
 
