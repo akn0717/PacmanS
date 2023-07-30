@@ -19,7 +19,7 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 10
+        FPS = 15
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -81,6 +81,9 @@ class Gameplay_Menu(Menu):
                 player = global_variables.PLAYERS[id]
                 if player.id == id:
                     player.draw()
+
+            global_variables.CANVAS.score_display(global_variables.PLAYERS)
+
             pygame.display.update()
             clock.tick(FPS)
 

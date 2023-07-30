@@ -1,5 +1,4 @@
 # adapted from https://realpython.com/python-sockets/
-from multiprocessing import Queue
 from threading import Lock
 import random
 import socket
@@ -44,8 +43,9 @@ class Game_Server:
             player_id = (
                 len(self.connections) - 1
             )  # player id is set to the connection index
-            player = Pacman(player_id, "test")
+            player = Pacman(player_id)
             self.players.append(player)
+
             message = concatBuffer(Message_Type.PLAYER_ID.value, [str(player_id)])
             self.sendAndFlush(conn, message)
 
@@ -58,8 +58,14 @@ class Game_Server:
             message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
             self.sendAndFlush(conn, message)
 
-            player_joined_args = [str(player.id), "testname"]
+            for i in range(player_id):
+                player_joined_args = [str(i)]
+                player_joined_message = concatBuffer(
+                    Message_Type.PLAYER_JOIN.value, player_joined_args
+                )
+                self.sendAndFlush(conn, player_joined_message)
 
+            player_joined_args = [str(player.id)]
             player_joined_message = concatBuffer(
                 Message_Type.PLAYER_JOIN.value, player_joined_args
             )
@@ -99,17 +105,19 @@ class Game_Server:
                 break
             if recv_data:
                 data = splitBuffer(recv_data)
-                print("Server received data:", recv_data)
-                print("Server received parsed data", data)
                 for i in range(len(data)):
-                    bufferQueue.put(data[i])
+                    bufferQueue.append(data[i])
 
-            if not (bufferQueue.empty()):
-                token = int(bufferQueue.get())
-
+            if (
+                len(bufferQueue) > 0
+                and len(bufferQueue) >= Message_Type.NUM_ARGS.value[int(bufferQueue[0])]
+            ):
+                token = int(bufferQueue.pop(0))
+                data = [
+                    int(bufferQueue.pop(0))
+                    for _ in range(Message_Type.NUM_ARGS.value[token] - 1)
+                ]
                 if token == Message_Type.REQUEST_PLAYER_MOVE.value:
-                    data = [bufferQueue.get() for _ in range(3)]
-                    print("Server received Request Move:", data)
                     player_id = int(data[0])
                     position_x = int(data[1])
                     position_y = int(data[2])
@@ -149,7 +157,6 @@ class Game_Server:
                         )
                         args = [str(player_id), str(position_x), str(position_y)]
                         message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-                        print("Server move player", self.players[player_id].position)
                         for i in range(len(self.connections)):
                             self.sendAndFlush(self.connections[i], message)
         print("__listen thread closed in game server")
