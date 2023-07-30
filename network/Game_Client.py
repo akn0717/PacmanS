@@ -63,14 +63,18 @@ class Game_Client:
                         global_variables.PLAYERS[player_id].score = player_score
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
-                    with global_variables.MUTEX_PLAYERS_LIST:
-                        global_variables.PLAYERS.append(Pacman(player_id))
+                    with global_variables.MUTEX_PLAYERS_DICT:
+                        global_variables.PLAYERS[player_id] = Pacman(player_id)
                 elif token == Message_Type.HOST_GAME_STARTED.value:
                     with global_variables.GAME_STARTED_LOCK:
                         global_variables.GAME_STARTED = True
                 elif token == Message_Type.PLAYER_ID.value:
                     with global_variables.MUTEX_PLAYER_ID:
                         global_variables.PLAYER_ID = data[0]
+                elif token == Message_Type.PLAYER_DISCONNECT.value:
+                    player_id = int(data[0])
+                    with global_variables.MUTEX_PLAYERS_DICT:
+                        global_variables.PLAYERS.pop(player_id)
 
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip

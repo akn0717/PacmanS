@@ -72,10 +72,8 @@ class Gameplay_Menu(Menu):
 
             # Draw
             global_variables.CANVAS.draw()
-            for id in range(len(global_variables.PLAYERS)):
-                player = global_variables.PLAYERS[id]
-                if player.id == id:
-                    player.draw()
+            for player_id in global_variables.PLAYERS:
+                global_variables.PLAYERS[player_id].draw()
 
             global_variables.CANVAS.score_display(global_variables.PLAYERS)
 
