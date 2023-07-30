@@ -78,7 +78,7 @@ class Canvas:
         )
 
         # Display clown for the pacman icon with highest score
-        if players[0] == max_score:
+        if players[0].score == max_score:
             global_variables.SCREEN_WINDOW.blit(
                 global_variables.ICON_CROWN,
                 (icon_x, icon_y - global_variables.ICON_PACMAN_SIZE / 4 * 3),
@@ -89,7 +89,9 @@ class Canvas:
             return
 
         score_text = global_variables.SCORE_FONT.render(
-            f"Player {players[1].id + 1}: {players[1].score}", True, global_constants.COLORS[1]
+            f"Player {players[1].id + 1}: {players[1].score}",
+            True,
+            global_constants.COLORS[1],
         )
         text_width = score_text.get_width()
         text_height = score_text.get_height()
@@ -117,7 +119,9 @@ class Canvas:
             return
 
         score_text = global_variables.SCORE_FONT.render(
-            f"Player {players[2].id + 1}: {players[2].score}", True, global_constants.COLORS[2]
+            f"Player {players[2].id + 1}: {players[2].score}",
+            True,
+            global_constants.COLORS[2],
         )
         text_width = score_text.get_width()
         text_height = score_text.get_height()
@@ -143,7 +147,9 @@ class Canvas:
             return
 
         score_text = global_variables.SCORE_FONT.render(
-            f"Player {players[3].id + 1}: {players[3].score}", True, global_constants.COLORS[3]
+            f"Player {players[3].id + 1}: {players[3].score}",
+            True,
+            global_constants.COLORS[3],
         )
         text_width = score_text.get_width()
         text_height = score_text.get_height()
