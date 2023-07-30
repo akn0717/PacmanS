@@ -10,8 +10,8 @@ class Host_Menu(Menu):
     def __init__(self):
         self.menu = pygame_menu.Menu(
             "Host Menu",
-            global_variables.SCREEN_WIDTH,
-            global_variables.SCREEN_HEIGHT,
+            global_variables.BOARD_WIDTH,
+            global_variables.BOARD_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
