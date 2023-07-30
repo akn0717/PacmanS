@@ -85,7 +85,7 @@ class Canvas:
             )
 
         # player 2 green top-right
-        if global_variables.NUMBER_CONNECTIONS < 2:
+        if len(players) < 2:
             return
 
         score_text = global_variables.SCORE_FONT.render(
@@ -115,7 +115,7 @@ class Canvas:
             )
 
         # player 3 blue bottom left
-        if global_variables.NUMBER_CONNECTIONS < 3:
+        if len(players) < 3:
             return
 
         score_text = global_variables.SCORE_FONT.render(
@@ -143,7 +143,7 @@ class Canvas:
             )
 
         # player 4 yellow bottom right
-        if global_variables.NUMBER_CONNECTIONS < 4:
+        if len(players) < 4:
             return
 
         score_text = global_variables.SCORE_FONT.render(

@@ -39,6 +39,7 @@ class Game_Server:
             )  # player id is set to the connection index
             player = Pacman(player_id)
             self.players.append(player)
+
             message = concatBuffer(Message_Type.PLAYER_ID.value, [str(player_id)])
             self.sendAndFlush(conn, message)
 
@@ -51,8 +52,14 @@ class Game_Server:
             message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
             self.sendAndFlush(conn, message)
 
-            player_joined_args = [str(player.id)]
+            for i in range(player_id):
+                player_joined_args = [str(i)]
+                player_joined_message = concatBuffer(
+                    Message_Type.PLAYER_JOIN.value, player_joined_args
+                )
+                self.sendAndFlush(conn, player_joined_message)
 
+            player_joined_args = [str(player.id)]
             player_joined_message = concatBuffer(
                 Message_Type.PLAYER_JOIN.value, player_joined_args
             )

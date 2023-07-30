@@ -13,10 +13,7 @@ def init():
         global_variables.SCREEN_WIDTH,
         global_variables.SCREEN_HEIGHT,
     ) = global_variables.SCREEN_WINDOW.get_size()
-    (
-        global_variables.BOARD_WIDTH,
-        global_variables.BOARD_HEIGHT,
-    ) = (
+    (global_variables.BOARD_WIDTH, global_variables.BOARD_HEIGHT,) = (
         global_variables.SCREEN_HEIGHT,
         global_variables.SCREEN_HEIGHT,
     )
@@ -27,10 +24,10 @@ def init():
     )
 
     global_variables.BOARD_MARGIN = (
-        (global_variables.SCREEN_WIDTH - 
-        global_variables.CANVAS_UNIT[1] * global_constants.CANVAS_SIZE[0]) / 2
-    )
-    
+        global_variables.SCREEN_WIDTH
+        - global_variables.CANVAS_UNIT[1] * global_constants.CANVAS_SIZE[0]
+    ) / 2
+
     global_variables.IMAGE_ASSET_EMPTY_BLOCK = pygame.transform.scale(
         pygame.image.load("assets/EmptyBlock.png"), global_variables.CANVAS_UNIT
     )
@@ -49,34 +46,33 @@ def init():
     ]  # TODO: change color of player depending on the player ID
 
     global_variables.SCORE_FONT = pygame.font.Font(
-        pygame.font.get_default_font(), 
-        global_variables.CANVAS_UNIT[0]
+        pygame.font.get_default_font(), global_variables.CANVAS_UNIT[0]
     )
-    global_variables.ICON_CROWN =  pygame.transform.scale(
-        pygame.image.load("assets/Crown.svg"), 
-        (global_variables.CANVAS_UNIT[0] * 3, global_variables.CANVAS_UNIT[1] * 4)
+    global_variables.ICON_CROWN = pygame.transform.scale(
+        pygame.image.load("assets/Crown.svg"),
+        (global_variables.CANVAS_UNIT[0] * 3, global_variables.CANVAS_UNIT[1] * 4),
     )
 
     global_variables.ICON_PACMAN_SIZE = global_variables.CANVAS_UNIT[0] * 2
 
     global_variables.ICON_PACMAN_RED = pygame.transform.scale(
         pygame.image.load("assets/PacmanRed.svg"),
-    (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE)
+        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.ICON_PACMAN_GREEN = pygame.transform.scale(
-        pygame.image.load("assets/PacmanGreen.svg"), 
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE)
+        pygame.image.load("assets/PacmanGreen.svg"),
+        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.ICON_PACMAN_BLUE = pygame.transform.scale(
-        pygame.image.load("assets/PacmanBlue.svg"), 
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE)
+        pygame.image.load("assets/PacmanBlue.svg"),
+        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.ICON_PACMAN_YELLOW = pygame.transform.scale(
         pygame.image.load("assets/PacmanYellow.svg"),
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE)
+        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.CANVAS = Canvas()
@@ -94,7 +90,7 @@ def init():
 
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED = False
-    global_variables.PLAYERS = [Pacman(0)] * 4
+    global_variables.PLAYERS = []
 
     pygame.display.set_caption("PacmanS")
 

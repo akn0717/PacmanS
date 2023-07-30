@@ -64,7 +64,7 @@ class Game_Client:
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
                     with global_variables.MUTEX_PLAYERS_LIST:
-                        global_variables.PLAYERS[player_id] = Pacman(player_id)
+                        global_variables.PLAYERS.append(Pacman(player_id))
                 elif token == Message_Type.HOST_GAME_STARTED.value:
                     with global_variables.GAME_STARTED_LOCK:
                         global_variables.GAME_STARTED = True
