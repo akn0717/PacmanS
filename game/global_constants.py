@@ -50,3 +50,4 @@ class Message_Type(Enum):
     UPDATE_BLOCK = 5
     HOST_GAME_STARTED = 6
     PLAYER_ID = 7
+    NUM_ARGS = [3 + CANVAS_SIZE[0] * CANVAS_SIZE[1], 4, 3, 4, 2, 4, 1, 2]

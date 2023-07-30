@@ -8,10 +8,9 @@ from network.utils import concatBuffer
 
 
 class Pacman:
-    def __init__(self, id, name="", position=(0, 0)):
+    def __init__(self, id, position=(0, 0)):
         self.id = id
         self.position = position
-        self.name = name
         self.movingRequest = True
         self.score = 0
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[int(id)], pygame.Surface)
@@ -32,8 +31,6 @@ class Pacman:
 
         if not (isValidMove(global_variables.CANVAS.board_data, new_position)):
             return
-        print(type(new_position))
-        print("Client sends new position", new_position)
         args = [self.id, *new_position]
         args = [str(arg) for arg in args]
         message = concatBuffer(
