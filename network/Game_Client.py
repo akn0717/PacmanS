@@ -74,8 +74,7 @@ class Game_Client:
                     if global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] == 2:
                         global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] = 0
                         
-                        # print("ccccccccccccccccccccccccccccccccc board")
-                        print(global_variables.CANVAS.board_data)
+                        # print(global_variables.CANVAS.board_data)
 
 
                 elif token == Message_Type.PLAYER_SCORE.value:
@@ -84,7 +83,7 @@ class Game_Client:
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
-                    print("cccccccccccccccccccccccccccccccccc score receive:", player_id, global_variables.PLAYERS[player_id].score)
+                    print("score receive:", player_id, global_variables.PLAYERS[player_id].score)
 
                 elif token == Message_Type.PLAYER_JOIN.value:
                     data = [str(self.bufferQueue.get()) for _ in range(2)]

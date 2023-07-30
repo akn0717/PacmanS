@@ -140,7 +140,7 @@ class Game_Server:
                         if self.board_data[position_x][position_y] == 2:
                             self.board_data[position_x][position_y] = 0
                             self.players[player_id].score += 1
-                        print("sssssssssssssssssssssssssssssssssssssss score value:", self.players[player_id].score)
+                        # print("score value:", self.players[player_id].score)
 
                         # encapsulate the positon to send
                         args = [str(player_id), str(position_x), str(position_y)]
