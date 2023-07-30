@@ -3,6 +3,8 @@ from game.menu import Menu
 import pygame_menu
 from game.loading_menu import Loading_Menu
 from network.Game_Client import Game_Client
+from game.gameplay_menu import Gameplay_Menu
+
 
 
 class Client_Menu(Menu):
@@ -29,30 +31,35 @@ class Client_Menu(Menu):
             "Enter HOST PORT: ", default="", onchange=self.on_port_no_change
         )
         self.menu.add.vertical_margin(30)
-        self.menu.add.button("Connect", self.navigate_to_gameplay_menu)
+        self.menu.add.button("Connect", self.connect_to_server)
         self.menu.add.vertical_margin(30)
         self.menu.add.button("Back", self.back_to_main_menu)
 
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
-    def navigate_to_gameplay_menu(self):
+    def connect_to_server(self):
         self.error_widget.set_title("Connecting...")
-        game_client = Game_Client()
-        success = game_client.connect(self.inputted_host_ip, self.inputted_host_port)
+        self.game_client = Game_Client()
+        success = self.game_client.connect(self.inputted_host_ip, self.inputted_host_port)
         if success != -1:
             print("Connected!")
+            self.listen_for_game_start(self.game_client)
         else:
             print("Failed to connect!")
             self.error_widget.set_title("Failed to connect to server!")
             return
 
-        self.loading_menu = Loading_Menu(game_client=game_client)
-        self.loading_menu.main()
 
     def back_to_main_menu(self):
         self.error_widget.set_title("")
         self.menu._back()
+    
+    def listen_for_game_start(self):
+        self.gameplay_menu = Gameplay_Menu(self.game_client)
+        self.gameplay_menu.main()
+
+        
 
     def on_ip_address_change(self, value):
         # for testing. Not sure if global variable one is not needed anymore
