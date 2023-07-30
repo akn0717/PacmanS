@@ -27,17 +27,17 @@ class Game_Client:
 
     def __listen(self):
         bufferQueue = []
-        while True and not global_variables.QUIT_GAME:
+        while True:
             try:
                 recv_data = self.socket.recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
                 )
             except ConnectionAbortedError as e:
-                print("Connection aborted Game Client Listener")
+                print("CONNECTION ABORTED")
                 break
 
             except ConnectionResetError as e:
-                print("Connection aborted Game Client Listener")
+                print("CONNECTION ABORTED")
                 break
 
             if recv_data:

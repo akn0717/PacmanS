@@ -27,7 +27,7 @@ class Game_Server:
         flush(conn)
 
     def __listenIncommingConnection(self):
-        while True and not global_variables.QUIT_GAME:
+        while True:
             print("listening")
             try:
                 conn, _ = self.socket.accept()
@@ -90,8 +90,8 @@ class Game_Server:
         print("_listenincomingconn thread closed")
 
     def __listen(self, player_id):
-        bufferQueue = Queue()
-        while True and not global_variables.QUIT_GAME:
+        bufferQueue = []
+        while True:
             try:
                 recv_data = self.connections[player_id].recv(
                 global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
@@ -235,6 +235,10 @@ class Game_Server:
         for conn in self.connections:
             print("GAME STARTED")
             self.sendAndFlush(conn, game_started_message)
+
+    def __del__(self):
+        print("CALLING DESTRUCTOR")
+        self.socket.close()
 
     def closeSocket(self):
         self.socket.close()

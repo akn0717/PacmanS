@@ -49,3 +49,7 @@ class Host_Menu(Menu):
     def on_port_no_change(self, value):
         self.inputted_host_port = value
         pass
+
+    def __del__(self):
+        print("CALL DESTRUCTOR IN HOST MENU")
+        
