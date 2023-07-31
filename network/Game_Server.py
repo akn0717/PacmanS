@@ -139,18 +139,13 @@ class Game_Server:
                     old_position = self.players[player_id].position
 
                     if isValidMove(self.board_data, (new_position[0], new_position[1])):
-
                         self.mutex_server_canvas_cells[old_position[0]][
                             old_position[1]
                         ].acquire()
-                        self.obstacle_data[old_position[0], old_position[1]] = 0
-                        self.mutex_server_canvas_cells[old_position[0]][
-                            old_position[1]
-                        ].release()
-
                         self.mutex_server_canvas_cells[new_position[0]][
                             new_position[1]
                         ].acquire()
+                        self.obstacle_data[old_position[0], old_position[1]] = 0
                         if self.obstacle_data[new_position[0]][new_position[1]] == 0:
                             self.obstacle_data[new_position[0]][new_position[1]] = 1
                             self.players[player_id].position = (
@@ -192,6 +187,9 @@ class Game_Server:
 
                         self.mutex_server_canvas_cells[new_position[0]][
                             new_position[1]
+                        ].release()
+                        self.mutex_server_canvas_cells[old_position[0]][
+                            old_position[1]
                         ].release()
 
     def __dfsPopulation(self, i, j):
