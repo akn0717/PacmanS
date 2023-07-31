@@ -227,7 +227,6 @@ class Game_Server:
     def getPotentialSpawnPositions(self):
         (n, m) = self.board_data.shape
         potential_positions = []
-        print(self.board_data)
         for i in range(n):
             for j in range(m):
                 if self.board_data[i, j] == Block_Type.DOT.value:
@@ -253,7 +252,6 @@ class Game_Server:
         self.initialize_dots()
 
         self.potential_player_positions = self.getPotentialSpawnPositions()
-        print(self.potential_player_positions)
 
         self.mutex_server_canvas_cells = [
             [Lock() for _ in range(self.board_data.shape[1])]
