@@ -23,7 +23,7 @@ class Canvas:
         #     for j in range(self.size):
         #         print(str(self.data[i, j]) + " ", end="")
         #     print()
-
+        
         assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
         assert isinstance(global_variables.IMAGE_ASSET_EMPTY_BLOCK, pygame.Surface)
         assert isinstance(global_variables.IMAGE_ASSET_WALL_BLOCK, pygame.Surface)
@@ -51,7 +51,12 @@ class Canvas:
                     )
 
                 if self.board_data[i][j] == Block_Type.DOT.value:
-                    pass  # TODO: Load dot image and blit it here
+
+                    global_variables.SCREEN_WINDOW.blit(
+                        global_variables.IMAGE_ASSET_DOT,
+                        position,
+                    )
+                    
 
     def score_display(self, players):
         max_score = max([players[i].score for i in players])

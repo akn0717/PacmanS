@@ -53,24 +53,44 @@ class Game_Client:
                         global_variables.CANVAS.board_data = np.reshape(
                             np.asarray(data[2:]), (data[0], data[1])
                         )
+
                 elif token == Message_Type.PLAYER_POSITION.value:
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].position = player_position
                         global_variables.PLAYERS[player_id].movingRequest = False
+
+                    # update board_data
+                    if (
+                        global_variables.CANVAS.board_data[
+                            global_variables.PLAYERS[player_id].position[0]
+                        ][global_variables.PLAYERS[player_id].position[1]]
+                        == 2
+                    ):
+                        global_variables.CANVAS.board_data[
+                            global_variables.PLAYERS[player_id].position[0]
+                        ][global_variables.PLAYERS[player_id].position[1]] = 0
+
+                        # print(global_variables.CANVAS.board_data)
+
                 elif token == Message_Type.PLAYER_SCORE.value:
                     player_id = int(data[0])
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
+                    # print("score receive:", player_id, global_variables.PLAYERS[player_id].score)
+
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
+
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[player_id] = Pacman(player_id)
+
                 elif token == Message_Type.HOST_GAME_STARTED.value:
                     with global_variables.GAME_STARTED_LOCK:
                         global_variables.GAME_STARTED = True
+
                 elif token == Message_Type.PLAYER_ID.value:
                     with global_variables.MUTEX_PLAYER_ID:
                         global_variables.PLAYER_ID = data[0]
