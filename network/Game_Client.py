@@ -49,7 +49,6 @@ class Game_Client:
                 token = data[0]
                 data = data[1:]
 
-                print(token, data)
                 if token == Message_Type.INITIAL_BOARD.value:
                     with global_variables.MUTEX_CANVAS:
                         global_variables.CANVAS.board_data = np.reshape(

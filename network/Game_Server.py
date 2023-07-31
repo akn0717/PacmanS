@@ -81,6 +81,13 @@ class Game_Server:
             self.mutex_server_canvas_cells[self.players[player_id].position[0]][
                 self.players[player_id].position[1]
             ].acquire()
+            self.obstacle_data[self.players[player_id].position[0]][
+                self.players[player_id].position[1]
+            ] = 1
+            self.mutex_server_canvas_cells[self.players[player_id].position[0]][
+                self.players[player_id].position[1]
+            ].release()
+
             args = [
                 player_id,
                 *self.players[player_id].position,
@@ -127,49 +134,58 @@ class Game_Server:
                 data = data[1:]
                 if token == Message_Type.REQUEST_PLAYER_MOVE.value:
                     player_id = int(data[0])
-                    position_x = int(data[1])
-                    position_y = int(data[2])
+                    new_position = (int(data[1]), int(data[2]))
+                    old_position = self.players[player_id].position
 
-                    if isValidMove(self.board_data, (position_x, position_y)) and not (
-                        self.mutex_server_canvas_cells[position_x][position_y].locked()
-                    ):
-                        self.mutex_server_canvas_cells[position_x][position_y].acquire()
-                        old_position = (
-                            self.players[player_id].position[0],
-                            self.players[player_id].position[1],
-                        )
-
-                        if self.mutex_server_canvas_cells[old_position[0]][
+                    if isValidMove(self.board_data, (new_position[0], new_position[1])):
+                        self.mutex_server_canvas_cells[old_position[0]][
                             old_position[1]
-                        ].locked():
-                            self.mutex_server_canvas_cells[old_position[0]][
-                                old_position[1]
-                            ].release()
+                        ].acquire()
+                        self.mutex_server_canvas_cells[new_position[0]][
+                            new_position[1]
+                        ].acquire()
+                        if self.obstacle_data[new_position[0]][new_position[1]] == 0:
+                            self.obstacle_data[old_position[0], old_position[1]] = 0
+                            self.obstacle_data[new_position[0]][new_position[1]] = 1
+                            self.players[player_id].position = (
+                                new_position[0],
+                                new_position[1],
+                            )
+                            # increment the score based on the movement
+                            if self.board_data[new_position[0]][new_position[1]] == 2:
+                                self.board_data[new_position[0]][new_position[1]] = 0
+                                self.players[player_id].score += 1
 
-                        self.players[player_id].position = (
-                            position_x,
-                            position_y,
-                        )
+                                # encapsulate the score to send
+                                args = [
+                                    str(player_id),
+                                    str(self.players[player_id].score),
+                                ]
+                                message = concatBuffer(
+                                    Message_Type.PLAYER_SCORE.value, args
+                                )
+                                for key in self.connections:
+                                    self.sendAndFlush(self.connections[key], message)
 
-                        # increment the score based on the movement
-                        if self.board_data[position_x][position_y] == 2:
-                            self.board_data[position_x][position_y] = 0
-                            self.players[player_id].score += 1
+                            # encapsulate the positon to send
+                            args = [
+                                str(player_id),
+                                str(new_position[0]),
+                                str(new_position[1]),
+                            ]
+                            message = concatBuffer(
+                                Message_Type.PLAYER_POSITION.value, args
+                            )
+                            # send position of player move
+                            for key in self.connections:
+                                self.sendAndFlush(self.connections[key], message)
 
-                        # encapsulate the positon to send
-                        args = [str(player_id), str(position_x), str(position_y)]
-                        message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-
-                        # send position of player move
-                        for i in self.connections:
-                            self.sendAndFlush(self.connections[i], message)
-
-                        # encapsulate the score to send
-                        args = [str(player_id), str(self.players[player_id].score)]
-                        message = concatBuffer(Message_Type.PLAYER_SCORE.value, args)
-
-                        for key in self.connections:
-                            self.sendAndFlush(self.connections[key], message)
+                        self.mutex_server_canvas_cells[new_position[0]][
+                            new_position[1]
+                        ].release()
+                        self.mutex_server_canvas_cells[old_position[0]][
+                            old_position[1]
+                        ].release()
 
     def __dfsPopulation(self, i, j):
         if (
@@ -229,6 +245,7 @@ class Game_Server:
     def initializeGameData(self):
         print("initializing game data...")
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
+        self.obstacle_data = np.zeros_like(self.board_data)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
         self.initialize_dots()
