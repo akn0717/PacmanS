@@ -66,17 +66,16 @@ class Game_Server:
             for conn in self.connections:
                 self.sendAndFlush(conn, player_joined_message)
 
+            self.players[player_id].position = self.potential_player_positions.pop(0)
             player_position_message = [
                 player_id,
-                *self.potential_player_positions[player_id],
+                *self.players[player_id].position,
             ]
             args = [str(arg) for arg in player_position_message]
-            self.players[player_id].position = self.potential_player_positions[
-                player_id
-            ]
-            # self.mutex_server_canvas_cells[player_position_message[1]][
-            #     player_position_message[2]
-            # ].acquire()
+
+            self.mutex_server_canvas_cells[self.players[player_id].position[0]][
+                self.players[player_id].position[1]
+            ].acquire()
             message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
             self.sendAndFlush(conn, message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
@@ -107,8 +106,10 @@ class Game_Server:
                     position_x = int(data[1])
                     position_y = int(data[2])
 
-                    if isValidMove(self.board_data, (position_x, position_y)):
-                        # self.mutex_server_canvas_cells[position_x][position_y].acquire()
+                    if isValidMove(self.board_data, (position_x, position_y)) and not (
+                        self.mutex_server_canvas_cells[position_x][position_y].locked()
+                    ):
+                        self.mutex_server_canvas_cells[position_x][position_y].acquire()
                         old_position = (
                             self.players[int(player_id)].position[0],
                             self.players[int(player_id)].position[1],
@@ -130,12 +131,12 @@ class Game_Server:
                         #     conn.sendall(message)
 
                         # bad practice, needs to change later
-                        # if self.mutex_server_canvas_cells[old_position[0]][
-                        #     old_position[1]
-                        # ].locked():
-                        #     self.mutex_server_canvas_cells[old_position[0]][
-                        #         old_position[1]
-                        #     ].release()
+                        if self.mutex_server_canvas_cells[old_position[0]][
+                            old_position[1]
+                        ].locked():
+                            self.mutex_server_canvas_cells[old_position[0]][
+                                old_position[1]
+                            ].release()
                         self.players[player_id].position = (
                             position_x,
                             position_y,
@@ -181,22 +182,21 @@ class Game_Server:
         self.__dfsPopulation(i, j - 1)
         self.__dfsPopulation(i, j + 1)
 
-    def populatePlayerPosition(self, num_players):
+    def getPotentialSpawnPositions(self):
         (n, m) = self.board_data.shape
         potential_positions = []
         for i in range(n):
             for j in range(m):
                 if self.board_data[i, j] == 0:
                     potential_positions.append((i, j))
-        return random.choices(potential_positions, k=num_players)
+        random.shuffle(potential_positions)
+        return potential_positions
 
     def initializeGameData(self):
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
         self.__dd = np.zeros_like(self.board_data)
         self.populateCanvas()
-        self.potential_player_positions = self.populatePlayerPosition(
-            global_constants.NUM_PLAYERS
-        )
+        self.potential_player_positions = self.getPotentialSpawnPositions()
         self.mutex_server_canvas_cells = [
             [Lock() for _ in range(self.board_data.shape[1])]
             for _ in range(self.board_data.shape[0])
