@@ -80,7 +80,9 @@ class Game_Server:
                 self.players[player_id].position[1]
             ].acquire()
             message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-            self.sendAndFlush(conn, message)
+
+            for key in self.connections:
+                self.sendAndFlush(self.connections[key], message)
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             self.receiver_threads.append(thread)
             thread.start()
