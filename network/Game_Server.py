@@ -36,10 +36,7 @@ class Game_Server:
                 if i not in self.players:
                     player_id = i
                     break
-
             self.connections[player_id] = conn
-            global_variables.NUMBER_CONNECTIONS += 1
-            print(global_variables.NUMBER_CONNECTIONS)
 
             player = Pacman(player_id)
             self.players[player_id] = player
@@ -228,6 +225,9 @@ class Game_Server:
         self.socket.listen()
         thread = threading.Thread(target=self.__listenIncommingConnection)
         thread.start()
+
+    def getNumberConnections(self):
+        return len(self.connections)
 
     def startGame(self):
         game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value)
