@@ -18,7 +18,8 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 15
+        FPS = 30
+        updateIteration = 0
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -64,15 +65,18 @@ class Gameplay_Menu(Menu):
             global_variables.CANVAS.update()
             # player will move every tick
 
-            with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
-                if (
-                    global_variables.PLAYERS[global_variables.PLAYER_ID].movingRequest
-                    == False
-                ):
-                    global_variables.PLAYERS[global_variables.PLAYER_ID].move(
-                        self.game_client
-                    )
-
+            if updateIteration % 10 == 0:
+                with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
+                    if (
+                        global_variables.PLAYERS[
+                            global_variables.PLAYER_ID
+                        ].movingRequest
+                        == False
+                    ):
+                        global_variables.PLAYERS[global_variables.PLAYER_ID].move(
+                            self.game_client
+                        )
+            updateIteration += 1
             # Draw
             global_variables.CANVAS.draw()
             for player_id in global_variables.PLAYERS:
