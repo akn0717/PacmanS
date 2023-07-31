@@ -169,14 +169,13 @@ class Game_Server:
                             )
                             # send position of player move
                             for key in self.connections:
-                                self.sendAndFlush(self.connections[i], message)
+                                self.sendAndFlush(self.connections[key], message)
 
                             # encapsulate the score to send
                             args = [str(player_id), str(self.players[player_id].score)]
                             message = concatBuffer(
                                 Message_Type.PLAYER_SCORE.value, args
                             )
-
                             for key in self.connections:
                                 self.sendAndFlush(self.connections[key], message)
 
