@@ -44,7 +44,7 @@ class Game_Server:
             self.connections[player_id] = conn
             player = Pacman(player_id)
             self.players[player_id] = player
-
+            print("Player", player_id + 1, "joined!")
             # send a message to current connection player to let it know its id
             message = concatBuffer(Message_Type.PLAYER_ID.value, [str(player_id)])
             self.sendAndFlush(conn, message)
@@ -155,13 +155,10 @@ class Game_Server:
                         if self.board_data[position_x][position_y] == 2:
                             self.board_data[position_x][position_y] = 0
                             self.players[player_id].score += 1
-                        # print("score value:", self.players[player_id].score)
 
                         # encapsulate the positon to send
                         args = [str(player_id), str(position_x), str(position_y)]
                         message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-
-                        print("Server move player to", self.players[player_id].position)
 
                         # send position of player move
                         for i in self.connections:
