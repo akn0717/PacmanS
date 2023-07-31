@@ -29,8 +29,8 @@ class Game_Server:
 
     def __listenIncommingConnection(self):
         while True:
-            if (self.getNumberConnections()==4):
-                return
+            if (self.getNumberConnections()>=4):
+                continue
             try:
                 conn, _ = self.socket.accept()
             except:
