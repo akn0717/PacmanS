@@ -29,7 +29,12 @@ class Game_Server:
 
     def __listenIncommingConnection(self):
         while True:
-            conn, _ = self.socket.accept()
+            if (self.getNumberConnections()>=4):
+                continue
+            try:
+                conn, _ = self.socket.accept()
+            except:
+                return
 
             # Picking a new player id for new connection
             player_id = -1
@@ -243,7 +248,7 @@ class Game_Server:
 
     def closeSocket(self):
         self.socket.close()
-        print("Closed socket.")
+        # print("Closed socket.")
 
 
 if __name__ == "__main__":

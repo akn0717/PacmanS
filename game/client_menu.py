@@ -47,6 +47,7 @@ class Client_Menu(Menu):
             self.error_widget.set_title("Failed to connect to server!")
             return
 
+        self.menu.disable()
         self.loading_menu = Loading_Menu(game_client=game_client)
         self.loading_menu.main()
 

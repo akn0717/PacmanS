@@ -23,6 +23,9 @@ class Gameplay_Menu(Menu):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
+                    self.game_client.close_socket()
+                    # pygame.quit()
+                    return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         global_variables.PLAYERS[

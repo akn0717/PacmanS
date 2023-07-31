@@ -4,6 +4,7 @@ import game.global_variables as global_variables
 import game.global_constants as global_constants
 from game.gameplay_menu import *
 from game.main_menu import Main_Menu
+import sys
 
 
 def init():
@@ -103,6 +104,7 @@ def run(args):
     menu = Main_Menu()
     menu.main()
     pygame.quit()
+    sys.exit()
 
 
 if __name__ == "__main__":

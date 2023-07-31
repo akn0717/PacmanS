@@ -28,13 +28,16 @@ class Game_Client:
     def __listen(self):
         bufferQueue = []
         while True:
-            recv_data = self.socket.recv(
-                global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
-            )
-            if recv_data:
-                data = splitBuffer(recv_data)
-                for i in range(len(data)):
-                    bufferQueue.append(data[i])
+            try: 
+                recv_data = self.socket.recv(
+                    global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
+                )
+                if recv_data:
+                    data = splitBuffer(recv_data)
+                    for i in range(len(data)):
+                        bufferQueue.append(data[i])
+            except:
+                return
 
             if (
                 len(bufferQueue) > 0
@@ -94,7 +97,7 @@ class Game_Client:
 
     def close_socket(self):
         self.socket.close()
-        print("Closed socket.")
+        # print("Closed socket!")
 
 
 if __name__ == "__main__":
