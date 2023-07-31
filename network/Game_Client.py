@@ -2,7 +2,7 @@
 import socket
 import threading
 from game.game_sprites import Pacman
-from game.global_constants import Message_Type
+from game.global_constants import Message_Type, Move_Operation, Direction
 import game.global_constants as global_constants
 import game.global_variables as global_variables
 import numpy as np
@@ -44,6 +44,7 @@ class Game_Client:
 
             while len(messageQueue) > 0:
                 message = messageQueue.pop(0)
+
                 data = [int(arg) for arg in parseMessage(message)]
                 token = data[0]
                 data = data[1:]
@@ -58,6 +59,32 @@ class Game_Client:
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
                     with global_variables.MUTEX_PLAYERS[player_id]:
+
+                        # calculate the direction of the player
+                        direction_op = (
+                            player_position[0]
+                            - global_variables.PLAYERS[player_id].position[0],
+                            player_position[1]
+                            - global_variables.PLAYERS[player_id].position[1],
+                        )
+
+                        if direction_op == Move_Operation.OPERATOR_LEFT.value:
+                            global_variables.PLAYERS[
+                                player_id
+                            ].direction = Direction.LEFT.value
+                        elif direction_op == Move_Operation.OPERATOR_RIGHT.value:
+                            global_variables.PLAYERS[
+                                player_id
+                            ].direction = Direction.RIGHT.value
+                        elif direction_op == Move_Operation.OPERATOR_UP.value:
+                            global_variables.PLAYERS[
+                                player_id
+                            ].direction = Direction.UP.value
+                        elif direction_op == Move_Operation.OPERATOR_DOWN.value:
+                            global_variables.PLAYERS[
+                                player_id
+                            ].direction = Direction.DOWN.value
+
                         global_variables.PLAYERS[player_id].position = player_position
                         global_variables.PLAYERS[player_id].movingRequest = False
 
@@ -72,18 +99,15 @@ class Game_Client:
                             global_variables.PLAYERS[player_id].position[0]
                         ][global_variables.PLAYERS[player_id].position[1]] = 0
 
-                        # print(global_variables.CANVAS.board_data)
-
                 elif token == Message_Type.PLAYER_SCORE.value:
                     player_id = int(data[0])
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
-                    # print("score receive:", player_id, global_variables.PLAYERS[player_id].score)
+
 
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
-                    print("in player join", player_id)
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[player_id] = Pacman(player_id)
 
