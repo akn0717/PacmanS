@@ -44,7 +44,6 @@ class Game_Client:
 
             while len(messageQueue) > 0:
                 message = messageQueue.pop(0)
-
                 data = [int(arg) for arg in parseMessage(message)]
                 token = data[0]
                 data = data[1:]
@@ -86,7 +85,7 @@ class Game_Client:
                             ].direction = Direction.DOWN.value
 
                         global_variables.PLAYERS[player_id].position = player_position
-                        global_variables.PLAYERS[player_id].movingRequest = False
+                        global_variables.MOVING_REQUEST = False
 
                     # update board_data
                     if (

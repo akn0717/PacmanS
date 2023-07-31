@@ -87,9 +87,10 @@ def init():
         Lock() for _ in range(global_constants.NUM_PLAYERS)
     ]
     global_variables.MUTEX_PLAYERS_DICT = Lock()
-
+    global_variables.MUTEX_MOVING_REQUEST = Lock()
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED = False
+    global_variables.MOVING_REQUEST = False
     global_variables.PLAYERS = {}
 
     pygame.display.set_caption("PacmanS")

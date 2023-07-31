@@ -11,7 +11,6 @@ class Pacman:
     def __init__(self, id, position=(0, 0)):
         self.id = id
         self.position = position
-        self.movingRequest = True
         self.score = 0
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[int(id)], pygame.Surface)
         image_asset = global_variables.IMAGE_ASSET_PLAYERS[int(id)]
@@ -31,7 +30,6 @@ class Pacman:
             Move_Operation.OPERATORS.value[self.direction]
         )
         new_position = (int(new_position[0]), int(new_position[1]))
-        self.movingRequest = True
 
         if not (isValidMove(global_variables.CANVAS.board_data, new_position)):
             return
