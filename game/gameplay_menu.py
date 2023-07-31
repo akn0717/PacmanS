@@ -18,11 +18,14 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 10
+        FPS = 15
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
+                    self.game_client.close_socket()
+                    # pygame.quit()
+                    return
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         global_variables.PLAYERS[
@@ -72,10 +75,11 @@ class Gameplay_Menu(Menu):
 
             # Draw
             global_variables.CANVAS.draw()
-            for id in range(len(global_variables.PLAYERS)):
-                player = global_variables.PLAYERS[id]
-                if player.id == id:
-                    player.draw()
+            for player_id in global_variables.PLAYERS:
+                global_variables.PLAYERS[player_id].draw()
+
+            global_variables.CANVAS.score_display(global_variables.PLAYERS)
+
             pygame.display.update()
             clock.tick(FPS)
 

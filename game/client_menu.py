@@ -9,8 +9,8 @@ class Client_Menu(Menu):
     def __init__(self):
         self.menu = pygame_menu.Menu(
             "Client Menu",
-            global_variables.SCREEN_WIDTH,
-            global_variables.SCREEN_HEIGHT,
+            global_variables.BOARD_WIDTH,
+            global_variables.BOARD_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
@@ -47,6 +47,7 @@ class Client_Menu(Menu):
             self.error_widget.set_title("Failed to connect to server!")
             return
 
+        self.menu.disable()
         self.loading_menu = Loading_Menu(game_client=game_client)
         self.loading_menu.main()
 

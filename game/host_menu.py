@@ -10,8 +10,8 @@ class Host_Menu(Menu):
     def __init__(self):
         self.menu = pygame_menu.Menu(
             "Host Menu",
-            global_variables.SCREEN_WIDTH,
-            global_variables.SCREEN_HEIGHT,
+            global_variables.BOARD_WIDTH,
+            global_variables.BOARD_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
@@ -36,12 +36,10 @@ class Host_Menu(Menu):
         # Host is also a client and connect to itself
         game_client = Game_Client()
         game_client.connect("127.0.0.1", self.inputted_host_port)
-
         self.loading_menu = Loading_Menu(
             game_client=game_client, game_server=game_server
         )
         self.menu._open(self.loading_menu.menu)
-        pass
 
     def back_to_main_menu(self):
         self.menu._back()

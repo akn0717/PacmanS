@@ -24,7 +24,6 @@ class Loading_Menu(Menu):
         self.menu.add.vertical_margin(30)
         self.game_client = game_client
 
-        global_variables.PLAYERS = [Pacman(0)] * 4
         if self.game_server is not None:
             self.active_connections = self.menu.add.label(
                 "Number of players joined: {}".format(
