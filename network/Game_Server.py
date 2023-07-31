@@ -29,7 +29,7 @@ class Game_Server:
 
     def __listenIncommingConnection(self):
         while True:
-            if (self.getNumberConnections()>=4):
+            if self.getNumberConnections() >= 4:
                 continue
             try:
                 conn, _ = self.socket.accept()
@@ -74,13 +74,13 @@ class Game_Server:
             for key in self.connections:
                 self.sendAndFlush(self.connections[key], message)
 
+            # send a message to all the joined players acknowledging the current connection player's position
+            self.players[player_id].position = self.potential_player_positions.pop(0)
+
             # block the current position meaning the current player is holding it
             self.mutex_server_canvas_cells[self.players[player_id].position[0]][
                 self.players[player_id].position[1]
             ].acquire()
-
-            # send a message to all the joined players acknowledging the current connection player's position
-            self.players[player_id].position = self.potential_player_positions.pop(0)
             args = [
                 player_id,
                 *self.players[player_id].position,
