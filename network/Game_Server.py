@@ -31,19 +31,21 @@ class Game_Server:
         while True:
             conn, _ = self.socket.accept()
 
+            # Picking a new player id for new connection
             player_id = -1
             for i in range(4):
                 if i not in self.players:
                     player_id = i
                     break
             self.connections[player_id] = conn
-
             player = Pacman(player_id)
             self.players[player_id] = player
 
+            # send a message to current connection player to let it know its id
             message = concatBuffer(Message_Type.PLAYER_ID.value, [str(player_id)])
             self.sendAndFlush(conn, message)
 
+            # send a message to the current player to update its initial board
             args = [
                 self.board_data.shape[0],
                 self.board_data.shape[1],
@@ -53,34 +55,37 @@ class Game_Server:
             message = concatBuffer(Message_Type.INITIAL_BOARD.value, args)
             self.sendAndFlush(conn, message)
 
+            # send a message to current connection player to let it know about all the join players (except the current connection player)
             for key in self.players:
                 if player_id == key:
                     continue
-                player_joined_args = [str(key)]
-                player_joined_message = concatBuffer(
-                    Message_Type.PLAYER_JOIN.value, player_joined_args
-                )
-                self.sendAndFlush(conn, player_joined_message)
+                args = [str(key)]
+                message = concatBuffer(Message_Type.PLAYER_JOIN.value, args)
+                self.sendAndFlush(conn, message)
 
-            player_joined_args = [str(player.id)]
-            player_joined_message = concatBuffer(
-                Message_Type.PLAYER_JOIN.value, player_joined_args
-            )
+            # send a message to all the joined players, let them know about new player joins (including the current connection player)
+            args = [str(player.id)]
+            message = concatBuffer(Message_Type.PLAYER_JOIN.value, args)
             for key in self.connections:
-                self.sendAndFlush(self.connections[key], player_joined_message)
+                self.sendAndFlush(self.connections[key], message)
 
-            self.players[player_id].position = self.potential_player_positions.pop(0)
-            player_position_message = [
-                player_id,
-                *self.players[player_id].position,
-            ]
-            args = [str(arg) for arg in player_position_message]
-
+            # block the current position meaning the current player is holding it
             self.mutex_server_canvas_cells[self.players[player_id].position[0]][
                 self.players[player_id].position[1]
             ].acquire()
+
+            # send a message to all the joined players acknowledging the current connection player's position
+            self.players[player_id].position = self.potential_player_positions.pop(0)
+            args = [
+                player_id,
+                *self.players[player_id].position,
+            ]
+            args = [str(arg) for arg in args]
             message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-            self.sendAndFlush(conn, message)
+            for key in self.connections:
+                self.sendAndFlush(self.connections[key], message)
+
+            # start a new thread to keep listening to the current connection player
             thread = threading.Thread(target=self.__listen, args=(player_id,))
             self.receiver_threads.append(thread)
             thread.start()
