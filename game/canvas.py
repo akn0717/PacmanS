@@ -23,7 +23,7 @@ class Canvas:
         #     for j in range(self.size):
         #         print(str(self.data[i, j]) + " ", end="")
         #     print()
-        
+
         assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
         assert isinstance(global_variables.IMAGE_ASSET_EMPTY_BLOCK, pygame.Surface)
         assert isinstance(global_variables.IMAGE_ASSET_WALL_BLOCK, pygame.Surface)
@@ -60,7 +60,6 @@ class Canvas:
                         global_variables.IMAGE_ASSET_BIG_DOT,
                         position,
                     )
-                    
 
     def score_display(self, players):
         max_score = max([players[i].score for i in players])
@@ -85,7 +84,7 @@ class Canvas:
             icon_x = icon_margin
             icon_y = text_y + global_variables.CANVAS_UNIT[1] * 2
             global_variables.SCREEN_WINDOW.blit(
-                global_variables.ICON_PACMAN_RED, (icon_x, icon_y)
+                global_variables.SCORE_PLAYER_ASSETS[0], (icon_x, icon_y)
             )
 
             # Display clown for the pacman icon with highest score
@@ -118,7 +117,7 @@ class Canvas:
             )
             icon_y = text_y + global_variables.CANVAS_UNIT[1] * 2
             global_variables.SCREEN_WINDOW.blit(
-                global_variables.ICON_PACMAN_GREEN, (icon_x, icon_y)
+                global_variables.SCORE_PLAYER_ASSETS[1], (icon_x, icon_y)
             )
 
             # Display clown for the pacman icon with highest score
@@ -147,7 +146,7 @@ class Canvas:
             icon_x = icon_margin
             icon_y = text_y - icon_margin
             global_variables.SCREEN_WINDOW.blit(
-                global_variables.ICON_PACMAN_BLUE, (icon_x, icon_y)
+                global_variables.SCORE_PLAYER_ASSETS[2], (icon_x, icon_y)
             )
 
             # Display clown for the pacman icon with highest score
@@ -180,7 +179,7 @@ class Canvas:
             )
             icon_y = text_y - icon_margin
             global_variables.SCREEN_WINDOW.blit(
-                global_variables.ICON_PACMAN_YELLOW, (icon_x, icon_y)
+                global_variables.SCORE_PLAYER_ASSETS[3], (icon_x, icon_y)
             )
 
             # Display clown for the pacman icon with highest score

@@ -23,31 +23,34 @@ class Game_Client:
 
     def sendAndFlush(self, message):
         self.socket.sendall(message)
-        flush(self.socket)
 
     def __listen(self):
-        bufferQueue = []
+        messageQueue = []
+        bufferRemainder = ""
         while True:
-            try: 
+            try:
                 recv_data = self.socket.recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
                 )
                 if recv_data:
-                    data = splitBuffer(recv_data)
-                    for i in range(len(data)):
-                        bufferQueue.append(data[i])
+                    messages, remainder = splitBuffer(
+                        bufferRemainder + recv_data.decode()
+                    )
+                    bufferRemainder = remainder
+                    for i in range(len(messages)):
+                        messageQueue.append(messages[i])
+                    print(messageQueue)
             except:
                 return
 
-            if (
-                len(bufferQueue) > 0
-                and len(bufferQueue) >= Message_Type.NUM_ARGS.value[int(bufferQueue[0])]
-            ):
-                token = int(bufferQueue.pop(0))
-                data = [
-                    int(bufferQueue.pop(0))
-                    for _ in range(Message_Type.NUM_ARGS.value[token] - 1)
-                ]
+            while len(messageQueue) > 0:
+                message = messageQueue.pop(0)
+                print(messageQueue)
+                data = [int(arg) for arg in parseMessage(message)]
+                token = data[0]
+                data = data[1:]
+
+                print(token, data)
                 if token == Message_Type.INITIAL_BOARD.value:
                     with global_variables.MUTEX_CANVAS:
                         global_variables.CANVAS.board_data = np.reshape(
@@ -92,7 +95,7 @@ class Game_Client:
 
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
-
+                    print("in player join", player_id)
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[player_id] = Pacman(player_id)
 
@@ -102,7 +105,7 @@ class Game_Client:
 
                 elif token == Message_Type.PLAYER_ID.value:
                     with global_variables.MUTEX_PLAYER_ID:
-                        global_variables.PLAYER_ID = data[0]
+                        global_variables.PLAYER_ID = int(data[0])
                 elif token == Message_Type.PLAYER_DISCONNECT.value:
                     player_id = int(data[0])
                     with global_variables.MUTEX_PLAYERS_DICT:

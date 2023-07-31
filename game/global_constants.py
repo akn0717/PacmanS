@@ -19,21 +19,22 @@ NUM_DEFAULT_COMMUNICATION_BYTES = 1024
 
 class Direction(Enum):
     RIGHT = 0
-    LEFT = 1
-    UP = 3
-    DOWN = 2
+    UP = 1
+    LEFT = 2
+    DOWN = 3
 
 
 class Move_Operation(Enum):
     OPERATOR_RIGHT = (0, 1)
+    OPERATOR_UP = (-1, 0)
     OPERATOR_LEFT = (0, -1)
     OPERATOR_DOWN = (1, 0)
-    OPERATOR_UP = (-1, 0)
+
     OPERATORS = [
         OPERATOR_RIGHT,
+        OPERATOR_UP,
         OPERATOR_LEFT,
         OPERATOR_DOWN,
-        OPERATOR_UP,
     ]
 
 
