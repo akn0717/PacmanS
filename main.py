@@ -5,7 +5,7 @@ import game.global_constants as global_constants
 from game.gameplay_menu import *
 from game.main_menu import Main_Menu
 import sys
-
+import threading
 
 def init():
     pygame.init()

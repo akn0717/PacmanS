@@ -1,3 +1,4 @@
+from game.client_loading_menu import Client_Loading_Menu
 import game.global_variables as global_variables
 from game.menu import Menu
 import pygame_menu
@@ -29,27 +30,30 @@ class Client_Menu(Menu):
             "Enter HOST PORT: ", default="", onchange=self.on_port_no_change
         )
         self.menu.add.vertical_margin(30)
-        self.menu.add.button("Connect", self.navigate_to_gameplay_menu)
+        self.menu.add.button("Connect", self.connect_to_server)
         self.menu.add.vertical_margin(30)
         self.menu.add.button("Back", self.back_to_main_menu)
 
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
-    def navigate_to_gameplay_menu(self):
+    def connect_to_server(self):
         self.error_widget.set_title("Connecting...")
-        game_client = Game_Client()
-        success = game_client.connect(self.inputted_host_ip, self.inputted_host_port)
+        self.game_client = Game_Client()
+        success = self.game_client.connect(self.inputted_host_ip, self.inputted_host_port)
         if success != -1:
             print("Connected!")
+            self.error_widget.set_title("Connected!")
+            
+            # Add the waiting label to the menu
+            self.menu.disable()
+            self.client_load_menu = Client_Loading_Menu(self.game_client)
+            self.client_load_menu.main()
+   
         else:
             print("Failed to connect!")
             self.error_widget.set_title("Failed to connect to server!")
             return
-
-        self.menu.disable()
-        self.loading_menu = Loading_Menu(game_client=game_client)
-        self.loading_menu.main()
 
     def back_to_main_menu(self):
         self.error_widget.set_title("")
