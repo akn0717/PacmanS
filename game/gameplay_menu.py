@@ -54,9 +54,7 @@ class Gameplay_Menu(Menu):
             # player will move every tick
 
             if updateIteration % 20 == 0:
-                global_variables.PLAYERS[
-                    global_variables.PLAYER_ID
-                ].movingRequest = False
+                global_variables.MOVING_REQUEST = False
 
             with global_variables.MUTEX_MOVING_REQUEST:
                 if global_variables.MOVING_REQUEST == False:
