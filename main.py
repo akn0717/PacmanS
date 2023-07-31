@@ -40,12 +40,13 @@ def init():
     )
     global_variables.IMAGE_ASSET_PLAYERS = [
         pygame.transform.scale(
-            pygame.image.load("assets/PacmanYellowSingle.png").convert_alpha(),
+            pygame.image.load("assets/PacmanYellowLeft.svg").convert_alpha(),
             global_variables.CANVAS_UNIT,
         )
         for i in range(global_constants.NUM_PLAYERS)
     ]  # TODO: change color of player depending on the player ID
-
+    for image in global_variables.IMAGE_ASSET_PLAYERS:
+        image = pygame.transform.rotate(image, 90)
     global_variables.SCORE_FONT = pygame.font.Font(
         pygame.font.get_default_font(), global_variables.CANVAS_UNIT[0]
     )
@@ -57,22 +58,22 @@ def init():
     global_variables.ICON_PACMAN_SIZE = global_variables.CANVAS_UNIT[0] * 2
 
     global_variables.ICON_PACMAN_RED = pygame.transform.scale(
-        pygame.image.load("assets/PacmanRed.svg"),
+        pygame.image.load("assets/PacmanRedLeft.svg"),
         (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.ICON_PACMAN_GREEN = pygame.transform.scale(
-        pygame.image.load("assets/PacmanGreen.svg"),
+        pygame.image.load("assets/PacmanGreenLeft.svg"),
         (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.ICON_PACMAN_BLUE = pygame.transform.scale(
-        pygame.image.load("assets/PacmanBlue.svg"),
+        pygame.image.load("assets/PacmanBlueLeft.svg"),
         (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
     global_variables.ICON_PACMAN_YELLOW = pygame.transform.scale(
-        pygame.image.load("assets/PacmanYellow.svg"),
+        pygame.image.load("assets/PacmanYellowLeft.svg"),
         (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
     )
 
