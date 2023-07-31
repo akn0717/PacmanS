@@ -110,8 +110,6 @@ class Game_Server:
                 for key in self.connections:
                     self.sendAndFlush(self.connections[key], message)
                 print("Player", player_id + 1, "disconnected!")
-                if(self.getNumberConnections()==0):
-                    self.closeSocket()
                 return
 
             if (
