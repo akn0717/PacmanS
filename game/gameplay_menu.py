@@ -18,8 +18,9 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 30
+        FPS = 60
         updateIteration = 0
+        lastUpdateIteration = 0
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -32,30 +33,18 @@ class Gameplay_Menu(Menu):
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.UP.value)
-                        global_variables.PLAYERS[
-                            global_variables.PLAYER_ID
-                        ].movingRequest = False
                     elif event.key == pygame.K_DOWN:
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.DOWN.value)
-                        global_variables.PLAYERS[
-                            global_variables.PLAYER_ID
-                        ].movingRequest = False
                     elif event.key == pygame.K_LEFT:
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.LEFT.value)
-                        global_variables.PLAYERS[
-                            global_variables.PLAYER_ID
-                        ].movingRequest = False
                     elif event.key == pygame.K_RIGHT:
                         global_variables.PLAYERS[
                             global_variables.PLAYER_ID
                         ].setDirection(Direction.RIGHT.value)
-                        global_variables.PLAYERS[
-                            global_variables.PLAYER_ID
-                        ].movingRequest = False
 
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
@@ -64,6 +53,12 @@ class Gameplay_Menu(Menu):
             # Update
             global_variables.CANVAS.update()
             # player will move every tick
+
+            RTO = updateIteration - lastUpdateIteration
+            if RTO >= 10:
+                global_variables.PLAYERS[
+                    global_variables.PLAYER_ID
+                ].movingRequest = False
 
             if updateIteration % 10 == 0:
                 with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
@@ -76,6 +71,7 @@ class Gameplay_Menu(Menu):
                         global_variables.PLAYERS[global_variables.PLAYER_ID].move(
                             self.game_client
                         )
+                        lastUpdateIteration = updateIteration
             updateIteration += 1
             # Draw
             global_variables.CANVAS.draw()
