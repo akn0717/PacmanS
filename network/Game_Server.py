@@ -135,32 +135,6 @@ class Game_Server:
                             self.players[player_id].position[1],
                         )
 
-                        # UPDATE BLOCK FOR UPDATE a block from dot to empty for scoring
-                        # self.board_data[
-                        #     old_position[0], old_position[1]
-                        # ] = Block_Type.EMPTY.value
-                        # message = concatBuffer(
-                        #     Message_Type.UPDATE_BLOCK.value,
-                        #     [
-                        #         str(position_x),
-                        #         str(position_y),
-                        #         str(Block_Type.EMPTY.value),
-                        #     ],
-                        # )
-                        # for conn in self.connections:
-                        #     conn.sendall(message)
-
-                        # bad practice, needs to change later
-
-                        # if self.mutex_server_canvas_cells[old_position[0]][
-                        #     old_position[1]
-                        # ].locked():
-                        #     self.mutex_server_canvas_cells[old_position[0]][
-                        #         old_position[1]
-                        #     ].release()
-
-                        
-
                         if self.mutex_server_canvas_cells[old_position[0]][
                             old_position[1]
                         ].locked():
@@ -253,19 +227,16 @@ class Game_Server:
         
 
     def remove_spawn_dots(self):
-        for i in range(global_variables.NUMBER_CONNECTIONS):
-            player_y = self.potential_player_positions[i][0]
-            player_x = self.potential_player_positions[i][1]
-            self.board_data[player_y][player_x] = 0
+        for i in self.players:
+            player_x = self.potential_player_positions[i][0]
+            player_y = self.potential_player_positions[i][1]
+            self.board_data[player_x][player_y] = 0
 
     def initializeGameData(self):
         print("initializing game data...")
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
         self.__dd = np.zeros_like(self.board_data)
 
-        self.potential_player_positions = self.populatePlayerPosition(
-            global_constants.NUM_PLAYERS
-        )
 
         self.initialize_dots()
 
