@@ -275,6 +275,19 @@ class Game_Server:
         for key in self.connections:
             print("GAME STARTED")
             self.sendAndFlush(self.connections[key], game_started_message)
+        game_over_thread = threading.Thread(target=self._check_if_game_over)
+        game_over_thread.start()
+
+    def _check_if_game_over(self):
+        while True:
+            number_of_remaining_dots = np.count_nonzero(global_variables.CANVAS.board_data == 2)
+            if(number_of_remaining_dots==0):
+                message = concatBuffer(Message_Type.GAME_OVER.value)
+                for key in self.connections:
+                    self.sendAndFlush(self.connections[key], message)
+                print("GAME_OVER")
+                break
+            threading.Event().wait(10)
 
     def closeSocket(self):
         self.socket.close()

@@ -82,6 +82,8 @@ def init():
         for _ in range(global_constants.CANVAS_SIZE[0])
     ]
     global_variables.GAME_STARTED_LOCK = Lock()
+    global_variables.GAME_OVER_LOCK = Lock()
+
     global_variables.MUTEX_PLAYER_ID = Lock()
     global_variables.MUTEX_PLAYERS = [
         Lock() for _ in range(global_constants.NUM_PLAYERS)
@@ -90,6 +92,7 @@ def init():
     global_variables.MUTEX_MOVING_REQUEST = Lock()
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED = False
+    global_variables.GAME_OVER = False
     global_variables.MOVING_REQUEST = False
     global_variables.PLAYERS = {}
 
