@@ -227,7 +227,10 @@ class Game_Server:
         return potential_positions
 
     def initialize_dots(self):
-        self.board_data[self.board_data == 0] = 2
+        weight = [0.8, 0.2]     # [2, 3]
+        zero_list = self.board_data[self.board_data == 0]
+        self.board_data[self.board_data == 0] = np.random.choice([2, 3], size=len(zero_list), p=weight)
+        # self.board_data[self.board_data == 0] = dot_type
 
     def remove_spawn_dots(self):
         for i in self.players:

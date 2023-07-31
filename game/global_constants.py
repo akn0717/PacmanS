@@ -41,6 +41,7 @@ class Block_Type(Enum):
     EMPTY = 0
     WALL = 1
     DOT = 2
+    BIG_DOT = 3
 
 
 class Message_Type(Enum):
