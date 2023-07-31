@@ -156,7 +156,17 @@ class Game_Server:
                             if self.board_data[new_position[0]][new_position[1]] == 2:
                                 self.board_data[new_position[0]][new_position[1]] = 0
                                 self.players[player_id].score += 1
-                            # print("score value:", self.players[player_id].score)
+
+                                # encapsulate the score to send
+                                args = [
+                                    str(player_id),
+                                    str(self.players[player_id].score),
+                                ]
+                                message = concatBuffer(
+                                    Message_Type.PLAYER_SCORE.value, args
+                                )
+                                for key in self.connections:
+                                    self.sendAndFlush(self.connections[key], message)
 
                             # encapsulate the positon to send
                             args = [
@@ -168,14 +178,6 @@ class Game_Server:
                                 Message_Type.PLAYER_POSITION.value, args
                             )
                             # send position of player move
-                            for key in self.connections:
-                                self.sendAndFlush(self.connections[key], message)
-
-                            # encapsulate the score to send
-                            args = [str(player_id), str(self.players[player_id].score)]
-                            message = concatBuffer(
-                                Message_Type.PLAYER_SCORE.value, args
-                            )
                             for key in self.connections:
                                 self.sendAndFlush(self.connections[key], message)
 
