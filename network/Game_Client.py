@@ -50,7 +50,7 @@ class Game_Client:
                         global_variables.CANVAS.board_data = np.reshape(
                             np.asarray(data[2:]), (data[0], data[1])
                         )
-                    
+
                 elif token == Message_Type.PLAYER_POSITION.value:
                     player_id = int(data[0])
                     player_position = (int(data[1]), int(data[2]))
@@ -58,12 +58,18 @@ class Game_Client:
                         global_variables.PLAYERS[player_id].position = player_position
                         global_variables.PLAYERS[player_id].movingRequest = False
 
-                    # update board_data 
-                    if global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] == 2:
-                        global_variables.CANVAS.board_data[global_variables.PLAYERS[player_id].position[0]][global_variables.PLAYERS[player_id].position[1]] = 0
-                        
-                        # print(global_variables.CANVAS.board_data)
+                    # update board_data
+                    if (
+                        global_variables.CANVAS.board_data[
+                            global_variables.PLAYERS[player_id].position[0]
+                        ][global_variables.PLAYERS[player_id].position[1]]
+                        == 2
+                    ):
+                        global_variables.CANVAS.board_data[
+                            global_variables.PLAYERS[player_id].position[0]
+                        ][global_variables.PLAYERS[player_id].position[1]] = 0
 
+                        # print(global_variables.CANVAS.board_data)
 
                 elif token == Message_Type.PLAYER_SCORE.value:
                     player_id = int(data[0])
@@ -75,9 +81,6 @@ class Game_Client:
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
 
-                    name = str(data[1])
-                    with global_variables.MUTEX_PLAYERS_LIST:
-                        global_variables.PLAYERS[player_id] = Pacman(player_id, name)
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS[player_id] = Pacman(player_id)
 

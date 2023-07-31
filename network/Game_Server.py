@@ -158,11 +158,11 @@ class Game_Server:
                         message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
 
                         print("Server move player to", self.players[player_id].position)
-                        
+
                         # send position of player move
                         for i in range(len(self.connections)):
                             self.sendAndFlush(self.connections[i], message)
-                            
+
                         # encapsulate the score to send
                         args = [str(player_id), str(self.players[player_id].score)]
                         message = concatBuffer(Message_Type.PLAYER_SCORE.value, args)
@@ -170,7 +170,6 @@ class Game_Server:
                         # send position of player move
                         for i in range(len(self.connections)):
                             self.sendAndFlush(self.connections[i], message)
-
 
                         for key in self.connections:
                             self.sendAndFlush(self.connections[key], message)
@@ -214,33 +213,32 @@ class Game_Server:
     def getPotentialSpawnPositions(self):
         (n, m) = self.board_data.shape
         potential_positions = []
+        print(self.board_data)
         for i in range(n):
             for j in range(m):
-                if self.board_data[i, j] == 0:
+                if self.board_data[i, j] == Block_Type.DOT.value:
                     potential_positions.append((i, j))
         random.shuffle(potential_positions)
         return potential_positions
 
-
     def initialize_dots(self):
         self.board_data[self.board_data == 0] = 2
-        
 
     def remove_spawn_dots(self):
         for i in self.players:
-            player_x = self.potential_player_positions[i][0]
-            player_y = self.potential_player_positions[i][1]
+            player_x = self.players[i].position[0]
+            player_y = self.players[i].position[1]
             self.board_data[player_x][player_y] = 0
 
     def initializeGameData(self):
         print("initializing game data...")
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
         self.__dd = np.zeros_like(self.board_data)
-
-
+        self.populateCanvas()
         self.initialize_dots()
 
         self.potential_player_positions = self.getPotentialSpawnPositions()
+        print(self.potential_player_positions)
 
         self.mutex_server_canvas_cells = [
             [Lock() for _ in range(self.board_data.shape[1])]
