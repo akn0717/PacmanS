@@ -145,8 +145,8 @@ class Game_Server:
                         self.mutex_server_canvas_cells[new_position[0]][
                             new_position[1]
                         ].acquire()
-                        self.obstacle_data[old_position[0], old_position[1]] = 0
                         if self.obstacle_data[new_position[0]][new_position[1]] == 0:
+                            self.obstacle_data[old_position[0], old_position[1]] = 0
                             self.obstacle_data[new_position[0]][new_position[1]] = 1
                             self.players[player_id].position = (
                                 new_position[0],
