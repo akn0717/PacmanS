@@ -12,8 +12,8 @@ class Main_Menu(Menu):
         super().__init__()
         self.menu = pygame_menu.Menu(
             "Main Menu",
-            global_variables.SCREEN_WIDTH,
-            global_variables.SCREEN_HEIGHT,
+            global_variables.BOARD_WIDTH,
+            global_variables.BOARD_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
