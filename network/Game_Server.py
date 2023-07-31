@@ -25,7 +25,6 @@ class Game_Server:
 
     def sendAndFlush(self, conn, message):
         conn.sendall(message)
-        flush(conn)
 
     def __listenIncommingConnection(self):
         while True:
@@ -71,6 +70,7 @@ class Game_Server:
             # send a message to all the joined players, let them know about new player joins (including the current connection player)
             args = [str(player.id)]
             message = concatBuffer(Message_Type.PLAYER_JOIN.value, args)
+
             for key in self.connections:
                 self.sendAndFlush(self.connections[key], message)
 
@@ -103,16 +103,20 @@ class Game_Server:
             thread.start()
 
     def __listen(self, player_id):
-        bufferQueue = []
+        messageQueue = []
+        bufferRemainder = ""
         while True:
             try:
                 recv_data = self.connections[player_id].recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
                 )
                 if recv_data:
-                    data = splitBuffer(recv_data)
-                    for i in range(len(data)):
-                        bufferQueue.append(data[i])
+                    messages, remainder = splitBuffer(
+                        bufferRemainder + recv_data.decode()
+                    )
+                    bufferRemainder = remainder
+                    for i in range(len(messages)):
+                        messageQueue.append(messages[i])
             except:
                 message = concatBuffer(
                     Message_Type.PLAYER_DISCONNECT.value, [str(player_id)]
@@ -124,15 +128,10 @@ class Game_Server:
                 print("Player", player_id + 1, "disconnected!")
                 return
 
-            while (
-                len(bufferQueue) > 0
-                and len(bufferQueue) >= Message_Type.NUM_ARGS.value[int(bufferQueue[0])]
-            ):
-                token = int(bufferQueue.pop(0))
-                data = [
-                    int(bufferQueue.pop(0))
-                    for _ in range(Message_Type.NUM_ARGS.value[token] - 1)
-                ]
+            while len(messageQueue) > 0:
+                data = [int(arg) for arg in parseMessage(messageQueue.pop(0))]
+                token = data[0]
+                data = data[1:]
                 if token == Message_Type.REQUEST_PLAYER_MOVE.value:
                     player_id = int(data[0])
                     new_position = (int(data[1]), int(data[2]))
