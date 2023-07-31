@@ -53,15 +53,16 @@ class Gameplay_Menu(Menu):
             global_variables.CANVAS.update()
             # player will move every tick
 
-            if updateIteration % 20 == 0:
+            if updateIteration % 30 == 0:
                 global_variables.MOVING_REQUEST = False
 
-            with global_variables.MUTEX_MOVING_REQUEST:
-                if global_variables.MOVING_REQUEST == False:
-                    with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
-                        global_variables.PLAYERS[global_variables.PLAYER_ID].move(
-                            self.game_client
-                        )
+            if updateIteration % 10 == 0:
+                with global_variables.MUTEX_MOVING_REQUEST:
+                    if global_variables.MOVING_REQUEST == False:
+                        with global_variables.MUTEX_PLAYERS[global_variables.PLAYER_ID]:
+                            global_variables.PLAYERS[global_variables.PLAYER_ID].move(
+                                self.game_client
+                            )
 
             updateIteration += 1
             # Draw
