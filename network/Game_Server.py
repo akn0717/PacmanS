@@ -124,7 +124,7 @@ class Game_Server:
                 print("Player", player_id + 1, "disconnected!")
                 return
 
-            if (
+            while (
                 len(bufferQueue) > 0
                 and len(bufferQueue) >= Message_Type.NUM_ARGS.value[int(bufferQueue[0])]
             ):

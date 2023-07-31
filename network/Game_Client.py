@@ -28,7 +28,7 @@ class Game_Client:
     def __listen(self):
         bufferQueue = []
         while True:
-            try: 
+            try:
                 recv_data = self.socket.recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
                 )
@@ -39,7 +39,7 @@ class Game_Client:
             except:
                 return
 
-            if (
+            while (
                 len(bufferQueue) > 0
                 and len(bufferQueue) >= Message_Type.NUM_ARGS.value[int(bufferQueue[0])]
             ):
