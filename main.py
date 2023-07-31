@@ -38,26 +38,7 @@ def init():
     global_variables.IMAGE_ASSET_DOT = pygame.transform.scale(
         pygame.image.load("assets/SmallDot.png"), global_variables.CANVAS_UNIT
     )
-    global_variables.IMAGE_ASSET_PLAYERS = [
-        pygame.transform.scale(
-            pygame.image.load("assets/PacmanYellow.svg").convert_alpha(),
-            global_variables.CANVAS_UNIT,
-        ),
-        pygame.transform.scale(
-            pygame.image.load("assets/PacmanRed.svg").convert_alpha(),
-            global_variables.CANVAS_UNIT,
-        ),
-        pygame.transform.scale(
-            pygame.image.load("assets/PacmanBlue.svg").convert_alpha(),
-            global_variables.CANVAS_UNIT,
-        ),
-        pygame.transform.scale(
-            pygame.image.load("assets/PacmanGreen.svg").convert_alpha(),
-            global_variables.CANVAS_UNIT,
-        ),
-    ]
-    for image in global_variables.IMAGE_ASSET_PLAYERS:
-        image = pygame.transform.rotate(image, 90)
+
     global_variables.SCORE_FONT = pygame.font.Font(
         pygame.font.get_default_font(), global_variables.CANVAS_UNIT[0]
     )
@@ -68,25 +49,31 @@ def init():
 
     global_variables.ICON_PACMAN_SIZE = global_variables.CANVAS_UNIT[0] * 2
 
-    global_variables.ICON_PACMAN_RED = pygame.transform.scale(
-        pygame.image.load("assets/PacmanRed.svg"),
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
-    )
+    global_variables.SCORE_PLAYER_ASSETS = [
+        pygame.transform.scale(
+            pygame.image.load("assets/PacmanYellow.svg"),
+            (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
+        ),
+        pygame.transform.scale(
+            pygame.image.load("assets/PacmanRed.svg"),
+            (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
+        ),
+        pygame.transform.scale(
+            pygame.image.load("assets/PacmanGreen.svg"),
+            (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
+        ),
+        pygame.transform.scale(
+            pygame.image.load("assets/PacmanBlue.svg"),
+            (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
+        ),
+    ]
 
-    global_variables.ICON_PACMAN_GREEN = pygame.transform.scale(
-        pygame.image.load("assets/PacmanGreen.svg"),
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
-    )
-
-    global_variables.ICON_PACMAN_BLUE = pygame.transform.scale(
-        pygame.image.load("assets/PacmanBlue.svg"),
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
-    )
-
-    global_variables.ICON_PACMAN_YELLOW = pygame.transform.scale(
-        pygame.image.load("assets/PacmanYellow.svg"),
-        (global_variables.ICON_PACMAN_SIZE, global_variables.ICON_PACMAN_SIZE),
-    )
+    global_variables.IMAGE_ASSET_PLAYERS = [
+        pygame.transform.scale(
+            image, (global_variables.CANVAS_UNIT[0], global_variables.CANVAS_UNIT[1])
+        )
+        for image in global_variables.SCORE_PLAYER_ASSETS
+    ]
 
     global_variables.CANVAS = Canvas()
     global_variables.MUTEX_CANVAS = Lock()
