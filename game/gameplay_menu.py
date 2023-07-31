@@ -18,7 +18,7 @@ class Gameplay_Menu(Menu):
     def main(self):
         isRunning = True
         clock = pygame.time.Clock()
-        FPS = 60
+        FPS = 30
         updateIteration = 0
         while isRunning:
             for event in pygame.event.get():
