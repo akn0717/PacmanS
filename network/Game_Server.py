@@ -156,6 +156,10 @@ class Game_Server:
                         if self.board_data[position_x][position_y] == 2:
                             self.board_data[position_x][position_y] = 0
                             self.players[player_id].score += 1
+                        
+                        elif self.board_data[position_x][position_y] == 3:
+                            self.board_data[position_x][position_y] = 0
+                            self.players[player_id].score += 2
                         # print("score value:", self.players[player_id].score)
 
                         # encapsulate the positon to send

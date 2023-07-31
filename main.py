@@ -39,8 +39,8 @@ def init():
         pygame.image.load("assets/SmallDot.png"), global_variables.CANVAS_UNIT
     )
     global_variables.IMAGE_ASSET_BIG_DOT = pygame.transform.scale(
-        pygame.image.load("assets/BigDot.png"), 
-        (global_variables.CANVAS_UNIT[0] * 2, global_variables.CANVAS_UNIT[1] * 2)
+        pygame.image.load("assets/BigDot.png").convert_alpha(), 
+        (global_variables.CANVAS_UNIT[0], global_variables.CANVAS_UNIT[1])
     )
     global_variables.IMAGE_ASSET_PLAYERS = [
         pygame.transform.scale(
