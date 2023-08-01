@@ -23,7 +23,11 @@ class Game_Client:
         self.listening_thread.start()
 
     def sendAndFlush(self, message):
-        self.socket.sendall(message)
+        try:
+            self.socket.sendall(message)
+        except:
+            with global_variables.GAME_OVER_LOCK:
+                global_variables.GAME_OVER = True
 
     def __listen(self):
         messageQueue = []
