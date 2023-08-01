@@ -125,6 +125,7 @@ class Game_Server:
                 self.players.pop(player_id)
                 for key in self.connections:
                     self.sendAndFlush(self.connections[key], message)
+            
                 print("Player", player_id + 1, "disconnected!")
                 return
 
