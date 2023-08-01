@@ -60,7 +60,6 @@ class Loading_Menu(Menu):
     def start_game(self):
         self.game_server.startGame()
         self.game_server.remove_spawn_dots()
-        self.navigate_to_gameplay_menu()
         clock = pygame.time.Clock()
         FPS = 15
         while True:
@@ -70,20 +69,6 @@ class Loading_Menu(Menu):
                     break
             pygame.display.update()
             clock.tick(FPS)
-
-    def main(self):
-        if self.game_server is not None:
-            self.menu.mainloop(fps_limit=15)
-        else:
-            clock = pygame.time.Clock()
-            FPS = 15
-            while True:
-                with global_variables.GAME_STARTED_LOCK:
-                    if global_variables.GAME_STARTED:
-                        self.navigate_to_gameplay_menu()
-                        break
-                pygame.display.update()
-                clock.tick(FPS)
 
     def navigate_to_gameplay_menu(self):
         self.menu.disable()
