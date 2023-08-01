@@ -44,7 +44,7 @@ class Game_Client:
                     bufferRemainder = remainder
                     for i in range(len(messages)):
                         messageQueue.append(messages[i])
-            except:
+            except: 
                 return
 
             while len(messageQueue) > 0:

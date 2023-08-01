@@ -33,6 +33,7 @@ class Gameplay_Menu(Menu):
                     isRunning = False
                     with global_variables.QUIT_GAME_LOCK:
                         global_variables.QUIT_GAME = True
+                        self.game_client.close_socket()
                     # pygame.quit()
                     return
                 elif event.type == pygame.KEYDOWN:
