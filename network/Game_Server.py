@@ -308,6 +308,7 @@ class Game_Server:
         self.socket.close()
 
     def __del__(self):
+        self.closeSocket()
         if self.incommingThread is not None:
             self.incommingThread.join()
             self.incommingThread = None

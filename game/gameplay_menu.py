@@ -25,14 +25,12 @@ class Gameplay_Menu(Menu):
         while isRunning:
             with global_variables.GAME_OVER_LOCK:
                 if global_variables.GAME_OVER:
-                    self.game_client.close_socket()
                     score_menu = Score_Menu()
                     score_menu.main()
                     return
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
-                    self.game_client.close_socket()
                     with global_variables.QUIT_GAME_LOCK:
                         global_variables.QUIT_GAME = True
                     # pygame.quit()

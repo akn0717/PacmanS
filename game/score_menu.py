@@ -32,7 +32,7 @@ class Score_Menu:
         self.surface.fill((0, 0, 0))
         player_list = []
         score_list = []
-        for i in range(len(self.players)):
+        for i in self.players:
             score_list.append(self.players[i].score)
             player_list.append(i)
 
