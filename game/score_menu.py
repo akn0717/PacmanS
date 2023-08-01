@@ -8,8 +8,9 @@ class Score_Menu:
     def __init__(self):
         self.surface = pygame.display.set_mode((800, 600))  # Create a Pygame surface
         self.surface.fill(global_constants.PRIMARY_COLOR)
+        self.players = global_variables.PLAYERS
 
-    def display_player_info(self, player_name, score, image_path, y_offset):
+    def display_player_info(self, player_name, score, player_image, y_offset):
         font = pygame.font.Font(None, 32)
 
         player_image = pygame.image.load(image_path)
@@ -31,34 +32,37 @@ class Score_Menu:
     def display_scores(self):
         self.surface.fill((0, 0, 0))
         player_list = []
-        score_list = []    
-        players = global_variables.PLAYERS
-        for i in range(len(players)):
-            score_list.append(players[i].score)
+        score_list = []
+        for i in range(len(self.players)):
+            score_list.append(self.players[i].score)
             player_list.append(i)
-        
 
         player_score_dict = dict(zip(player_list, score_list))
-        sorted_player_score_dict = dict(sorted(player_score_dict.items(), key=lambda item: item[1], reverse=True))
-          
+        sorted_player_score_dict = dict(
+            sorted(player_score_dict.items(), key=lambda item: item[1], reverse=True)
+        )
 
         font = pygame.font.Font(None, 64)
         title_text = font.render("SCORES", True, (255, 255, 255))
-        self.surface.blit(title_text, ((self.surface.get_width() - title_text.get_width()) // 2, 20))
+        self.surface.blit(
+            title_text, ((self.surface.get_width() - title_text.get_width()) // 2, 20)
+        )
         y_offset = 100
 
         for player, score in sorted_player_score_dict.items():
             player_name = f"Player {player + 1}"
-            if(player==0):
-                image_path = f"assets/PacmanYellow.svg" 
-            elif (player==1):
-                image_path = f"assets/PacmanRed.svg" 
-            elif (player==2):
-                image_path = f"assets/PacmanGreen.svg" 
-            elif (player==3):
-                image_path = f"assets/PacmanBlue.svg" 
+            if player == 0:
+                image_path = f"assets/PacmanYellow.svg"
+            elif player == 1:
+                image_path = f"assets/PacmanRed.svg"
+            elif player == 2:
+                image_path = f"assets/PacmanGreen.svg"
+            elif player == 3:
+                image_path = f"assets/PacmanBlue.svg"
 
-            self.display_player_info(player_name, score, image_path, y_offset)
+            self.display_player_info(
+                player_name, score, self.players[player].image_assets[0], y_offset
+            )
             y_offset += 70
         pygame.display.flip()
 
@@ -75,4 +79,3 @@ class Score_Menu:
 
             self.display_scores()
         sys.exit()
-

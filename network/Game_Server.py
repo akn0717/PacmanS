@@ -305,6 +305,9 @@ class Game_Server:
     def closeSocket(self):
         self.socket.close()
 
+    def __del__(self):
+        print("it is destroyed")
+
 
 if __name__ == "__main__":
     server = Game_Server(5555)
