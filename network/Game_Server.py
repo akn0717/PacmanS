@@ -22,6 +22,7 @@ class Game_Server:
         self.board_data = None
         self.players = {}
         self.receiver_threads = []
+        self.incommingThread = None
         self.isGameStarted = False
 
     def sendAndFlush(self, conn, message):
@@ -306,7 +307,11 @@ class Game_Server:
         self.socket.close()
 
     def __del__(self):
-        print("it is destroyed")
+        if self.incommingThread is not None:
+            self.incommingThread.join()
+            self.incommingThread = None
+        for thread in self.receiver_threads:
+            thread.join()
 
 
 if __name__ == "__main__":

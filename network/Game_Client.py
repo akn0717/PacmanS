@@ -13,6 +13,7 @@ class Game_Client:
     def __init__(self):
         # socket.SOCK_STREAM is TCP
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.listening_thread = None
 
     def sendDataToServer(self, message):
         self.sendAndFlush(message)
@@ -143,6 +144,11 @@ class Game_Client:
     def close_socket(self):
         self.socket.close()
         # print("Closed socket!")
+
+    def __del__(self):
+
+        if self.listening_thread is not None:
+            self.listening_thread.join()
 
 
 if __name__ == "__main__":
