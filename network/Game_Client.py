@@ -103,8 +103,6 @@ class Game_Client:
                     player_score = int(data[1])
                     with global_variables.MUTEX_PLAYERS[player_id]:
                         global_variables.PLAYERS[player_id].score = player_score
-
-
                 elif token == Message_Type.PLAYER_JOIN.value:
                     player_id = int(data[0])
                     with global_variables.MUTEX_PLAYERS_DICT:
@@ -121,7 +119,11 @@ class Game_Client:
                     player_id = int(data[0])
                     with global_variables.MUTEX_PLAYERS_DICT:
                         global_variables.PLAYERS.pop(player_id)
-
+                elif token == Message_Type.GAME_OVER.value:
+                    print("GAME OVER RECIEVED")
+                    with global_variables.GAME_OVER_LOCK:
+                        global_variables.GAME_OVER = True
+               
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip
         self.host_port = host_port

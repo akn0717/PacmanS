@@ -7,6 +7,7 @@ import pygame
 import game.global_constants as global_constants
 import game.global_variables as global_variables
 from game.global_constants import Direction, Block_Type
+from game.score_menu import Score_Menu
 from network.Game_Client import Game_Client
 
 
@@ -14,6 +15,8 @@ class Gameplay_Menu(Menu):
     def __init__(self, game_client) -> None:
         super().__init__()
         self.game_client = game_client
+        self.score_list =[]
+
 
     def main(self):
         isRunning = True
@@ -21,6 +24,12 @@ class Gameplay_Menu(Menu):
         FPS = 30
         updateIteration = 0
         while isRunning:
+            with global_variables.GAME_OVER_LOCK:
+                if global_variables.GAME_OVER:
+                    score_menu= Score_Menu()
+                    score_menu.main()
+                    self.game_client.close_socket()
+                    return
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
