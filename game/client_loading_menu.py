@@ -38,11 +38,7 @@ class Client_Loading_Menu(Menu):
                     self.menu.disable()
                     self.gameplay_menu = Gameplay_Menu(self.game_client)
                     self.gameplay_menu.main()
-                    self.error_widget.set_title("Connected!!!...")
-                        # self.menu.disable()
-                        # self.gameplay_menu = Gameplay_Menu(self.game_client)
-                        # self.gameplay_menu.main()
-                        # return
+                    return
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
             global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
