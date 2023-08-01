@@ -75,9 +75,6 @@ class Loading_Menu(Menu):
         self.gameplay_menu = Gameplay_Menu(self.game_client)
         self.gameplay_menu.main()
 
-    def back_to_main_menu(self):
-        self.menu._back()
-
     def on_ip_address_change(self, value):
         global_variables.HOST_IP_ADDRESS = value
         pass

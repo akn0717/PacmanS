@@ -24,6 +24,7 @@ global ICON_PACMAN_SIZE
 
 global GAME_STARTED
 global GAME_OVER
+global QUIT_GAME
 
 
 # SHARED MEMORY
@@ -42,6 +43,4 @@ global MUTEX_CANVAS_CELLS
 global MUTEX_CANVAS
 global GAME_STARTED_LOCK
 global GAME_OVER_LOCK
-
-
-
+global QUIT_GAME_LOCK

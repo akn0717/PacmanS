@@ -123,7 +123,7 @@ class Game_Client:
                     print("GAME OVER RECIEVED")
                     with global_variables.GAME_OVER_LOCK:
                         global_variables.GAME_OVER = True
-               
+
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip
         self.host_port = host_port
