@@ -55,4 +55,4 @@ class Message_Type(Enum):
     PLAYER_ID = 7
     PLAYER_DISCONNECT = 8
     GAME_OVER = 9
-    NUM_ARGS = [3 + CANVAS_SIZE[0] * CANVAS_SIZE[1], 4, 3, 4, 2, 4, 1, 2, 2]
+    NUM_ARGS = [3 + CANVAS_SIZE[0] * CANVAS_SIZE[1], 4, 3, 4, 2, 4, 1, 2, 2, 1]

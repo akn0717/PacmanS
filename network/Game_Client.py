@@ -146,7 +146,6 @@ class Game_Client:
         # print("Closed socket!")
 
     def __del__(self):
-
         if self.listening_thread is not None:
             self.listening_thread.join()
 

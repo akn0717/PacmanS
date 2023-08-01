@@ -106,12 +106,13 @@ class Game_Server:
             self.receiver_threads.append(thread)
             thread.start()
 
-        print("Here?")
-
     def __listen(self, player_id):
         messageQueue = []
         bufferRemainder = ""
         while True:
+            with global_variables.QUIT_GAME_LOCK:
+                if global_variables.QUIT_GAME:
+                    return
             try:
                 recv_data = self.connections[player_id].recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
