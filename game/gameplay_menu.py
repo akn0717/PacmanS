@@ -25,6 +25,7 @@ class Gameplay_Menu(Menu):
         while isRunning:
             with global_variables.GAME_OVER_LOCK:
                 if global_variables.GAME_OVER:
+                    self.game_client.close_socket()
                     score_menu = Score_Menu()
                     score_menu.main()
                     return
