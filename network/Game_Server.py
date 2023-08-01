@@ -300,7 +300,7 @@ class Game_Server:
             with global_variables.QUIT_GAME_LOCK:
                 if global_variables.QUIT_GAME:
                     return
-            threading.Event().wait(10)
+            threading.Event().wait(5)
 
     def closeSocket(self):
         self.socket.close()

@@ -13,7 +13,6 @@ class Score_Menu:
     def display_player_info(self, player_name, score, player_image, y_offset):
         font = pygame.font.Font(None, 32)
 
-        player_image = pygame.image.load(image_path)
         icon_size = (40, 40)  # Set the desired icon size
         player_image = pygame.transform.scale(player_image, icon_size)
 
