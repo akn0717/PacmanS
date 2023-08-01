@@ -7,6 +7,7 @@ from game.main_menu import Main_Menu
 import sys
 import threading
 
+
 def init():
     pygame.init()
     global_variables.SCREEN_WINDOW = pygame.display.set_mode((1280, 720))
@@ -83,6 +84,8 @@ def init():
     ]
     global_variables.GAME_STARTED_LOCK = Lock()
     global_variables.GAME_OVER_LOCK = Lock()
+    global_variables.QUIT_GAME_LOCK = Lock()
+
 
     global_variables.MUTEX_PLAYER_ID = Lock()
     global_variables.MUTEX_PLAYERS = [
@@ -93,6 +96,7 @@ def init():
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED = False
     global_variables.GAME_OVER = False
+    global_variables.QUIT_GAME = False
     global_variables.MOVING_REQUEST = False
     global_variables.PLAYERS = {}
 
@@ -106,6 +110,8 @@ def run(args):
     # menu = Loading_Menu(True)
     menu = Main_Menu()
     menu.main()
+    print("Getting back to the main")
+    print(threading.enumerate())
     pygame.quit()
     sys.exit()
 

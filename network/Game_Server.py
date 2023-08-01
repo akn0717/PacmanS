@@ -22,16 +22,20 @@ class Game_Server:
         self.board_data = None
         self.players = {}
         self.receiver_threads = []
+        self.incommingThread = None
+        self.isGameStarted = False
 
     def sendAndFlush(self, conn, message):
         conn.sendall(message)
 
     def __listenIncommingConnection(self):
-        while True:
+        while not (self.isGameStarted):
             if self.getNumberConnections() >= 4:
                 continue
             try:
                 conn, _ = self.socket.accept()
+            except socket.timeout:
+                continue
             except:
                 return
 
@@ -106,6 +110,9 @@ class Game_Server:
         messageQueue = []
         bufferRemainder = ""
         while True:
+            with global_variables.QUIT_GAME_LOCK:
+                if global_variables.QUIT_GAME:
+                    return
             try:
                 recv_data = self.connections[player_id].recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
@@ -125,7 +132,7 @@ class Game_Server:
                 self.players.pop(player_id)
                 for key in self.connections:
                     self.sendAndFlush(self.connections[key], message)
-            
+
                 print("Player", player_id + 1, "disconnected!")
                 return
 
@@ -263,9 +270,10 @@ class Game_Server:
         print("-----------------")
         # for testing
         self.socket.bind(("", self.port))
+        self.socket.settimeout(5)
         self.socket.listen()
-        thread = threading.Thread(target=self.__listenIncommingConnection)
-        thread.start()
+        self.incommingThread = threading.Thread(target=self.__listenIncommingConnection)
+        self.incommingThread.start()
 
     def getNumberConnections(self):
         return len(self.connections)
@@ -278,21 +286,34 @@ class Game_Server:
             self.sendAndFlush(self.connections[key], game_started_message)
         game_over_thread = threading.Thread(target=self._check_if_game_over)
         game_over_thread.start()
+        self.isGameStarted = True
 
     def _check_if_game_over(self):
         while True:
-            number_of_remaining_dots = np.count_nonzero(global_variables.CANVAS.board_data == 2)
-            if(number_of_remaining_dots==0):
+            number_of_remaining_dots = np.count_nonzero(
+                global_variables.CANVAS.board_data == 2
+            )
+            if number_of_remaining_dots == 0:
                 message = concatBuffer(Message_Type.GAME_OVER.value)
                 for key in self.connections:
                     self.sendAndFlush(self.connections[key], message)
                 print("GAME_OVER")
-                break
-            threading.Event().wait(10)
+                return
+            with global_variables.QUIT_GAME_LOCK:
+                if global_variables.QUIT_GAME:
+                    return
+            threading.Event().wait(5)
 
     def closeSocket(self):
         self.socket.close()
-        # print("Closed socket.")
+
+    def __del__(self):
+        self.closeSocket()
+        if self.incommingThread is not None:
+            self.incommingThread.join()
+            self.incommingThread = None
+        for thread in self.receiver_threads:
+            thread.join()
 
 
 if __name__ == "__main__":

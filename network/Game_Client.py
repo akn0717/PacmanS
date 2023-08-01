@@ -13,6 +13,7 @@ class Game_Client:
     def __init__(self):
         # socket.SOCK_STREAM is TCP
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.listening_thread = None
 
     def sendDataToServer(self, message):
         self.sendAndFlush(message)
@@ -22,7 +23,11 @@ class Game_Client:
         self.listening_thread.start()
 
     def sendAndFlush(self, message):
-        self.socket.sendall(message)
+        try:
+            self.socket.sendall(message)
+        except:
+            with global_variables.GAME_OVER_LOCK:
+                global_variables.GAME_OVER = True
 
     def __listen(self):
         messageQueue = []
@@ -39,7 +44,7 @@ class Game_Client:
                     bufferRemainder = remainder
                     for i in range(len(messages)):
                         messageQueue.append(messages[i])
-            except:
+            except: 
                 return
 
             while len(messageQueue) > 0:
@@ -123,7 +128,7 @@ class Game_Client:
                     print("GAME OVER RECIEVED")
                     with global_variables.GAME_OVER_LOCK:
                         global_variables.GAME_OVER = True
-               
+
     def connect(self, host_ip, host_port):
         self.host_ip = host_ip
         self.host_port = host_port
@@ -143,6 +148,11 @@ class Game_Client:
     def close_socket(self):
         self.socket.close()
         # print("Closed socket!")
+
+    def __del__(self):
+        self.close_socket()
+        if self.listening_thread is not None:
+            self.listening_thread.join()
 
 
 if __name__ == "__main__":

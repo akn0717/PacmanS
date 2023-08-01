@@ -15,8 +15,7 @@ class Gameplay_Menu(Menu):
     def __init__(self, game_client) -> None:
         super().__init__()
         self.game_client = game_client
-        self.score_list =[]
-
+        self.score_list = []
 
     def main(self):
         isRunning = True
@@ -26,14 +25,15 @@ class Gameplay_Menu(Menu):
         while isRunning:
             with global_variables.GAME_OVER_LOCK:
                 if global_variables.GAME_OVER:
-                    score_menu= Score_Menu()
+                    score_menu = Score_Menu()
                     score_menu.main()
-                    self.game_client.close_socket()
                     return
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
-                    self.game_client.close_socket()
+                    with global_variables.QUIT_GAME_LOCK:
+                        global_variables.QUIT_GAME = True
+                        self.game_client.close_socket()
                     # pygame.quit()
                     return
                 elif event.type == pygame.KEYDOWN:
