@@ -41,16 +41,6 @@ class Score_Menu:
         pygame.display.flip()
 
     def display_scores(self):
-        if global_variables.DISCONNECTED_FROM_HOST:
-            self.surface.fill(global_constants.PRIMARY_COLOR)  
-            font = pygame.font.Font(None, 72)
-            disconnected_text = font.render("DISCONNECTED FROM HOST", True, (255, 0, 0))  # Red text
-            self.surface.blit(
-                disconnected_text, ((self.surface.get_width() - disconnected_text.get_width()) // 2,
-                (self.surface.get_height() - disconnected_text.get_height()) // 2)
-            )
-            pygame.display.flip()
-
         player_list = []
         score_list = []
         for i in self.players:
