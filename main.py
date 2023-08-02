@@ -85,6 +85,7 @@ def init():
     global_variables.GAME_STARTED_LOCK = Lock()
     global_variables.GAME_OVER_LOCK = Lock()
     global_variables.QUIT_GAME_LOCK = Lock()
+    global_variables.DISCONNECTED_FROM_HOST_LOCK=Lock()
 
 
     global_variables.MUTEX_PLAYER_ID = Lock()
@@ -98,6 +99,8 @@ def init():
     global_variables.GAME_OVER = False
     global_variables.QUIT_GAME = False
     global_variables.MOVING_REQUEST = False
+    global_variables.DISCONNECTED_FROM_HOST = False
+
     global_variables.PLAYERS = {}
 
     pygame.display.set_caption("PacmanS")
