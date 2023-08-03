@@ -26,8 +26,10 @@ class Game_Client:
         try:
             self.socket.sendall(message)
         except:
-            with global_variables.GAME_OVER_LOCK:
-                global_variables.GAME_OVER = True
+            # with global_variables.GAME_OVER_LOCK:
+            #     global_variables.GAME_OVER = True
+            with global_variables.DISCONNECTED_FROM_HOST_LOCK:
+                global_variables.DISCONNECTED_FROM_HOST = True
 
     def __listen(self):
         messageQueue = []

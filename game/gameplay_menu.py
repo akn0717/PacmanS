@@ -29,6 +29,12 @@ class Gameplay_Menu(Menu):
                     score_menu = Score_Menu()
                     score_menu.main()
                     return
+            with global_variables.DISCONNECTED_FROM_HOST_LOCK:
+                if global_variables.DISCONNECTED_FROM_HOST:
+                    self.game_client.close_socket()
+                    score_menu = Score_Menu()
+                    score_menu.main()
+                    return
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     isRunning = False
