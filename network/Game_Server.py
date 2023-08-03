@@ -1,4 +1,5 @@
 # adapted from https://realpython.com/python-sockets/
+import errno
 from threading import Lock
 import random
 import socket
@@ -26,7 +27,10 @@ class Game_Server:
         self.isGameStarted = False
 
     def sendAndFlush(self, conn, message):
-        conn.sendall(message)
+        try:
+            conn.sendall(message)
+        except:
+            return
 
     def __listenIncommingConnection(self):
         while not (self.isGameStarted):
@@ -34,11 +38,12 @@ class Game_Server:
                 continue
             try:
                 conn, _ = self.socket.accept()
-            except socket.timeout:
+            except socket.timeout:  # normal error dealing with non-blocking socket
                 continue
             except:
                 return
 
+            conn.setblocking(0)
             # Picking a new player id for new connection
             player_id = -1
             for i in range(4):
@@ -112,6 +117,7 @@ class Game_Server:
         while True:
             with global_variables.QUIT_GAME_LOCK:
                 if global_variables.QUIT_GAME:
+                    self.close_socket()
                     return
             try:
                 recv_data = self.connections[player_id].recv(
@@ -124,17 +130,31 @@ class Game_Server:
                     bufferRemainder = remainder
                     for i in range(len(messages)):
                         messageQueue.append(messages[i])
-            except:
-                message = concatBuffer(
-                    Message_Type.PLAYER_DISCONNECT.value, [str(player_id)]
-                )
-                self.connections.pop(player_id)
-                self.players.pop(player_id)
-                for key in self.connections:
-                    self.sendAndFlush(self.connections[key], message)
+            except socket.error as e:
+                err = e.args[0]
+                if (
+                    err == errno.EAGAIN or err == errno.EWOULDBLOCK
+                ):  # normal error dealing with non-blocking socket
+                    continue
+                else:
+                    position = self.players[player_id].position
+                    self.mutex_server_canvas_cells[position[0]][position[1]].acquire()
+                    self.obstacle_data[
+                        position[0],
+                        position[1],
+                    ] = 0
+                    self.mutex_server_canvas_cells[position[0]][position[1]].release()
 
-                print("Player", player_id + 1, "disconnected!")
-                return
+                    message = concatBuffer(
+                        Message_Type.PLAYER_DISCONNECT.value, [str(player_id)]
+                    )
+                    self.connections.pop(player_id)
+                    self.players.pop(player_id)
+                    for key in self.connections:
+                        self.sendAndFlush(self.connections[key], message)
+
+                    print("Player", player_id + 1, "disconnected!")
+                    return
 
             while len(messageQueue) > 0:
                 data = [int(arg) for arg in parseMessage(messageQueue.pop(0))]
@@ -304,11 +324,11 @@ class Game_Server:
                     return
             threading.Event().wait(5)
 
-    def closeSocket(self):
+    def close_socket(self):
         self.socket.close()
 
     def __del__(self):
-        self.closeSocket()
+        self.close_socket()
         if self.incommingThread is not None:
             self.incommingThread.join()
             self.incommingThread = None
