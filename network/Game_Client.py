@@ -49,6 +49,11 @@ class Game_Client:
                     bufferRemainder = remainder
                     for i in range(len(messages)):
                         messageQueue.append(messages[i])
+
+                if recv_data == b"":
+                    with global_variables.DISCONNECTED_FROM_HOST_LOCK:
+                        global_variables.DISCONNECTED_FROM_HOST = True
+                    return
             except socket.error as e:
                 err = e.args[0]
                 if (
