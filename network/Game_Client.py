@@ -38,6 +38,9 @@ class Game_Client:
         messageQueue = []
         bufferRemainder = ""
         while True:
+            with global_variables.QUIT_GAME_LOCK:
+                if global_variables.QUIT_GAME:
+                    self.close_socket()
             try:
                 recv_data = self.socket.recv(
                     global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
