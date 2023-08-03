@@ -14,7 +14,7 @@ class Host_Menu(Menu):
             global_variables.BOARD_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
-
+        self.game_server = None
         self.inputted_host_port = 5555
 
         self.port_number_input = self.menu.add.text_input(
@@ -29,15 +29,15 @@ class Host_Menu(Menu):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def navigate_to_loading_menu(self):
-        game_server = Game_Server(int(self.inputted_host_port))
-        game_server.initializeGameData()
-        game_server.startConnectionListener()
+        self.game_server = Game_Server(int(self.inputted_host_port))
+        self.game_server.initializeGameData()
+        self.game_server.startConnectionListener()
 
         # Host is also a client and connect to itself
-        game_client = Game_Client()
-        game_client.connect("127.0.0.1", self.inputted_host_port)
+        self.game_client = Game_Client()
+        self.game_client.connect("127.0.0.1", self.inputted_host_port)
         self.loading_menu = Loading_Menu(
-            game_client=game_client, game_server=game_server
+            game_client=self.game_client, game_server=self.game_server
         )
         self.menu._open(self.loading_menu.menu)
 

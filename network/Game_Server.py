@@ -1,4 +1,5 @@
 # adapted from https://realpython.com/python-sockets/
+import errno
 from threading import Lock
 import random
 import socket
@@ -24,9 +25,13 @@ class Game_Server:
         self.receiver_threads = []
         self.incommingThread = None
         self.isGameStarted = False
+        self.connections_dict_mutex = Lock()
 
     def sendAndFlush(self, conn, message):
-        conn.sendall(message)
+        try:
+            conn.sendall(message)
+        except:
+            return
 
     def __listenIncommingConnection(self):
         while not (self.isGameStarted):
@@ -34,18 +39,20 @@ class Game_Server:
                 continue
             try:
                 conn, _ = self.socket.accept()
-            except socket.timeout:
+            except socket.timeout:  # normal error dealing with non-blocking socket
                 continue
             except:
                 return
 
+            conn.setblocking(0)
             # Picking a new player id for new connection
             player_id = -1
             for i in range(4):
                 if i not in self.players:
                     player_id = i
                     break
-            self.connections[player_id] = conn
+            with self.connections_dict_mutex:
+                self.connections[player_id] = conn
             player = Pacman(player_id)
             self.players[player_id] = player
             print("Player", player_id + 1, "joined!")
@@ -75,8 +82,9 @@ class Game_Server:
             args = [str(player.id)]
             message = concatBuffer(Message_Type.PLAYER_JOIN.value, args)
 
-            for key in self.connections:
-                self.sendAndFlush(self.connections[key], message)
+            with self.connections_dict_mutex:
+                for key in self.connections:
+                    self.sendAndFlush(self.connections[key], message)
 
             # send a message to all the joined players acknowledging the current connection player's position
             self.players[player_id].position = self.potential_player_positions.pop(0)
@@ -98,25 +106,28 @@ class Game_Server:
             ]
             args = [str(arg) for arg in args]
             message = concatBuffer(Message_Type.PLAYER_POSITION.value, args)
-            for key in self.connections:
-                self.sendAndFlush(self.connections[key], message)
+            with self.connections_dict_mutex:
+                for key in self.connections:
+                    self.sendAndFlush(self.connections[key], message)
 
             # start a new thread to keep listening to the current connection player
-            thread = threading.Thread(target=self.__listen, args=(player_id,))
+            thread = threading.Thread(target=self.__client_listen, args=(player_id,))
             self.receiver_threads.append(thread)
             thread.start()
 
-    def __listen(self, player_id):
+    def __client_listen(self, player_id):
         messageQueue = []
         bufferRemainder = ""
         while True:
             with global_variables.QUIT_GAME_LOCK:
                 if global_variables.QUIT_GAME:
+                    self.close_socket()
                     return
             try:
-                recv_data = self.connections[player_id].recv(
-                    global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
-                )
+                with self.connections_dict_mutex:
+                    recv_data = self.connections[player_id].recv(
+                        global_constants.NUM_DEFAULT_COMMUNICATION_BYTES
+                    )
                 if recv_data:
                     messages, remainder = splitBuffer(
                         bufferRemainder + recv_data.decode()
@@ -124,17 +135,36 @@ class Game_Server:
                     bufferRemainder = remainder
                     for i in range(len(messages)):
                         messageQueue.append(messages[i])
-            except:
-                message = concatBuffer(
-                    Message_Type.PLAYER_DISCONNECT.value, [str(player_id)]
-                )
-                self.connections.pop(player_id)
-                self.players.pop(player_id)
-                for key in self.connections:
-                    self.sendAndFlush(self.connections[key], message)
+            except socket.error as e:
+                err = e.args[0]
+                if (
+                    err == errno.EAGAIN or err == errno.EWOULDBLOCK
+                ):  # normal error dealing with non-blocking socket
+                    continue
+                else:
+                    with self.connections_dict_mutex:
+                        position = self.players[player_id].position
+                        self.mutex_server_canvas_cells[position[0]][
+                            position[1]
+                        ].acquire()
+                        self.obstacle_data[
+                            position[0],
+                            position[1],
+                        ] = 0
+                        self.mutex_server_canvas_cells[position[0]][
+                            position[1]
+                        ].release()
 
-                print("Player", player_id + 1, "disconnected!")
-                return
+                        message = concatBuffer(
+                            Message_Type.PLAYER_DISCONNECT.value, [str(player_id)]
+                        )
+                        self.connections.pop(player_id)
+                        self.players.pop(player_id)
+                        for key in self.connections:
+                            self.sendAndFlush(self.connections[key], message)
+
+                    print("Player", player_id + 1, "disconnected!")
+                    return
 
             while len(messageQueue) > 0:
                 data = [int(arg) for arg in parseMessage(messageQueue.pop(0))]
@@ -172,8 +202,11 @@ class Game_Server:
                                 message = concatBuffer(
                                     Message_Type.PLAYER_SCORE.value, args
                                 )
-                                for key in self.connections:
-                                    self.sendAndFlush(self.connections[key], message)
+                                with self.connections_dict_mutex:
+                                    for key in self.connections:
+                                        self.sendAndFlush(
+                                            self.connections[key], message
+                                        )
 
                             # encapsulate the positon to send
                             args = [
@@ -185,8 +218,9 @@ class Game_Server:
                                 Message_Type.PLAYER_POSITION.value, args
                             )
                             # send position of player move
-                            for key in self.connections:
-                                self.sendAndFlush(self.connections[key], message)
+                            with self.connections_dict_mutex:
+                                for key in self.connections:
+                                    self.sendAndFlush(self.connections[key], message)
 
                         self.mutex_server_canvas_cells[new_position[0]][
                             new_position[1]
@@ -280,10 +314,10 @@ class Game_Server:
 
     def startGame(self):
         game_started_message = concatBuffer(Message_Type.HOST_GAME_STARTED.value)
-
-        for key in self.connections:
-            print("GAME STARTED")
-            self.sendAndFlush(self.connections[key], game_started_message)
+        with self.connections_dict_mutex:
+            for key in self.connections:
+                print("GAME STARTED")
+                self.sendAndFlush(self.connections[key], game_started_message)
         game_over_thread = threading.Thread(target=self._check_if_game_over)
         game_over_thread.start()
         self.isGameStarted = True
@@ -295,8 +329,9 @@ class Game_Server:
             )
             if number_of_remaining_dots == 0:
                 message = concatBuffer(Message_Type.GAME_OVER.value)
-                for key in self.connections:
-                    self.sendAndFlush(self.connections[key], message)
+                with self.connections_dict_mutex:
+                    for key in self.connections:
+                        self.sendAndFlush(self.connections[key], message)
                 print("GAME_OVER")
                 return
             with global_variables.QUIT_GAME_LOCK:
@@ -304,11 +339,14 @@ class Game_Server:
                     return
             threading.Event().wait(5)
 
-    def closeSocket(self):
+    def close_socket(self):
+        with self.connections_dict_mutex:
+            for player_id in self.connections:
+                self.connections[player_id].close()
         self.socket.close()
 
     def __del__(self):
-        self.closeSocket()
+        self.close_socket()
         if self.incommingThread is not None:
             self.incommingThread.join()
             self.incommingThread = None

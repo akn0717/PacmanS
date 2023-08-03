@@ -1,4 +1,5 @@
 # adapted from https://realpython.com/python-sockets/
+import errno
 import socket
 import threading
 from game.game_sprites import Pacman
@@ -13,12 +14,14 @@ class Game_Client:
     def __init__(self):
         # socket.SOCK_STREAM is TCP
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         self.listening_thread = None
 
     def sendDataToServer(self, message):
         self.sendAndFlush(message)
 
     def startListener(self):
+        self.socket.setblocking(0)
         self.listening_thread = threading.Thread(target=self.__listen)
         self.listening_thread.start()
 
@@ -46,8 +49,21 @@ class Game_Client:
                     bufferRemainder = remainder
                     for i in range(len(messages)):
                         messageQueue.append(messages[i])
-            except: 
-                return
+
+                if recv_data == b"":
+                    with global_variables.DISCONNECTED_FROM_HOST_LOCK:
+                        global_variables.DISCONNECTED_FROM_HOST = True
+                    return
+            except socket.error as e:
+                err = e.args[0]
+                if (
+                    err == errno.EAGAIN or err == errno.EWOULDBLOCK
+                ):  # normal error dealing with non-blocking socket
+                    continue
+                else:
+                    with global_variables.DISCONNECTED_FROM_HOST_LOCK:
+                        global_variables.DISCONNECTED_FROM_HOST = True
+                    return
 
             while len(messageQueue) > 0:
                 message = messageQueue.pop(0)

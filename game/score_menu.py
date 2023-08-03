@@ -9,7 +9,6 @@ class Score_Menu:
         self.surface = pygame.display.set_mode((800, 600))  # Create a Pygame surface
         self.surface.fill(global_constants.PRIMARY_COLOR)
         self.players = global_variables.PLAYERS
-     
 
     def display_player_info(self, player_name, score, player_image, y_offset):
         font = pygame.font.Font(None, 32)
@@ -30,12 +29,17 @@ class Score_Menu:
         self.surface.blit(player_info_surface, (0, y_offset))
 
     def display_disconnected_from_host(self):
-        self.surface.fill(global_constants.PRIMARY_COLOR)  
+        self.surface.fill(global_constants.PRIMARY_COLOR)
         font = pygame.font.Font(None, 72)
-        disconnected_text = font.render("DISCONNECTED FROM HOST", True, (255, 0, 0))  # Red text
+        disconnected_text = font.render(
+            "DISCONNECTED FROM HOST", True, (255, 0, 0)
+        )  # Red text
         self.surface.blit(
-            disconnected_text, ((self.surface.get_width() - disconnected_text.get_width()) // 2,
-            (self.surface.get_height() - disconnected_text.get_height()) // 2)
+            disconnected_text,
+            (
+                (self.surface.get_width() - disconnected_text.get_width()) // 2,
+                (self.surface.get_height() - disconnected_text.get_height()) // 2,
+            ),
         )
 
         pygame.display.flip()
@@ -80,25 +84,29 @@ class Score_Menu:
 
         # Display the winning player text
         font = pygame.font.Font(None, 48)
-        winning_text = font.render(f"{winning_player_name} WINS!", True, (255, 255, 255))
+        winning_text = font.render(
+            f"{winning_player_name} WINS!", True, (255, 255, 255)
+        )
         self.surface.blit(
-            winning_text, ((self.surface.get_width() - winning_text.get_width()) // 2, y_offset + 20)
+            winning_text,
+            ((self.surface.get_width() - winning_text.get_width()) // 2, y_offset + 20),
         )
         pygame.display.flip()
 
     def main(self):
         pygame.init()
         pygame.display.set_caption("Player Scores")
-        
+
         if global_variables.DISCONNECTED_FROM_HOST:
             self.display_disconnected_from_host()
         else:
             self.display_scores()
-       
+
         running = True
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    with global_variables.QUIT_GAME_LOCK:
+                        global_variables.QUIT_GAME = True
                     return
         sys.exit()
