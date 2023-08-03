@@ -340,6 +340,9 @@ class Game_Server:
             threading.Event().wait(5)
 
     def close_socket(self):
+        with self.connections_dict_mutex:
+            for player_id in self.connections:
+                self.connections[player_id].close()
         self.socket.close()
 
     def __del__(self):
