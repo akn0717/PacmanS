@@ -5,6 +5,7 @@ import game.global_constants as global_constants
 from game.gameplay_menu import *
 from game.main_menu import Main_Menu
 import sys
+import threading
 
 
 def init():
@@ -86,14 +87,24 @@ def init():
         for _ in range(global_constants.CANVAS_SIZE[0])
     ]
     global_variables.GAME_STARTED_LOCK = Lock()
+    global_variables.GAME_OVER_LOCK = Lock()
+    global_variables.QUIT_GAME_LOCK = Lock()
+    global_variables.DISCONNECTED_FROM_HOST_LOCK=Lock()
+
+
     global_variables.MUTEX_PLAYER_ID = Lock()
     global_variables.MUTEX_PLAYERS = [
         Lock() for _ in range(global_constants.NUM_PLAYERS)
     ]
     global_variables.MUTEX_PLAYERS_DICT = Lock()
-
+    global_variables.MUTEX_MOVING_REQUEST = Lock()
     global_variables.NUMBER_CONNECTIONS = 0
     global_variables.GAME_STARTED = False
+    global_variables.GAME_OVER = False
+    global_variables.QUIT_GAME = False
+    global_variables.MOVING_REQUEST = False
+    global_variables.DISCONNECTED_FROM_HOST = False
+
     global_variables.PLAYERS = {}
 
     pygame.display.set_caption("PacmanS")
@@ -106,6 +117,8 @@ def run(args):
     # menu = Loading_Menu(True)
     menu = Main_Menu()
     menu.main()
+    print("Getting back to the main")
+    print(threading.enumerate())
     pygame.quit()
     sys.exit()
 

@@ -8,6 +8,7 @@ import pygame_menu
 import pygame
 from game.gameplay_menu import Gameplay_Menu
 import time
+import threading
 
 
 class Loading_Menu(Menu):
@@ -32,9 +33,8 @@ class Loading_Menu(Menu):
                 font_size=30,
             )
             self.menu.add.button("START GAME", self.start_game)
-
-        else:
-            waiting_text = self.menu.add.label("Waiting for host...", font_size=30)
+            thread = threading.Thread(target=self.new_connections_listener)
+            thread.start()
 
     def update_menu(self):
         if self.active_connections is not None:
@@ -45,22 +45,24 @@ class Loading_Menu(Menu):
     def new_connections_listener(self):
         while True:
             # print("looping?")
-            if global_variables.GAME_STARTED == True:
+            with global_variables.GAME_STARTED_LOCK:
+                if global_variables.GAME_STARTED:
                 # self.menu.disable()
-                break
+                    break
+            with global_variables.QUIT_GAME_LOCK:
+                if global_variables.QUIT_GAME:
+                    break
             if (
-                global_variables.NUMBER_CONNECTIONS != None
-                and self.num_connections != global_variables.NUMBER_CONNECTIONS
+                self.num_connections != self.game_server.getNumberConnections()
             ):
-                self.num_connections = global_variables.NUMBER_CONNECTIONS
+                self.num_connections = self.game_server.getNumberConnections()
                 self.update_menu()
-                time.sleep(1)
+            time.sleep(3)
                 # maybe need thread to sleep for 1 sec
 
     def start_game(self):
         self.game_server.startGame()
         self.game_server.remove_spawn_dots()
-        self.navigate_to_gameplay_menu()
         clock = pygame.time.Clock()
         FPS = 15
         while True:
@@ -71,27 +73,10 @@ class Loading_Menu(Menu):
             pygame.display.update()
             clock.tick(FPS)
 
-    def main(self):
-        if self.game_server is not None:
-            self.menu.mainloop(fps_limit=15)
-        else:
-            clock = pygame.time.Clock()
-            FPS = 15
-            while True:
-                with global_variables.GAME_STARTED_LOCK:
-                    if global_variables.GAME_STARTED:
-                        self.navigate_to_gameplay_menu()
-                        break
-                pygame.display.update()
-                clock.tick(FPS)
-
     def navigate_to_gameplay_menu(self):
         self.menu.disable()
         self.gameplay_menu = Gameplay_Menu(self.game_client)
         self.gameplay_menu.main()
-
-    def back_to_main_menu(self):
-        self.menu._back()
 
     def on_ip_address_change(self, value):
         global_variables.HOST_IP_ADDRESS = value

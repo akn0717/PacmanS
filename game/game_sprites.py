@@ -11,17 +11,17 @@ class Pacman:
     def __init__(self, id, position=(0, 0)):
         self.id = id
         self.position = position
-        self.movingRequest = True
         self.score = 0
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[int(id)], pygame.Surface)
-        self.image_asset = global_variables.IMAGE_ASSET_PLAYERS[int(id)]
+        image_asset = global_variables.IMAGE_ASSET_PLAYERS[int(id)]
+        self.image_assets = [
+            pygame.transform.rotate(image_asset, 90.0 * direction)
+            for direction in range(4)
+        ]
         self.direction = Direction.RIGHT.value
 
     def setDirection(self, direction):
         self.direction = direction
-        self.image_asset = pygame.transform.rotate(
-            global_variables.IMAGE_ASSET_PLAYERS[self.id], 90.0 * direction
-        )
 
     def move(self, game_client):
         # For game testing only, skipping exchanging message,
@@ -30,7 +30,6 @@ class Pacman:
             Move_Operation.OPERATORS.value[self.direction]
         )
         new_position = (int(new_position[0]), int(new_position[1]))
-        self.movingRequest = True
 
         if not (isValidMove(global_variables.CANVAS.board_data, new_position)):
             return
@@ -53,4 +52,4 @@ class Pacman:
             # self.position[1] * global_variables.CANVAS_UNIT[1],
             self.position[0] * global_variables.CANVAS_UNIT[0],
         )  # pygame display format is (column, row)
-        global_variables.SCREEN_WINDOW.blit(self.image_asset, position)
+        global_variables.SCREEN_WINDOW.blit(self.image_assets[self.direction], position)

@@ -1,7 +1,7 @@
 import numpy as np
 from enum import Enum
 
-CANVAS_SIZE = (20, 20)
+CANVAS_SIZE = (20,20)
 PRIMARY_COLOR = (119, 136, 153)
 BLOCK_SIZE = (100, 100)
 
@@ -14,7 +14,7 @@ COLORS = [
 
 NUM_PLAYERS = 4
 
-NUM_DEFAULT_COMMUNICATION_BYTES = 1024
+NUM_DEFAULT_COMMUNICATION_BYTES = 512
 
 
 class Direction(Enum):
@@ -55,4 +55,5 @@ class Message_Type(Enum):
     HOST_GAME_STARTED = 6
     PLAYER_ID = 7
     PLAYER_DISCONNECT = 8
-    NUM_ARGS = [3 + CANVAS_SIZE[0] * CANVAS_SIZE[1], 4, 3, 4, 2, 4, 1, 2, 2]
+    GAME_OVER = 9
+    NUM_ARGS = [3 + CANVAS_SIZE[0] * CANVAS_SIZE[1], 4, 3, 4, 2, 4, 1, 2, 2, 1]
