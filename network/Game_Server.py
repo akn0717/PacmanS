@@ -111,11 +111,11 @@ class Game_Server:
                     self.sendAndFlush(self.connections[key], message)
 
             # start a new thread to keep listening to the current connection player
-            thread = threading.Thread(target=self.__listen, args=(player_id,))
+            thread = threading.Thread(target=self.__client_listen, args=(player_id,))
             self.receiver_threads.append(thread)
             thread.start()
 
-    def __listen(self, player_id):
+    def __client_listen(self, player_id):
         messageQueue = []
         bufferRemainder = ""
         while True:
