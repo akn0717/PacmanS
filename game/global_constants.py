@@ -1,7 +1,7 @@
 import numpy as np
 from enum import Enum
 
-CANVAS_SIZE = (20,20)
+CANVAS_SIZE = (8,8)
 PRIMARY_COLOR = (119, 136, 153)
 BLOCK_SIZE = (100, 100)
 

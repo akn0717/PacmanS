@@ -331,9 +331,13 @@ class Game_Server:
 
     def _check_if_game_over(self):
         while True:
-            number_of_remaining_dots = np.count_nonzero(
+            number_of_remaining_small_dots = np.count_nonzero(
                 global_variables.CANVAS.board_data == 2
             )
+            number_of_remaining_big_dots = np.count_nonzero(
+                global_variables.CANVAS.board_data == 3
+            )
+            number_of_remaining_dots = number_of_remaining_small_dots+number_of_remaining_big_dots
             if number_of_remaining_dots == 0:
                 message = concatBuffer(Message_Type.GAME_OVER.value)
                 with self.connections_dict_mutex:
