@@ -22,8 +22,8 @@ class Main_Menu(Menu):
         self.menu.add.button("Join As Client", self.navigate_to_client_menu)
         self.menu.add.vertical_margin(30)
         self.exit_button = self.menu.add.button("Exit", self.exit_game)
-        self.client_menu=Client_Menu()
-        self.host_menu=Host_Menu()
+        self.client_menu = Client_Menu()
+        self.host_menu = Host_Menu()
 
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
@@ -35,7 +35,7 @@ class Main_Menu(Menu):
         self.menu._open(self.client_menu.menu)
 
     def exit_game(self):
-        pygame.quit()
+        self.menu.disable()
 
 
 # def on_hover_enter():
