@@ -2,7 +2,7 @@ import game.global_variables as global_variables
 from game.menu import Menu
 from game.host_menu import Host_Menu
 from game.client_menu import Client_Menu
-
+import game.global_constants as global_constants
 import pygame
 import pygame_menu
 
@@ -12,8 +12,8 @@ class Main_Menu(Menu):
         super().__init__()
         self.menu = pygame_menu.Menu(
             "Main Menu",
-            global_variables.BOARD_WIDTH,
-            global_variables.BOARD_HEIGHT,
+            global_variables.SCREEN_WIDTH,
+            global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
 
