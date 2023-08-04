@@ -123,6 +123,15 @@ class Game_Client:
                         global_variables.CANVAS.board_data[
                             global_variables.PLAYERS[player_id].position[0]
                         ][global_variables.PLAYERS[player_id].position[1]] = 0
+                    elif (
+                        global_variables.CANVAS.board_data[
+                            global_variables.PLAYERS[player_id].position[0]
+                        ][global_variables.PLAYERS[player_id].position[1]]
+                        == 3
+                    ):
+                        global_variables.CANVAS.board_data[
+                            global_variables.PLAYERS[player_id].position[0]
+                        ][global_variables.PLAYERS[player_id].position[1]] = 0
 
                 elif token == Message_Type.PLAYER_SCORE.value:
                     player_id = int(data[0])

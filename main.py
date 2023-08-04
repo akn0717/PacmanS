@@ -39,6 +39,10 @@ def init():
     global_variables.IMAGE_ASSET_DOT = pygame.transform.scale(
         pygame.image.load("assets/SmallDot.png"), global_variables.CANVAS_UNIT
     )
+    global_variables.IMAGE_ASSET_BIG_DOT = pygame.transform.scale(
+        pygame.image.load("assets/BigDot.png").convert_alpha(), 
+        (global_variables.CANVAS_UNIT[0], global_variables.CANVAS_UNIT[1])
+    )
 
     global_variables.SCORE_FONT = pygame.font.Font(
         pygame.font.get_default_font(), global_variables.CANVAS_UNIT[0]

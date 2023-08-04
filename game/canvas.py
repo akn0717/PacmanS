@@ -38,8 +38,8 @@ class Canvas:
                 if (
                     self.board_data[i][j] == Block_Type.EMPTY.value
                     or self.board_data[i][j] == Block_Type.DOT.value
+                    or self.board_data[i][j] == Block_Type.BIG_DOT.value
                 ):
-
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.IMAGE_ASSET_EMPTY_BLOCK,
                         position,
@@ -51,9 +51,13 @@ class Canvas:
                     )
 
                 if self.board_data[i][j] == Block_Type.DOT.value:
-
                     global_variables.SCREEN_WINDOW.blit(
                         global_variables.IMAGE_ASSET_DOT,
+                        position,
+                    )
+                elif self.board_data[i][j] == Block_Type.BIG_DOT.value:
+                    global_variables.SCREEN_WINDOW.blit(
+                        global_variables.IMAGE_ASSET_BIG_DOT,
                         position,
                     )
 

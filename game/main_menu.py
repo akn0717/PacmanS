@@ -22,8 +22,8 @@ class Main_Menu(Menu):
         self.menu.add.button("Join As Client", self.navigate_to_client_menu)
         self.menu.add.vertical_margin(30)
         self.exit_button = self.menu.add.button("Exit", self.exit_game)
-        self.client_menu=Client_Menu()
-        self.host_menu=Host_Menu()
+        self.client_menu = Client_Menu()
+        self.host_menu = Host_Menu()
 
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
@@ -35,20 +35,5 @@ class Main_Menu(Menu):
         self.menu._open(self.client_menu.menu)
 
     def exit_game(self):
-        pygame.quit()
+        self.menu.disable()
 
-
-# def on_hover_enter():
-#     button = menu.get_selected_widget()
-#     button.set_font_shadow(enabled=True, color=(0, 0, 0), position=None, offset=2)
-
-# def on_hover_exit():
-#     button = menu.get_selected_widget()
-#     button.set_font_shadow(enabled=False, color=(0, 0, 0), position=None, offset=2)
-
-# pygame_menu.widgets.Widget.set_onmouseover(start_button, on_hover_enter)
-# pygame_menu.widgets.Widget.set_onmouseleave(start_button, on_hover_exit)
-# pygame_menu.widgets.Widget.set_onmouseover(setting_button, on_hover_enter)
-# pygame_menu.widgets.Widget.set_onmouseleave(setting_button, on_hover_exit)
-# pygame_menu.widgets.Widget.set_onmouseover(exit_button, on_hover_enter)
-# pygame_menu.widgets.Widget.set_onmouseleave(exit_button, on_hover_exit)

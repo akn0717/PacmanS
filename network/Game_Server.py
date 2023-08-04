@@ -193,20 +193,24 @@ class Game_Server:
                             if self.board_data[new_position[0]][new_position[1]] == 2:
                                 self.board_data[new_position[0]][new_position[1]] = 0
                                 self.players[player_id].score += 1
+                            # increment the score based on the movement
+                            elif self.board_data[new_position[0]][new_position[1]] == 3:
+                                self.board_data[new_position[0]][new_position[1]] = 0
+                                self.players[player_id].score += 3
 
-                                # encapsulate the score to send
-                                args = [
-                                    str(player_id),
-                                    str(self.players[player_id].score),
-                                ]
-                                message = concatBuffer(
-                                    Message_Type.PLAYER_SCORE.value, args
-                                )
-                                with self.connections_dict_mutex:
-                                    for key in self.connections:
-                                        self.sendAndFlush(
-                                            self.connections[key], message
-                                        )
+                            # encapsulate the score to send
+                            args = [
+                                str(player_id),
+                                str(self.players[player_id].score),
+                            ]
+                            message = concatBuffer(
+                                Message_Type.PLAYER_SCORE.value, args
+                            )
+                            with self.connections_dict_mutex:
+                                for key in self.connections:
+                                    self.sendAndFlush(
+                                        self.connections[key], message
+                                    )
 
                             # encapsulate the positon to send
                             args = [
@@ -276,7 +280,10 @@ class Game_Server:
         return potential_positions
 
     def initialize_dots(self):
-        self.board_data[self.board_data == 0] = 2
+        weight = [0.9, 0.1]     # [2, 3]
+        zero_list = self.board_data[self.board_data == 0]
+        self.board_data[self.board_data == 0] = np.random.choice([2, 3], size=len(zero_list), p=weight)
+        # self.board_data[self.board_data == 0] = dot_type
 
     def remove_spawn_dots(self):
         for i in self.players:
@@ -324,9 +331,13 @@ class Game_Server:
 
     def _check_if_game_over(self):
         while True:
-            number_of_remaining_dots = np.count_nonzero(
+            number_of_remaining_small_dots = np.count_nonzero(
                 global_variables.CANVAS.board_data == 2
             )
+            number_of_remaining_big_dots = np.count_nonzero(
+                global_variables.CANVAS.board_data == 3
+            )
+            number_of_remaining_dots = number_of_remaining_small_dots+number_of_remaining_big_dots
             if number_of_remaining_dots == 0:
                 message = concatBuffer(Message_Type.GAME_OVER.value)
                 with self.connections_dict_mutex:
