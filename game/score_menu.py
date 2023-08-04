@@ -6,7 +6,7 @@ import sys
 
 class Score_Menu:
     def __init__(self):
-        self.surface = pygame.display.set_mode((800, 600))  # Create a Pygame surface
+        self.surface = pygame.display.set_mode((global_variables.SCREEN_WIDTH, global_variables.SCREEN_HEIGHT)) 
         self.surface.fill(global_constants.PRIMARY_COLOR)
         self.players = global_variables.PLAYERS
 

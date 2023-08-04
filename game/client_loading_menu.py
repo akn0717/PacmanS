@@ -15,14 +15,15 @@ class Client_Loading_Menu(Menu):
     def main(self):
         self.menu = pygame_menu.Menu(
             "Loading Menu",
-            global_variables.BOARD_WIDTH,
-            global_variables.BOARD_HEIGHT,
+            global_variables.SCREEN_WIDTH,
+            global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
         isRunning = True
         clock = pygame.time.Clock()
         FPS = 15
-
+        connected_text = self.menu.add.label("Connected!", font_size=30)
+        self.menu.add.vertical_margin(30)
         waiting_text = self.menu.add.label("Waiting for host...", font_size=30)
 
         assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
