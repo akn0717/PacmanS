@@ -195,22 +195,22 @@ class Game_Server:
                                 self.players[player_id].score += 1
                             # increment the score based on the movement
                             elif self.board_data[new_position[0]][new_position[1]] == 3:
-                                self.board_data[new_position][new_position] = 0
-                                self.board_data[new_position[0]][new_position[1]] += 2
+                                self.board_data[new_position[0]][new_position[1]] = 0
+                                self.players[player_id].score += 3
 
-                                # encapsulate the score to send
-                                args = [
-                                    str(player_id),
-                                    str(self.players[player_id].score),
-                                ]
-                                message = concatBuffer(
-                                    Message_Type.PLAYER_SCORE.value, args
-                                )
-                                with self.connections_dict_mutex:
-                                    for key in self.connections:
-                                        self.sendAndFlush(
-                                            self.connections[key], message
-                                        )
+                            # encapsulate the score to send
+                            args = [
+                                str(player_id),
+                                str(self.players[player_id].score),
+                            ]
+                            message = concatBuffer(
+                                Message_Type.PLAYER_SCORE.value, args
+                            )
+                            with self.connections_dict_mutex:
+                                for key in self.connections:
+                                    self.sendAndFlush(
+                                        self.connections[key], message
+                                    )
 
                             # encapsulate the positon to send
                             args = [
@@ -280,7 +280,7 @@ class Game_Server:
         return potential_positions
 
     def initialize_dots(self):
-        weight = [0.8, 0.2]     # [2, 3]
+        weight = [0.9, 0.1]     # [2, 3]
         zero_list = self.board_data[self.board_data == 0]
         self.board_data[self.board_data == 0] = np.random.choice([2, 3], size=len(zero_list), p=weight)
         # self.board_data[self.board_data == 0] = dot_type
