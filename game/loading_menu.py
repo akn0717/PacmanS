@@ -32,6 +32,7 @@ class Loading_Menu(Menu):
                 ),
                 font_size=30,
             )
+            self.menu.add.vertical_margin(30)
             self.menu.add.button("START GAME", self.start_game)
             thread = threading.Thread(target=self.new_connections_listener)
             thread.start()

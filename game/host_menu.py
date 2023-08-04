@@ -4,14 +4,15 @@ import pygame_menu
 from game.loading_menu import Loading_Menu
 from network.Game_Client import Game_Client
 from network.Game_Server import Game_Server
+import game.global_constants as global_constants
 
 
 class Host_Menu(Menu):
     def __init__(self):
         self.menu = pygame_menu.Menu(
             "Host Menu",
-            global_variables.BOARD_WIDTH,
-            global_variables.BOARD_HEIGHT,
+            global_variables.SCREEN_WIDTH,
+            global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
         self.game_server = None
@@ -24,7 +25,6 @@ class Host_Menu(Menu):
         self.menu.add.button("Continue", self.navigate_to_loading_menu)
         self.menu.add.vertical_margin(30)
         self.menu.add.button("Back", self.back_to_main_menu)
-
     def main(self):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
