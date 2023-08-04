@@ -37,18 +37,3 @@ class Main_Menu(Menu):
     def exit_game(self):
         self.menu.disable()
 
-
-# def on_hover_enter():
-#     button = menu.get_selected_widget()
-#     button.set_font_shadow(enabled=True, color=(0, 0, 0), position=None, offset=2)
-
-# def on_hover_exit():
-#     button = menu.get_selected_widget()
-#     button.set_font_shadow(enabled=False, color=(0, 0, 0), position=None, offset=2)
-
-# pygame_menu.widgets.Widget.set_onmouseover(start_button, on_hover_enter)
-# pygame_menu.widgets.Widget.set_onmouseleave(start_button, on_hover_exit)
-# pygame_menu.widgets.Widget.set_onmouseover(setting_button, on_hover_enter)
-# pygame_menu.widgets.Widget.set_onmouseleave(setting_button, on_hover_exit)
-# pygame_menu.widgets.Widget.set_onmouseover(exit_button, on_hover_enter)
-# pygame_menu.widgets.Widget.set_onmouseleave(exit_button, on_hover_exit)
