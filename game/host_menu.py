@@ -33,8 +33,16 @@ class Host_Menu(Menu):
         self.menu.mainloop(global_variables.SCREEN_WINDOW)
 
     def navigate_to_loading_menu(self):
+
+        # try to parse the port if it is valid
+        try:
+            port = int(self.inputted_host_port)
+        except:
+            # if it not then don't start the game server
+            return
+
         # initialize the game server with the inputted port
-        self.game_server = Game_Server(int(self.inputted_host_port))
+        self.game_server = Game_Server(port)
         self.game_server.initializeGameData()
         # start thread in game server for listening to connections
         self.game_server.startConnectionListener()

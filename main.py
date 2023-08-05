@@ -7,7 +7,7 @@ from game.gameplay_menu import *
 from game.main_menu import Main_Menu
 import sys
 
-
+# initialize game data
 def init():
     pygame.init()
     global_variables.SCREEN_WINDOW = pygame.display.set_mode((1280, 720))
