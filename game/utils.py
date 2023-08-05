@@ -1,6 +1,7 @@
 from game.global_constants import Block_Type
 
-
+# check if a move is valid based on boundaries and the type of the target block
+# return True if it is moveable, otherwise False
 def isValidMove(board_data, new_position):
     if (
         new_position[0] < 0

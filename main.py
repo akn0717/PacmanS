@@ -1,11 +1,11 @@
-import argparse
+from multiprocessing import Lock
 import pygame
+from game.canvas import Canvas
 import game.global_variables as global_variables
 import game.global_constants as global_constants
 from game.gameplay_menu import *
 from game.main_menu import Main_Menu
 import sys
-import threading
 
 
 def init():
@@ -40,8 +40,8 @@ def init():
         pygame.image.load("assets/SmallDot.png"), global_variables.CANVAS_UNIT
     )
     global_variables.IMAGE_ASSET_BIG_DOT = pygame.transform.scale(
-        pygame.image.load("assets/BigDot.png").convert_alpha(), 
-        (global_variables.CANVAS_UNIT[0], global_variables.CANVAS_UNIT[1])
+        pygame.image.load("assets/BigDot.png").convert_alpha(),
+        (global_variables.CANVAS_UNIT[0], global_variables.CANVAS_UNIT[1]),
     )
 
     global_variables.SCORE_FONT = pygame.font.Font(
@@ -89,12 +89,11 @@ def init():
     global_variables.GAME_STARTED_LOCK = Lock()
     global_variables.GAME_OVER_LOCK = Lock()
     global_variables.QUIT_GAME_LOCK = Lock()
-    global_variables.DISCONNECTED_FROM_HOST_LOCK=Lock()
-
+    global_variables.DISCONNECTED_FROM_HOST_LOCK = Lock()
 
     global_variables.MUTEX_PLAYER_ID = Lock()
     global_variables.MUTEX_PLAYERS = [
-        Lock() for _ in range(global_constants.NUM_PLAYERS)
+        Lock() for _ in range(global_constants.MAX_NUM_PLAYERS)
     ]
     global_variables.MUTEX_PLAYERS_DICT = Lock()
     global_variables.MUTEX_MOVING_REQUEST = Lock()
@@ -110,21 +109,14 @@ def init():
     pygame.display.set_caption("PacmanS")
 
 
-def run(args):
+def run():
     print("Starting the game...")
-    # TODO get player ids from the server and assign them with each image color
-
-    # menu = Loading_Menu(True)
     menu = Main_Menu()
     menu.main()
-    print("Getting back to the main")
-    print(threading.enumerate())
     pygame.quit()
     sys.exit()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()
     init()
-    run(args)
+    run()
