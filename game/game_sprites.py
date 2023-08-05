@@ -1,4 +1,3 @@
-import game.global_constants as global_constants
 import game.global_variables as global_variables
 import pygame
 import numpy as np
@@ -16,6 +15,7 @@ class Pacman:
         isinstance(global_variables.IMAGE_ASSET_PLAYERS[int(id)], pygame.Surface)
         image_asset = global_variables.IMAGE_ASSET_PLAYERS[int(id)]
         self.image_assets = [
+            # transform the pacman to make the mouth pointing to different directions
             pygame.transform.rotate(image_asset, 90.0 * direction)
             for direction in range(4)
         ]
@@ -30,7 +30,7 @@ class Pacman:
             Move_Operation.OPERATORS.value[self.direction]
         )
         new_position = (int(new_position[0]), int(new_position[1]))
-        # preliminary check to see if move is valid and has no obstacle 
+        # preliminary check to see if move is valid and has no obstacle
         if not (isValidMove(global_variables.CANVAS.board_data, new_position)):
             return
         # if move valid send request to server for taking that position
@@ -43,15 +43,14 @@ class Pacman:
         game_client.sendDataToServer(message)
 
     def update(self):
-        # Client thread will update the self.position, so nothing is determined here yet
+        # Client thread will update the self.position, so no movement logic is implemented here
         pass
-    
+
     # draw the Pacman asset in current position on the board
     def draw(self):
         position = (
             self.position[1] * global_variables.CANVAS_UNIT[1]
             + global_variables.BOARD_MARGIN,
-            # self.position[1] * global_variables.CANVAS_UNIT[1],
             self.position[0] * global_variables.CANVAS_UNIT[0],
         )  # pygame display format is (column, row)
         global_variables.SCREEN_WINDOW.blit(self.image_assets[self.direction], position)

@@ -353,7 +353,7 @@ class Game_Server:
             player_y = self.players[i].position[1]
             self.board_data[player_x][player_y] = 0
 
-    #
+    # initialize the game data in the server
     def initializeGameData(self):
         print("initializing game data...")
         self.board_data = np.ones(shape=global_constants.CANVAS_SIZE, dtype=np.int32)
@@ -378,7 +378,7 @@ class Game_Server:
         # set a timeout for accepting connection
         self.socket.settimeout(5)
         self.socket.listen()
-        # start a thread to handle incoming connections
+        # start a thread to handle accepting incoming connections
         self.incommingThread = threading.Thread(target=self.__listenIncommingConnection)
         self.incommingThread.start()
 

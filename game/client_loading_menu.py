@@ -3,9 +3,7 @@ import game.global_variables as global_variables
 import pygame_menu
 import pygame
 from game.menu import Menu
-from network.Game_Client import Game_Client
 import game.global_constants as global_constants
-from pygame.locals import USEREVENT
 
 
 class Client_Loading_Menu(Menu):

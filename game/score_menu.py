@@ -7,11 +7,15 @@ import sys
 class Score_Menu:
     def __init__(self):
         # init the menu
-        self.surface = pygame.display.set_mode((global_variables.SCREEN_WIDTH, global_variables.SCREEN_HEIGHT)) 
+        self.surface = pygame.display.set_mode(
+            (global_variables.SCREEN_WIDTH, global_variables.SCREEN_HEIGHT)
+        )
         self.surface.fill(global_constants.PRIMARY_COLOR)
         self.players = global_variables.PLAYERS
 
-    def display_individual_player_stats(self, player_name, score, player_image, y_offset):
+    def display_individual_player_stats(
+        self, player_name, score, player_image, y_offset
+    ):
         font = pygame.font.Font(None, 32)
 
         icon_size = (40, 40)  # Set the desired icon size for player_image
@@ -33,9 +37,7 @@ class Score_Menu:
         # if host disconnect during game, show players disconnected text
         self.surface.fill(global_constants.PRIMARY_COLOR)
         font = pygame.font.Font(None, 72)
-        disconnected_text = font.render(
-            "DISCONNECTED FROM HOST", True, (255, 0, 0)
-        )  
+        disconnected_text = font.render("DISCONNECTED FROM HOST", True, (255, 0, 0))
         self.surface.blit(
             disconnected_text,
             (
@@ -69,21 +71,13 @@ class Score_Menu:
         # assign player image according to player id
         for player, score in sorted_player_score_dict.items():
             player_name = f"Player {player + 1}"
-            if player == 0:
-                image_path = f"assets/PacmanYellow.svg"
-            elif player == 1:
-                image_path = f"assets/PacmanRed.svg"
-            elif player == 2:
-                image_path = f"assets/PacmanGreen.svg"
-            elif player == 3:
-                image_path = f"assets/PacmanBlue.svg"
 
             # display each player scores according to the order of score
             self.display_individual_player_stats(
                 player_name, score, self.players[player].image_assets[0], y_offset
             )
             y_offset += 70
-        
+
         # get winning player stat by taking the max of the sorted dictionary
         winning_player = max(sorted_player_score_dict, key=sorted_player_score_dict.get)
         winning_player_name = f"Player {winning_player + 1}"
