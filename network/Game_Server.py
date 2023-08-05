@@ -229,7 +229,6 @@ class Game_Server:
                                 self.board_data[new_position[0]][new_position[1]]
                                 == Block_Type.DOT.value
                             ):
-                                print("EATING SMALL DOT")
                                 self.board_data[new_position[0]][
                                     new_position[1]
                                 ] = 0  # set the current board cell to empty
@@ -257,7 +256,6 @@ class Game_Server:
                                 str(player_id),
                                 str(self.players[player_id].score),
                             ]
-                            print(self.players[player_id].score)
                             message = concatBuffer(
                                 Message_Type.PLAYER_SCORE.value, args
                             )
