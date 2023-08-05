@@ -5,12 +5,13 @@ import pygame
 from game.menu import Menu
 from network.Game_Client import Game_Client
 import game.global_constants as global_constants
-from pygame.locals import USEREVENT 
-class Client_Loading_Menu(Menu):
-    def __init__(self,game_client) -> None:
-        self.game_client= game_client
-        super().__init__()
+from pygame.locals import USEREVENT
 
+
+class Client_Loading_Menu(Menu):
+    def __init__(self, game_client) -> None:
+        self.game_client = game_client
+        super().__init__()
 
     def main(self):
         self.menu = pygame_menu.Menu(
@@ -34,12 +35,13 @@ class Client_Loading_Menu(Menu):
                     isRunning = False
                     self.game_client.close_socket()
                     return
-                elif global_variables.GAME_STARTED==True:
-                    # print("HERE???")
-                    self.menu.disable()
-                    self.gameplay_menu = Gameplay_Menu(self.game_client)
-                    self.gameplay_menu.main()
-                    return
+
+            if global_variables.GAME_STARTED == True:
+                # print("HERE???")
+                self.menu.disable()
+                self.gameplay_menu = Gameplay_Menu(self.game_client)
+                self.gameplay_menu.main()
+                return
             # Clear display
             assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
             global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
@@ -51,5 +53,3 @@ class Client_Loading_Menu(Menu):
             self.menu.draw(global_variables.SCREEN_WINDOW)
             pygame.display.update()
             clock.tick(FPS)
-
-        pygame.quit()
