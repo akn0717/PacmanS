@@ -12,7 +12,7 @@ The PacmanS project is inspired from the classic legendary game Pacman. The obje
 python -m venv venv
 ```
 
-Activate Python virtual environment
+- Activate Python virtual environment.
 ```bash
 # Linux:
 python -m venv venv
@@ -21,13 +21,13 @@ python -m venv venv
 .\venv\Scripts\activate
 ```
 
-- Install dependencies
+- Install dependencies.
 ```bash
 pip install -r requirements.txt
 ```
-- To play
+- To play.
 ```bash
-python the-expression.py
+python main.py
 ```
 
 ## Supported OS
