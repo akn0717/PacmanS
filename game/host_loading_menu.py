@@ -31,27 +31,26 @@ class Host_Loading_Menu(Menu):
                 font_size=30,
             )
             self.menu.add.vertical_margin(30)
-            # button for host to start the game
             self.menu.add.button("START GAME", self.start_game)
-            # thread to start listening for new connections 
             thread = threading.Thread(target=self.new_connections_listener)
             thread.start()
 
     def update_menu(self):
-        if self.active_connections is not None: 
+        if self.active_connections is not None:
             self.active_connections.set_title(
                 "Number of players: {}".format(self.num_connections)
             )
 
     def new_connections_listener(self):
-        # as new connections come in, the thread updates the number of connection
         while True:
+            # if the game started or quitting, just return
             with global_variables.GAME_STARTED_LOCK:
                 if global_variables.GAME_STARTED:
                     break
             with global_variables.QUIT_GAME_LOCK:
                 if global_variables.QUIT_GAME:
                     break
+            # if number of connections increase in game server, update the number in UI
             if self.num_connections != self.game_server.getNumberConnections():
                 self.num_connections = self.game_server.getNumberConnections()
                 self.update_menu()
@@ -75,3 +74,11 @@ class Host_Loading_Menu(Menu):
         self.menu.disable()
         self.gameplay_menu = Gameplay_Menu(self.game_client)
         self.gameplay_menu.main()
+
+    def on_ip_address_change(self, value):
+        global_variables.HOST_IP_ADDRESS = value
+        pass
+
+    def on_port_no_change(self, value):
+        global_variables.HOST_PORT = value
+        pass

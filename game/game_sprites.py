@@ -9,6 +9,7 @@ from network.utils import concatBuffer
 
 class Pacman:
     def __init__(self, id, position=(0, 0)):
+        # initialize pacman with id, position, score and icon.
         self.id = id
         self.position = position
         self.score = 0
@@ -24,15 +25,15 @@ class Pacman:
         self.direction = direction
 
     def move(self, game_client):
-        # For game testing only, skipping exchanging message,
-        # remove later when the network is ready
+        # calculate new position of pacman according to input
         new_position = self.position + np.array(
             Move_Operation.OPERATORS.value[self.direction]
         )
         new_position = (int(new_position[0]), int(new_position[1]))
-
+        # preliminary check to see if move is valid and has no obstacle 
         if not (isValidMove(global_variables.CANVAS.board_data, new_position)):
             return
+        # if move valid send request to server for taking that position
         args = [self.id, *new_position]
         args = [str(arg) for arg in args]
         message = concatBuffer(
@@ -44,7 +45,8 @@ class Pacman:
     def update(self):
         # Client thread will update the self.position, so nothing is determined here yet
         pass
-
+    
+    # draw the Pacman asset in current position on the board
     def draw(self):
         position = (
             self.position[1] * global_variables.CANVAS_UNIT[1]

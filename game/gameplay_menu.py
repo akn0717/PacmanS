@@ -1,14 +1,9 @@
-from multiprocessing import Lock
-from game.game_sprites import Pacman
 from game.menu import Menu
-from game.canvas import Canvas
-import numpy as np
 import pygame
 import game.global_constants as global_constants
 import game.global_variables as global_variables
-from game.global_constants import Direction, Block_Type
+from game.global_constants import Direction
 from game.score_menu import Score_Menu
-from network.Game_Client import Game_Client
 
 
 class Gameplay_Menu(Menu):

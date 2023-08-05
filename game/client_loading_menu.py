@@ -14,21 +14,29 @@ class Client_Loading_Menu(Menu):
         super().__init__()
 
     def main(self):
+        # init the menu using pygame_menu lib
         self.menu = pygame_menu.Menu(
             "Loading Menu",
             global_variables.SCREEN_WIDTH,
             global_variables.SCREEN_HEIGHT,
             theme=pygame_menu.themes.THEME_BLUE,
         )
-        isRunning = True
+
         clock = pygame.time.Clock()
         FPS = 15
-        connected_text = self.menu.add.label("Connected!", font_size=30)
-        self.menu.add.vertical_margin(30)
-        waiting_text = self.menu.add.label("Waiting for host...", font_size=30)
 
+        # show text to the screen
+        self.menu.add.label("Connected!", font_size=30)
+        self.menu.add.vertical_margin(30)
+        self.menu.add.label("Waiting for host...", font_size=30)
+
+        # assert if the variable is not the correct type
         assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
+
+        # fill the background to the primary color
         global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
+
+        isRunning = True
         while isRunning:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -37,19 +45,13 @@ class Client_Loading_Menu(Menu):
                     return
 
             if global_variables.GAME_STARTED == True:
-                # print("HERE???")
+                # if host start the game, close this menu and navigate to gameplay menu.
                 self.menu.disable()
                 self.gameplay_menu = Gameplay_Menu(self.game_client)
                 self.gameplay_menu.main()
                 return
-            # Clear display
-            assert isinstance(global_variables.SCREEN_WINDOW, pygame.Surface)
-            global_variables.SCREEN_WINDOW.fill(global_constants.PRIMARY_COLOR)
-
-            # Update
-            # player will move every tick
-
-            # Draw the menu
+            # Update display
             self.menu.draw(global_variables.SCREEN_WINDOW)
             pygame.display.update()
+            # player will move every tick
             clock.tick(FPS)

@@ -1,3 +1,4 @@
+# join token enum and the arguments to construct the message
 def concatBuffer(token, args=None):
     if args is not None:
         return (str(token) + " " + " ".join(args) + "\n").encode()
@@ -5,6 +6,7 @@ def concatBuffer(token, args=None):
         return (str(token) + "\n").encode()
 
 
+# parse a string into messages delimiter by "\n"
 def splitBuffer(stringBuffer: str):
     messages = stringBuffer.split("\n")
     remainder = ""
@@ -15,6 +17,7 @@ def splitBuffer(stringBuffer: str):
     return messages, remainder
 
 
+# parse a message into token and arguments separated by space " "
 def parseMessage(message):
     data = message.split(" ")
     # data = list(filter(lambda x: x != "", data))
