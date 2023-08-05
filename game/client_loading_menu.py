@@ -51,6 +51,7 @@ class Client_Loading_Menu(Menu):
                 self.gameplay_menu.main()
                 return
             # Update display
+            self.menu.draw(global_variables.SCREEN_WINDOW)
             pygame.display.update()
             # player will move every tick
             clock.tick(FPS)
