@@ -15,7 +15,7 @@ python -m venv venv
 - Activate Python virtual environment.
 ```bash
 # Linux:
-python -m venv venv
+source ./venv/bin/activate
 
 # Window:
 .\venv\Scripts\activate
