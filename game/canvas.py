@@ -69,7 +69,7 @@ class Canvas:
             score_text = global_variables.SCORE_FONT.render(
                 f"Player {players[0].id + 1}: {players[0].score}",
                 True,
-                global_constants.COLORS[3],
+                global_constants.COLORS[0],
             )
             text_width = score_text.get_width()
             text_height = score_text.get_height()
@@ -99,7 +99,7 @@ class Canvas:
             score_text = global_variables.SCORE_FONT.render(
                 f"Player {players[1].id + 1}: {players[1].score}",
                 True,
-                global_constants.COLORS[0],
+                global_constants.COLORS[1],
             )
             text_width = score_text.get_width()
             text_height = score_text.get_height()
@@ -132,7 +132,7 @@ class Canvas:
             score_text = global_variables.SCORE_FONT.render(
                 f"Player {players[2].id + 1}: {players[2].score}",
                 True,
-                global_constants.COLORS[1],
+                global_constants.COLORS[2],
             )
             text_width = score_text.get_width()
             text_height = score_text.get_height()
@@ -161,7 +161,7 @@ class Canvas:
             score_text = global_variables.SCORE_FONT.render(
                 f"Player {players[3].id + 1}: {players[3].score}",
                 True,
-                global_constants.COLORS[2],
+                global_constants.COLORS[3],
             )
             text_width = score_text.get_width()
             text_height = score_text.get_height()

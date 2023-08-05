@@ -6,11 +6,11 @@ PRIMARY_COLOR = (119, 136, 153)
 BLOCK_SIZE = (100, 100)
 
 COLORS = [
-    (255, 0, 0),
-    (0, 128, 0),
-    (0, 0, 255),
-    (255, 200, 0),
-]  # order of displaying score: red, green, blue, yellow
+    (255, 200, 0),  # yellow
+    (255, 0, 0),  # red
+    (0, 128, 0),  # green
+    (0, 0, 255),  # blue
+]
 
 NUM_PLAYERS = 4
 
